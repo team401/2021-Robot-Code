@@ -63,7 +63,7 @@ public class SwerveModule {
 
         rotationController.enableContinuousInput(-180, 180);
 
-    }   
+    }
 
     public SwerveModuleState getState() {
 
