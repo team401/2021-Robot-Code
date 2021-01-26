@@ -55,13 +55,13 @@ public class SwerveModule {
         driveEncoder = driveMotor.getEncoder();
         rotationEncoder = new AnalogEncoder(new AnalogInput(rotationEncoderPort));
         
-        rotationEncoder.setDistancePerRotation(360 / ModuleConstants.rotationGearingRatio);
+        rotationEncoder.setDistancePerRotation(2 * Math.PI / ModuleConstants.rotationGearingRatio);
 
-        driveEncoder.setPositionConversionFactor(Math.PI * ModuleConstants.wheelDiameterMeters * ModuleConstants.driveGearingRatio);
+        driveEncoder.setPositionConversionFactor(Math.PI * ModuleConstants.wheelDiameterMeters / ModuleConstants.driveGearingRatio);
         driveEncoder.setVelocityConversionFactor(
-            Math.PI * ModuleConstants.wheelDiameterMeters * ModuleConstants.driveGearingRatio / 60.0);
+            Math.PI * ModuleConstants.wheelDiameterMeters  / (ModuleConstants.driveGearingRatio * 60));
 
-        rotationController.enableContinuousInput(-180, 180);
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
     }
 
@@ -74,7 +74,7 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState state) {
 
         final var driveOut = driveController.calculate(driveEncoder.getVelocity(), state.speedMetersPerSecond);
-        final var rotationOut = rotationController.calculate(rotationEncoder.getDistance(), state.angle.getDegrees());
+        final var rotationOut = rotationController.calculate(rotationEncoder.getDistance(), state.angle.getRadians());
 
         driveMotor.set(driveOut);
         rotationMotor.set(rotationOut);
