@@ -34,8 +34,8 @@ public class SwerveModule {
             ModuleConstants.rotationControllerKi,
             ModuleConstants.rotationControllerKd,
             new TrapezoidProfile.Constraints(
-                ModuleConstants.maxAngularVel,
-                ModuleConstants.maxAngularAccel));
+                ModuleConstants.maxAngularVelRadPerSec,
+                ModuleConstants.maxAngularAccelRadPerSecSq));
 
     private final SimpleMotorFeedforward driveFeedforward = 
         new SimpleMotorFeedforward(
@@ -73,18 +73,14 @@ public class SwerveModule {
 
     public void setDesiredState(SwerveModuleState state) {
 
-        final var driveOut = driveController.calculate(driveEncoder.getVelocity(), state.speedMetersPerSecond);
-        final var rotationOut = rotationController.calculate(rotationEncoder.getDistance(), state.angle.getRadians());
+        final double driveOut = driveController.calculate(driveEncoder.getVelocity(), state.speedMetersPerSecond);
+        final double driveFeedForward = this.driveFeedforward.calculate(state.speedMetersPerSecond);
 
-        driveMotor.set(driveOut);
-        rotationMotor.set(rotationOut);
+        final double rotationOut = rotationController.calculate(rotationEncoder.getDistance(), state.angle.getRadians());
+        final double rotationFeedforward = this.rotationFeedforward.calculate(rotationController.getSetpoint().velocity);
 
-    }
-
-    public void resetEncoders() {
-
-        driveEncoder.setPosition(0);
-        rotationEncoder.reset();
+        driveMotor.setVoltage(driveOut + driveFeedForward);
+        rotationMotor.setVoltage(rotationOut + rotationFeedforward);
 
     }
 

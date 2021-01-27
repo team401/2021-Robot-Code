@@ -54,9 +54,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public void drive(double xSpeed, double ySpeed, double rot) {
+    public void drive(double fwdX, double fwdY, double rot, boolean isFieldRelative) {
 
-        var swerveModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, rot));
+        var swerveModuleStates = kinematics.toSwerveModuleStates(
+            isFieldRelative
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(fwdX, fwdY, rot, gyro.getRotation2d())
+                : new ChassisSpeeds(fwdX, fwdY, rot));
 
         SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, DriveConstants.maxSpeedMetersPerSecond);
 

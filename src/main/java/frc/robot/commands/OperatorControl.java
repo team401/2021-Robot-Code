@@ -21,12 +21,12 @@ public class OperatorControl extends CommandBase {
         rotation = rot;
         addRequirements(subsystem);
 
-    }
+    }  
     
     @Override
     public void execute() {
 
-        drive.drive(forwardX.getAsDouble(), forwardY.getAsDouble(), rotation.getAsDouble());
+        drive.drive(forwardX.getAsDouble(), forwardY.getAsDouble(), rotation.getAsDouble(), false);
 
     }
 

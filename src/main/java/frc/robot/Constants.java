@@ -31,8 +31,8 @@ public final class Constants {
         public static final double rotationControllerKi = 0.0;
         public static final double rotationControllerKd = 0.0;
 
-        public static final double maxAngularVel = 1.0;
-        public static final double maxAngularAccel = 1.0;
+        public static final double maxAngularVelRadPerSec = 1.0;
+        public static final double maxAngularAccelRadPerSecSq = 1.0;
 
         public static final double driveKs = 0.0;
         public static final double driveKv = 0.0;
