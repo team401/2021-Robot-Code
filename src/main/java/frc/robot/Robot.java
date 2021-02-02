@@ -8,7 +8,7 @@ public class Robot extends TimedRobot {
 
     private Command autonomousCommand;
 
-    private RobotContainer robotContainer;
+    private static RobotContainer robotContainer;
 
     @Override
     public void robotInit() {
@@ -65,5 +65,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {}
-    
+
+    public static RobotContainer getContainer() {
+
+        return robotContainer;
+
+    }
+
 }

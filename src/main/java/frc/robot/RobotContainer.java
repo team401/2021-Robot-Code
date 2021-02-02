@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.InputDevices;
@@ -15,17 +14,25 @@ public class RobotContainer {
     private final DriveSubsystem drive = new DriveSubsystem();
 
     private final OperatorControl operatorControl = 
-        new OperatorControl(
-            drive, 
-            () -> leftJoystick.getX(GenericHID.Hand.kLeft), 
-            () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
-            () -> rightJoystick.getX(GenericHID.Hand.kRight));
+        new OperatorControl(drive);
 
     public RobotContainer() {
 
         drive.setDefaultCommand(operatorControl);
 
         configureButtonBindings();
+
+    }
+
+    public Joystick getLeftJoystick() {
+
+        return leftJoystick;
+
+    }
+
+    public Joystick getRightJoystick() {
+
+        return rightJoystick;
 
     }
 
