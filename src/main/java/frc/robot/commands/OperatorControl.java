@@ -1,40 +1,47 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
+
+import java.util.function.DoubleSupplier;
 
 import org.frcteam2910.common.robot.Utilities;
 
-public class OperatorControl extends Command {
+public class OperatorControl extends CommandBase {
 
-    public OperatorControl() {
+    private final DriveSubsystem driveSubsystem;
 
-        requires(DriveSubsystem.getInstance());
+    private final DoubleSupplier forward;
+    private final DoubleSupplier strafe;
+    private final DoubleSupplier rotation;
 
-    }
+    public OperatorControl(DriveSubsystem drive, DoubleSupplier fwd, DoubleSupplier stfe, DoubleSupplier rot) {
 
-    @Override
-    protected void execute() {
+        driveSubsystem = drive;
 
-        double forward = Utilities.deadband(-Robot.getContainer().getLeftJoystick().getRawAxis(1));
-        forward = Math.copySign(Math.pow(forward, 2.0), forward);
+        forward = fwd;
+        strafe = stfe;
+        rotation = rot;
 
-        double strafe = Utilities.deadband(-Robot.getContainer().getLeftJoystick().getRawAxis(0));
-        strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
-
-        double rotation = Utilities.deadband(-Robot.getContainer().getRightJoystick().getRawAxis(0));
-        rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);
-
-        DriveSubsystem.getInstance().drive(new Translation2d(forward, strafe), rotation);
+        addRequirements(driveSubsystem);
 
     }
 
     @Override
-    protected boolean isFinished() {
+    public void execute() {
 
-        return false;
+        double fwd = Utilities.deadband(forward.getAsDouble());
+        fwd = Math.copySign(Math.pow(fwd, 2.0), fwd);
+
+        double stfe = Utilities.deadband(strafe.getAsDouble());
+        stfe = Math.copySign(Math.pow(stfe, 2.0), stfe);
+
+        double rot = Utilities.deadband(rotation.getAsDouble());
+        rot = Math.copySign(Math.pow(rot, 2.0), rot);
+
+        driveSubsystem.drive(new Translation2d(fwd, stfe), rot);
 
     }
+
 }

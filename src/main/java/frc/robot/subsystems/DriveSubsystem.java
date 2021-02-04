@@ -4,26 +4,24 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import frc.robot.Constants.AnalogDevices;
 import frc.robot.Constants.CANDevices;
-import frc.robot.commands.OperatorControl;
 
 import org.frcteam2910.common.drivers.SwerveModule;
 import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
 
-public class DriveSubsystem extends Subsystem {
+public class DriveSubsystem extends SubsystemBase {
+    
     private static final double trackWidth = 16.5;
     private static final double wheelBase = 16.5;
 
-    private static DriveSubsystem instance;
-
-    private final SwerveModule frontLeftModule = 
+    private final SwerveModule frontLeft = 
         new Mk2SwerveModuleBuilder(
             new Vector2(trackWidth / 2.0, wheelBase / 2.0))
             .angleEncoder(
@@ -36,7 +34,7 @@ public class DriveSubsystem extends Subsystem {
                     Mk2SwerveModuleBuilder.MotorType.NEO)
             .build();
 
-    private final SwerveModule frontRightModule = 
+    private final SwerveModule frontRight = 
         new Mk2SwerveModuleBuilder(
             new Vector2(trackWidth / 2.0, -wheelBase / 2.0))
             .angleEncoder(
@@ -49,7 +47,7 @@ public class DriveSubsystem extends Subsystem {
                     Mk2SwerveModuleBuilder.MotorType.NEO)
             .build();
 
-    private final SwerveModule backLeftModule = 
+    private final SwerveModule rearLeft = 
         new Mk2SwerveModuleBuilder(
             new Vector2(-trackWidth / 2.0, wheelBase / 2.0))
             .angleEncoder(
@@ -62,7 +60,7 @@ public class DriveSubsystem extends Subsystem {
                     Mk2SwerveModuleBuilder.MotorType.NEO)
             .build();
 
-    private final SwerveModule backRightModule = 
+    private final SwerveModule rearRight = 
         new Mk2SwerveModuleBuilder(
             new Vector2(-trackWidth / 2.0, -wheelBase / 2.0))
             .angleEncoder(
@@ -82,28 +80,20 @@ public class DriveSubsystem extends Subsystem {
             new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
             new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
 
-    public DriveSubsystem() { }
-
-    public static DriveSubsystem getInstance() {
-
-        if (instance == null) instance = new DriveSubsystem();
-
-        return instance;
-
-    }
+    public DriveSubsystem() {}
 
     @Override
     public void periodic() {
 
-        frontLeftModule.updateSensors();
-        frontRightModule.updateSensors();
-        backLeftModule.updateSensors();
-        backRightModule.updateSensors();
+        frontLeft.updateSensors();
+        frontRight.updateSensors();
+        rearLeft.updateSensors();
+        rearRight.updateSensors();
 
-        frontLeftModule.updateState(TimedRobot.kDefaultPeriod);
-        frontRightModule.updateState(TimedRobot.kDefaultPeriod);
-        backLeftModule.updateState(TimedRobot.kDefaultPeriod);
-        backRightModule.updateState(TimedRobot.kDefaultPeriod);
+        frontLeft.updateState(TimedRobot.kDefaultPeriod);
+        frontRight.updateState(TimedRobot.kDefaultPeriod);
+        rearLeft.updateState(TimedRobot.kDefaultPeriod);
+        rearRight.updateState(TimedRobot.kDefaultPeriod);
 
     }
 
@@ -113,21 +103,13 @@ public class DriveSubsystem extends Subsystem {
 
         ChassisSpeeds speeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
         
-
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
         
-        frontLeftModule.setTargetVelocity(states[0].speedMetersPerSecond, states[0].angle.getRadians());
-        frontRightModule.setTargetVelocity(states[1].speedMetersPerSecond, states[1].angle.getRadians());
-        backLeftModule.setTargetVelocity(states[2].speedMetersPerSecond, states[2].angle.getRadians());
-        backRightModule.setTargetVelocity(states[3].speedMetersPerSecond, states[3].angle.getRadians());
+        frontLeft.setTargetVelocity(states[0].speedMetersPerSecond, states[0].angle.getRadians());
+        frontRight.setTargetVelocity(states[1].speedMetersPerSecond, states[1].angle.getRadians());
+        rearLeft.setTargetVelocity(states[2].speedMetersPerSecond, states[2].angle.getRadians());
+        rearRight.setTargetVelocity(states[3].speedMetersPerSecond, states[3].angle.getRadians());
 
     }
 
-
-    @Override
-    protected void initDefaultCommand() {
-
-        setDefaultCommand(new OperatorControl());
-
-    }
 }
