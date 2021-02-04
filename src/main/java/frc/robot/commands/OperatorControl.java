@@ -1,43 +1,40 @@
 package frc.robot.commands;
 
-import org.frcteam2910.common.robot.Utilities;
-
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class OperatorControl extends CommandBase {
+import org.frcteam2910.common.robot.Utilities;
 
-    private final DriveSubsystem drive;
+public class OperatorControl extends Command {
 
-    private double forward;
-    private double strafe;
-    private double rotation;
-    
-    public OperatorControl(DriveSubsystem subsystem) {
+    public OperatorControl() {
 
-        drive = subsystem;
-        addRequirements(drive);
+        requires(DriveSubsystem.getInstance());
 
     }
 
     @Override
-    public void execute() {
+    protected void execute() {
 
-        forward = Utilities.deadband(Robot.getContainer().getLeftJoystick().getX(Hand.kLeft));
+        double forward = Utilities.deadband(-Robot.getContainer().getLeftJoystick().getRawAxis(1));
         forward = Math.copySign(Math.pow(forward, 2.0), forward);
 
-
-        strafe = Utilities.deadband(Robot.getContainer().getLeftJoystick().getY(Hand.kLeft));
+        double strafe = Utilities.deadband(-Robot.getContainer().getLeftJoystick().getRawAxis(0));
         strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
 
-        rotation = Utilities.deadband(Robot.getContainer().getRightJoystick().getX(Hand.kRight));
+        double rotation = Utilities.deadband(-Robot.getContainer().getRightJoystick().getRawAxis(0));
         rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);
 
-        drive.drive(new Translation2d(forward, strafe), rotation, false);
+        DriveSubsystem.getInstance().drive(new Translation2d(forward, strafe), rotation);
 
     }
 
+    @Override
+    protected boolean isFinished() {
+
+        return false;
+
+    }
 }
