@@ -17,7 +17,7 @@ import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
 
 public class DriveSubsystem extends SubsystemBase {
-    
+
     private static final double trackWidth = 16.5;
     private static final double wheelBase = 16.5;
 

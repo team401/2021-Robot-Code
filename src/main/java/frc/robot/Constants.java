@@ -16,6 +16,13 @@ public class Constants {
         public static final int rearRightRotationMotorId = 8;
         public static final int rearRightDriveMotorId = 7;
 
+        public static final int rightFlywheelMotorId = 9;
+        public static final int leftFlywheelMotorId = 10;
+
+        public static final int kickerMotorId = 11;
+
+        public static final int intakeMotorId = 12;
+
     }
 
     public static final class AnalogDevices {
@@ -31,6 +38,13 @@ public class Constants {
 
         public static final int leftJoystickPort = 0;
         public static final int rightJoystickPort = 1;
+
+    }
+
+    public static final class PneumaticChannels {
+
+        public static final int[] leftIntakeSolenoidChannels = {0, 1};
+        public static final int[] rightIntakeSolenoidChannels= {2, 3};
 
     }
     
