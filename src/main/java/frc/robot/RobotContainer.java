@@ -2,8 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.InputDevices;
-import frc.robot.commands.OperatorControl;
+import frc.robot.commands.drivetrain.OperatorControlCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class RobotContainer {
@@ -16,11 +17,18 @@ public class RobotContainer {
     public RobotContainer() {
 
         drive.setDefaultCommand(
-            new OperatorControl(
+            new OperatorControlCommand(
                 drive,
                 () -> leftJoystick.getY(GenericHID.Hand.kLeft),
                 () -> leftJoystick.getX(GenericHID.Hand.kLeft),
                 () -> rightJoystick.getX(GenericHID.Hand.kRight)));
+    
+
+    }
+
+    public void configureButtonBindings() {
+
+    
 
     }
 

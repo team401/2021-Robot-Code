@@ -20,8 +20,8 @@ public class Constants {
         public static final int leftFlywheelMotorId = 10;
 
         public static final int kickerMotorId = 11;
-
         public static final int intakeMotorId = 12;
+        public static final int conveyorMotorId = 13;
 
     }
 
@@ -31,6 +31,13 @@ public class Constants {
         public static final int frontRightRotationEncoderPort = 1;
         public static final int rearLeftRotationEncoderPort = 2;
         public static final int rearRightRotationEncoderPort = 3;
+
+    }
+
+    public static final class DIOChannels {
+
+        public static final int bottomBannerPort = 0;
+        public static final int topBannerPort = 1;
 
     }
 
@@ -44,7 +51,20 @@ public class Constants {
     public static final class PneumaticChannels {
 
         public static final int[] leftIntakeSolenoidChannels = {0, 1};
-        public static final int[] rightIntakeSolenoidChannels= {2, 3};
+        public static final int[] rightIntakeSolenoidChannels = {2, 3};
+        public static final int[] hoodSolenoidChannels = {4, 5};
+
+    }
+
+    public static final class SuperstructureConstants {
+
+        public static final double intakingPower = 0.5;
+        public static final double kickerPower = 0.85;
+        public static final double conveyorPower = 0.5;
+
+        public static final double spacingDelaySeconds = 0.5;
+
+        public static final double flywheelGearRatio = 1.0 / 1.0;
 
     }
     

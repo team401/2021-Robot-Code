@@ -1,15 +1,14 @@
-package frc.robot.commands;
+package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.function.DoubleSupplier;
 
 import org.frcteam2910.common.robot.Utilities;
 
-public class OperatorControl extends CommandBase {
+public class OperatorControlCommand extends CommandBase {
 
     private final DriveSubsystem driveSubsystem;
 
@@ -17,7 +16,7 @@ public class OperatorControl extends CommandBase {
     private final DoubleSupplier strafe;
     private final DoubleSupplier rotation;
 
-    public OperatorControl(DriveSubsystem drive, DoubleSupplier fwd, DoubleSupplier stfe, DoubleSupplier rot) {
+    public OperatorControlCommand(DriveSubsystem drive, DoubleSupplier fwd, DoubleSupplier stfe, DoubleSupplier rot) {
 
         driveSubsystem = drive;
 

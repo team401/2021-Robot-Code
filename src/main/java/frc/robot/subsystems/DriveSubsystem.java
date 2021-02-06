@@ -21,11 +21,16 @@ public class DriveSubsystem extends SubsystemBase {
     private static final double trackWidth = 16.5;
     private static final double wheelBase = 16.5;
 
+    private final AnalogInput frontLeftRotationEncoder = new AnalogInput(AnalogDevices.frontLeftRotationEncoderPort);
+    private final AnalogInput frontRightRotationEncoder = new AnalogInput(AnalogDevices.frontRightRotationEncoderPort);
+    private final AnalogInput rearLeftRotationEncoder = new AnalogInput(AnalogDevices.rearLeftRotationEncoderPort);
+    private final AnalogInput rearRightRotationEncoder = new AnalogInput(AnalogDevices.rearRightRotationEncoderPort);
+
     private final SwerveModule frontLeft = 
         new Mk2SwerveModuleBuilder(
             new Vector2(trackWidth / 2.0, wheelBase / 2.0))
             .angleEncoder(
-                    new AnalogInput(AnalogDevices.frontLeftRotationEncoderPort), 0.0)
+                    frontLeftRotationEncoder, 0.0)
             .angleMotor(
                     new CANSparkMax(CANDevices.frontLeftRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
                     Mk2SwerveModuleBuilder.MotorType.NEO)
@@ -38,7 +43,7 @@ public class DriveSubsystem extends SubsystemBase {
         new Mk2SwerveModuleBuilder(
             new Vector2(trackWidth / 2.0, -wheelBase / 2.0))
             .angleEncoder(
-                    new AnalogInput(AnalogDevices.frontRightRotationEncoderPort), 0.0)
+                    frontRightRotationEncoder, 0.0)
             .angleMotor(
                     new CANSparkMax(CANDevices.frontRightRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
                     Mk2SwerveModuleBuilder.MotorType.NEO)
@@ -51,7 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
         new Mk2SwerveModuleBuilder(
             new Vector2(-trackWidth / 2.0, wheelBase / 2.0))
             .angleEncoder(
-                    new AnalogInput(AnalogDevices.rearLeftRotationEncoderPort), 0.0)
+                    rearLeftRotationEncoder, 0.0)
             .angleMotor(
                     new CANSparkMax(CANDevices.rearLeftRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
                     Mk2SwerveModuleBuilder.MotorType.NEO)
@@ -64,7 +69,7 @@ public class DriveSubsystem extends SubsystemBase {
         new Mk2SwerveModuleBuilder(
             new Vector2(-trackWidth / 2.0, -wheelBase / 2.0))
             .angleEncoder(
-                    new AnalogInput(AnalogDevices.rearRightRotationEncoderPort), 0.0)
+                    rearRightRotationEncoder, 0.0)
             .angleMotor(
                     new CANSparkMax(CANDevices.rearRightRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
                     Mk2SwerveModuleBuilder.MotorType.NEO)
@@ -80,7 +85,9 @@ public class DriveSubsystem extends SubsystemBase {
             new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
             new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
 
-    public DriveSubsystem() {}
+    public DriveSubsystem() {
+
+    }
 
     @Override
     public void periodic() {
@@ -109,6 +116,15 @@ public class DriveSubsystem extends SubsystemBase {
         frontRight.setTargetVelocity(states[1].speedMetersPerSecond, states[1].angle.getRadians());
         rearLeft.setTargetVelocity(states[2].speedMetersPerSecond, states[2].angle.getRadians());
         rearRight.setTargetVelocity(states[3].speedMetersPerSecond, states[3].angle.getRadians());
+
+    }
+
+    public void resetEncoders() {
+
+        frontLeftRotationEncoder.resetAccumulator();
+        frontRightRotationEncoder.resetAccumulator();
+        rearLeftRotationEncoder.resetAccumulator();
+        rearRightRotationEncoder.resetAccumulator();
 
     }
 
