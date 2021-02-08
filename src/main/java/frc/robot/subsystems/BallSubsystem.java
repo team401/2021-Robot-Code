@@ -23,7 +23,7 @@ public class BallSubsystem extends SubsystemBase {
 
     private final WPI_TalonFX leftFlywheelMotor = new WPI_TalonFX(CANDevices.leftFlywheelMotorId);
     private final WPI_TalonFX rightFlywheelMotor = new WPI_TalonFX(CANDevices.rightFlywheelMotorId);
-    
+
     private final SpeedControllerGroup flywheel = 
         new SpeedControllerGroup(
             leftFlywheelMotor,
