@@ -3,45 +3,60 @@ package frc.robot.commands.superstructure;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SuperstructureConstants;
-import frc.robot.subsystems.BallSubsystem;
+import frc.robot.subsystems.ConveyorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeCommand extends CommandBase {
 
-    private final BallSubsystem ballSubsystem;
+    private final IntakeSubsystem intake;
 
-    public IntakeCommand(BallSubsystem subsystem) {
+    private final ConveyorSubsystem conveyor;
 
-        ballSubsystem = subsystem;
+    private boolean isCurrentBallInConveyor = false;
 
-        addRequirements(ballSubsystem);
+    public IntakeCommand(IntakeSubsystem intakeSubsystem, ConveyorSubsystem conveyorSubsystem) {
+
+        intake = intakeSubsystem;
+        conveyor = conveyorSubsystem;
+
+        addRequirements(intake, conveyor);
 
     }
 
     @Override
     public void initialize() {
 
-        ballSubsystem.deployIntake();
+        intake.extendIntake();
 
     }
 
     @Override
     public void execute() {
 
-        if (ballSubsystem.getBottomBannerState() && !ballSubsystem.getTopBannerState()) {
+        if (conveyor.getBottomBannerState() && !conveyor.getTopBannerState()) {
 
-            ballSubsystem.runIntake();
-            ballSubsystem.runConveyor();
+            intake.runIntakeMotor();
+            conveyor.runConveyor();
 
             Timer.delay(SuperstructureConstants.spacingDelaySeconds);
+
+            isCurrentBallInConveyor = true;
 
         }
 
     }
 
     @Override
+    public boolean isFinished() {
+
+        return isCurrentBallInConveyor;
+        
+    }
+
+    @Override
     public void end(boolean interrupted) {
 
-        ballSubsystem.retractIntake();
+        intake.retractIntake();
 
     }
     

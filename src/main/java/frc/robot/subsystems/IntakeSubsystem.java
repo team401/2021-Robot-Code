@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.PneumaticChannels;
+import frc.robot.Constants.SuperstructureConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -25,9 +26,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {}
 
-    public void runMotor(double output) {
+    public void runIntakeMotor() {
 
-        intakeMotor.set(output);
+        intakeMotor.set(SuperstructureConstants.intakingPower);
 
     }
 
