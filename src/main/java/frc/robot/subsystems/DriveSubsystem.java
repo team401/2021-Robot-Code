@@ -1,26 +1,28 @@
 package frc.robot.subsystems;
 
+import com.analog.adis16470.frc.ADIS16470_IMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.AnalogDevices;
 import frc.robot.Constants.CANDevices;
+import frc.robot.Constants.DriveConstants;
 
 import org.frcteam2910.common.drivers.SwerveModule;
 import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
 
 public class DriveSubsystem extends SubsystemBase {
-
-    private static final double trackWidth = 16.5;
-    private static final double wheelBase = 16.5;
 
     private static final double frontLeftAngleOffset = -Math.toRadians(0);
     private static final double frontRightAngleOffset = -Math.toRadians(0);
@@ -29,7 +31,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final SwerveModule frontLeft = 
         new Mk2SwerveModuleBuilder(
-            new Vector2(trackWidth / 2.0, wheelBase / 2.0))
+            new Vector2(DriveConstants.trackWidth / 2.0, DriveConstants.wheelBase / 2.0))
             .angleEncoder(
                 new AnalogInput(AnalogDevices.frontLeftRotationEncoderPort), frontLeftAngleOffset)
             .angleMotor(
@@ -42,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final SwerveModule frontRight = 
         new Mk2SwerveModuleBuilder(
-            new Vector2(trackWidth / 2.0, -wheelBase / 2.0))
+            new Vector2(DriveConstants.trackWidth / 2.0, -DriveConstants.wheelBase / 2.0))
             .angleEncoder(
                 new AnalogInput(AnalogDevices.frontRightRotationEncoderPort), frontRightAngleOffset)
             .angleMotor(
@@ -55,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final SwerveModule rearLeft = 
         new Mk2SwerveModuleBuilder(
-            new Vector2(-trackWidth / 2.0, wheelBase / 2.0))
+            new Vector2(-DriveConstants.trackWidth / 2.0, DriveConstants.wheelBase / 2.0))
             .angleEncoder(
                 new AnalogInput(AnalogDevices.rearLeftRotationEncoderPort), rearLeftAngleOffset)
             .angleMotor(
@@ -68,7 +70,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final SwerveModule rearRight = 
         new Mk2SwerveModuleBuilder(
-            new Vector2(-trackWidth / 2.0, -wheelBase / 2.0))
+            new Vector2(-DriveConstants.trackWidth / 2.0, -DriveConstants.wheelBase / 2.0))
             .angleEncoder(
                 new AnalogInput(AnalogDevices.rearRightRotationEncoderPort), rearRightAngleOffset)
             .angleMotor(
@@ -79,14 +81,16 @@ public class DriveSubsystem extends SubsystemBase {
                 Mk2SwerveModuleBuilder.MotorType.NEO)
             .build();
 
-    private final SwerveDriveKinematics kinematics = 
-        new SwerveDriveKinematics(
-            new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
-            new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
-            new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
-            new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
+    private final ADIS16470_IMU imu = new ADIS16470_IMU();
 
-    public DriveSubsystem() {}
+    private final SwerveDriveOdometry odometry = 
+        new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d(Units.degreesToRadians(imu.getAngle())));
+
+    public DriveSubsystem() {
+
+        imu.calibrate();
+
+    }
 
     @Override
     public void periodic() {
@@ -110,11 +114,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void drive(Translation2d translation, double rotation) {
 
-        rotation *= 2.0 / Math.hypot(wheelBase, trackWidth);
+        rotation *= 2.0 / Math.hypot(DriveConstants.wheelBase, DriveConstants.trackWidth);
 
         ChassisSpeeds speeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
         
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
         
         frontLeft.setTargetVelocity(states[0].speedMetersPerSecond, states[0].angle.getRadians());
         frontRight.setTargetVelocity(states[1].speedMetersPerSecond, states[1].angle.getRadians());
@@ -123,9 +127,18 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public void resetEncoders() {
+    public void setModuleStates(SwerveModuleState[] moduleStates) {
 
+        frontLeft.setTargetVelocity(moduleStates[0].speedMetersPerSecond, moduleStates[0].angle.getRadians());
+        frontRight.setTargetVelocity(moduleStates[1].speedMetersPerSecond, moduleStates[1].angle.getRadians());
+        rearLeft.setTargetVelocity(moduleStates[2].speedMetersPerSecond, moduleStates[2].angle.getRadians());
+        rearRight.setTargetVelocity(moduleStates[3].speedMetersPerSecond, moduleStates[3].angle.getRadians());
 
+    }
+
+    public Pose2d getPose() {
+
+        return odometry.getPoseMeters();
 
     }
 

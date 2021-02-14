@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+
 public class Constants {
 
     public static final class CANDevices {
@@ -56,6 +59,20 @@ public class Constants {
 
     }
 
+    public static final class DriveConstants {
+
+        public static final double trackWidth = 16.5;
+        public static final double wheelBase = 16.5;
+
+        public static final SwerveDriveKinematics kinematics = 
+            new SwerveDriveKinematics(
+                new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
+                new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
+                new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
+                new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
+
+    }
+
     public static final class SuperstructureConstants {
 
         public static final double intakingPower = 0.5;
@@ -65,6 +82,13 @@ public class Constants {
         public static final double spacingDelaySeconds = 0.5;
 
         public static final double flywheelGearRatio = 1.0 / 1.0;
+
+    }
+
+    public static final class AutoConstants {
+
+        public static final double maxVelMetersPerSec = 3;
+        public static final double maxAccelMetersPerSecondSq = 3;
 
     }
     
