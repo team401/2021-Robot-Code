@@ -30,8 +30,8 @@ public class Constants {
 
     public static final class AnalogDevices {
 
-        public static final int frontLeftRotationEncoderPort = 0;
-        public static final int frontRightRotationEncoderPort = 1;
+        public static final int frontLeftRotationEncoderPort = 1;
+        public static final int frontRightRotationEncoderPort = 0;
         public static final int rearLeftRotationEncoderPort = 2;
         public static final int rearRightRotationEncoderPort = 3;
 

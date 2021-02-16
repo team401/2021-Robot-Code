@@ -24,10 +24,10 @@ import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private static final double frontLeftAngleOffset = -Math.toRadians(0);
-    private static final double frontRightAngleOffset = -Math.toRadians(0);
-    private static final double rearLeftAngleOffset = -Math.toRadians(0);
-    private static final double rearRightAngleOffset = -Math.toRadians(0);
+    private static final double frontLeftAngleOffset = -Math.toRadians(236.5);
+    private static final double frontRightAngleOffset = -Math.toRadians(54.7 + 180);
+    private static final double rearLeftAngleOffset = -Math.toRadians(210.6);
+    private static final double rearRightAngleOffset = -Math.toRadians(55.7 + 180);
 
     private final SwerveModule frontLeft = 
         new Mk2SwerveModuleBuilder(
