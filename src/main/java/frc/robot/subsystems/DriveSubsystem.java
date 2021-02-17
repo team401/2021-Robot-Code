@@ -112,11 +112,14 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public void drive(Translation2d translation, double rotation) {
+    public void drive(Translation2d translation, double rotation, boolean isFieldRelative) {
 
         rotation *= 2.0 / Math.hypot(DriveConstants.wheelBase, DriveConstants.trackWidth);
 
-        ChassisSpeeds speeds = new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+        ChassisSpeeds speeds = (isFieldRelative)
+        ? ChassisSpeeds.fromFieldRelativeSpeeds(
+            translation.getX(), translation.getY(), rotation, Rotation2d.fromDegrees(imu.getAngle()))
+        : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
         
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
         
