@@ -58,7 +58,7 @@ SwerveControllerCommand swerveControllerCommand =
     }
 
     public SwerveControllerCommand runCommand() {
-System.out.println("running");
+        
         return swerveControllerCommand;
 
     }
