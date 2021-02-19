@@ -32,6 +32,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     }
 
+    public void stopIntakeMotor() {
+
+        intakeMotor.set(0);
+
+    }
+
     public void extendIntake() {
 
         leftIntakeSolenoid.set(Value.kForward);
