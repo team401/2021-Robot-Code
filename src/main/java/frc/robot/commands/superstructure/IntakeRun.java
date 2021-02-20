@@ -12,7 +12,7 @@ public class IntakeRun extends CommandBase{
         subsystem = intake;
     }
 
-    public void execute() {
+    public void initialize() {
         subsystem.runIntakeMotor();
     }
 
