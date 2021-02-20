@@ -16,7 +16,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class FollowTrajectoryCommand {
+public class FollowTrajectory {
 
     private final DriveSubsystem drive = new DriveSubsystem();
     
@@ -42,16 +42,16 @@ public class FollowTrajectoryCommand {
 
 SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
-            trajectory, 
-            drive::getPose, 
-            DriveConstants.kinematics, 
-            new PIDController(1, 0.0, 0.0), 
-            new PIDController(1, 0.0, 0.0), 
-            rotationController, 
-            drive::setModuleStates, 
+            trajectory,
+            drive::getPose,
+            DriveConstants.kinematics,
+            new PIDController(1, 0.0, 0.0),
+            new PIDController(1, 0.0, 0.0),
+            rotationController,
+            drive::setModuleStates,
             drive);
 
-    public FollowTrajectoryCommand() {
+    public FollowTrajectory() {
 
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
 

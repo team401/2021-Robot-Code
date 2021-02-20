@@ -9,8 +9,6 @@ import org.frcteam2910.common.control.Trajectory;
 import org.frcteam2910.common.math.Rotation2;
 import org.frcteam2910.common.math.Vector2;
 
-import edu.wpi.first.wpiutil.math.Vector;
-
 public class AutoTrajectories {
 
     private final Rotation2 galacticSearchStartingHeading = Rotation2.ZERO;

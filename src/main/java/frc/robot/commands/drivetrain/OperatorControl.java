@@ -8,7 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import org.frcteam2910.common.robot.Utilities;
 
-public class OperatorControlCommand extends CommandBase {
+public class OperatorControl extends CommandBase {
 
     private final DriveSubsystem driveSubsystem;
 
@@ -16,7 +16,7 @@ public class OperatorControlCommand extends CommandBase {
     private final DoubleSupplier strafe;
     private final DoubleSupplier rotation;
 
-    public OperatorControlCommand(DriveSubsystem drive, DoubleSupplier fwd, DoubleSupplier stfe, DoubleSupplier rot) {
+    public OperatorControl(DriveSubsystem drive, DoubleSupplier fwd, DoubleSupplier stfe, DoubleSupplier rot) {
 
         driveSubsystem = drive;
 

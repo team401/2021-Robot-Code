@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 
@@ -89,6 +91,12 @@ public class Constants {
 
         public static final double maxVelMetersPerSec = 3;
         public static final double maxAccelMetersPerSecondSq = 3;
+
+    }
+
+    public static final class FieldConstants {
+
+        public static final Pose2d initalRobotToFieldPose = new Pose2d(0.0, 0.0, new Rotation2d(0.0));
 
     }
     
