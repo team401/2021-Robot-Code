@@ -1,19 +1,19 @@
 package frc.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakeExtend extends CommandBase {
+public class IntakeRetract extends CommandBase {
 
     private final IntakeSubsystem subsystem;
 
-    public IntakeExtend(IntakeSubsystem Intake) {
+    public IntakeRetract(IntakeSubsystem Intake) {
         subsystem = Intake;
         addRequirements(subsystem);
     }
 
     public void initialize() {
-        subsystem.extendIntake();
+        subsystem.retractIntake();
     }
 
     public boolean isFinished() {
