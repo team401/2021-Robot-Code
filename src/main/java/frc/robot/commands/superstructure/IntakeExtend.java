@@ -8,15 +8,21 @@ public class IntakeExtend extends CommandBase {
     private final IntakeSubsystem subsystem;
 
     public IntakeExtend(IntakeSubsystem Intake) {
+
         subsystem = Intake;
         addRequirements(subsystem);
+
     }
 
     public void initialize() {
+
         subsystem.extendIntake();
+
     }
 
     public boolean isFinished() {
+
         return true;
+        
     }
 }

@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
             PneumaticChannels.leftIntakeSolenoidChannels[0], 
             PneumaticChannels.leftIntakeSolenoidChannels[1]);
     
-    private final DoubleSolenoid rightIntakeSolenoid =
+    private final DoubleSolenoid rightIntakeSolenoid = 
         new DoubleSolenoid(
             PneumaticChannels.rightIntakeSolenoidChannels[0], 
             PneumaticChannels.rightIntakeSolenoidChannels[1]);
