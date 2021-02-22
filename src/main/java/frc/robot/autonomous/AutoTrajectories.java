@@ -1,26 +1,36 @@
 package frc.robot.autonomous;
 
-import org.frcteam2910.common.control.ITrajectoryConstraint;
-import org.frcteam2910.common.control.Path;
-import org.frcteam2910.common.control.PathArcSegment;
-import org.frcteam2910.common.control.PathLineSegment;
-import org.frcteam2910.common.control.PathSegment;
-import org.frcteam2910.common.control.Trajectory;
-import org.frcteam2910.common.math.Rotation2;
-import org.frcteam2910.common.math.Vector2;
+import java.util.List;
+
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 
 public class AutoTrajectories {
 
-    private final Rotation2 galacticSearchStartingHeading = Rotation2.ZERO;
-    private final Rotation2 autoNavStartingHeading = Rotation2.ZERO;
+    private final static TrajectoryConfig config = 
+        new TrajectoryConfig(
+            AutoConstants.maxVelMetersPerSec, 
+            AutoConstants.maxAccelMetersPerSecondSq)
+        .setKinematics(DriveConstants.kinematics);
 
-    /*private final Trajectory galacticSearchRedATrajectory;
-    private final Trajectory galacticSearchRedBTrajectory;
-    private final Trajectory galacticSearchBlueATrajectory;
-    private final Trajectory galacticSearchBlueBTrajectory;
+    public static Trajectory testTrajectory;
 
-    private final Trajectory autoNavBarrelRacingTrajectory;
-    private final Trajectory autoNavSlalomTrajectory;
-    private final Trajectory autoNavBounceTrajectory;*/
+    public AutoTrajectories() {
+
+        testTrajectory = 
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0, 0, new Rotation2d(0)),
+                List.of(new Translation2d(1, 1), new Translation2d(2, -1)), 
+                new Pose2d(3, 0, new Rotation2d(0)),
+                config);
+
+    }
 
 }

@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
+import frc.robot.autonomous.AutoTrajectories;
+import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -50,11 +52,15 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
 
+        new JoystickButton(gamepad, Button.kB.value)
+        .whenHeld(new InstantCommand(intake::extendIntake))
+        .whenReleased(new InstantCommand(intake::retractIntake));
+
     }
 
     public Command getAutonomousCommand() {
     
-        return null;
+        return new FollowTrajectory(AutoTrajectories.testTrajectory);
 
     }
 

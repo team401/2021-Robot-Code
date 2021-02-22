@@ -14,7 +14,8 @@ public class FollowTrajectory extends SwerveControllerCommand {
 
     private final static DriveSubsystem drive = new DriveSubsystem();
 
-    private final static ProfiledPIDController rotationController = new ProfiledPIDController(1, 0, 0,
+    private final static ProfiledPIDController rotationController = 
+        new ProfiledPIDController(1, 0, 0,
             new TrapezoidProfile.Constraints(AutoConstants.maxVelMetersPerSec,
                     AutoConstants.maxAccelMetersPerSecondSq));
 
