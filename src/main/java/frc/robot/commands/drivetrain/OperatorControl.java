@@ -3,9 +3,7 @@ package frc.robot.commands.drivetrain;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-
 import java.util.function.DoubleSupplier;
-
 import org.frcteam2910.common.robot.Utilities;
 
 public class OperatorControl extends CommandBase {
@@ -40,7 +38,7 @@ public class OperatorControl extends CommandBase {
         double rot = Utilities.deadband(rotation.getAsDouble());
         rot = Math.copySign(Math.pow(rot, 2.0), rot);
         
-        driveSubsystem.drive(new Translation2d(fwd, stfe), rot, true);
+        driveSubsystem.drive(new Translation2d(fwd, stfe), rot, false);
 
     }
 
