@@ -25,8 +25,6 @@ public class LockToTarget extends CommandBase {
     @Override
     public void execute() {
 
-        
-
     }
 
 }
