@@ -37,4 +37,10 @@ public class ConveyorSubsystem extends SubsystemBase {
 
     }
 
+    public void stopConveyor() {
+
+        conveyorMotor.set(0);
+
+    }
+
 }
