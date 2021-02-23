@@ -39,7 +39,8 @@ public class DriveSubsystem extends SubsystemBase {
                 Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                 new CANSparkMax(CANDevices.frontLeftDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-                Mk2SwerveModuleBuilder.MotorType.NEO)
+                DriveConstants.driveWheelGearReduction,
+                DriveConstants.wheelDiameterMeters)
             .build();
 
     private final SwerveModule frontRight = 
@@ -52,7 +53,8 @@ public class DriveSubsystem extends SubsystemBase {
                 Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                 new CANSparkMax(CANDevices.frontRightDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-                Mk2SwerveModuleBuilder.MotorType.NEO)
+                DriveConstants.driveWheelGearReduction,
+                DriveConstants.wheelDiameterMeters)
             .build();
 
     private final SwerveModule rearLeft = 
@@ -65,7 +67,8 @@ public class DriveSubsystem extends SubsystemBase {
                 Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                 new CANSparkMax(CANDevices.rearLeftDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-                Mk2SwerveModuleBuilder.MotorType.NEO)
+                DriveConstants.driveWheelGearReduction,
+                DriveConstants.wheelDiameterMeters)
             .build();
 
     private final SwerveModule rearRight = 
@@ -78,7 +81,8 @@ public class DriveSubsystem extends SubsystemBase {
                 Mk2SwerveModuleBuilder.MotorType.NEO)
             .driveMotor(
                 new CANSparkMax(CANDevices.rearRightDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-                Mk2SwerveModuleBuilder.MotorType.NEO)
+                DriveConstants.driveWheelGearReduction,
+                DriveConstants.wheelDiameterMeters)
             .build();
 
     private final ADIS16470_IMU imu = new ADIS16470_IMU();
@@ -95,20 +99,21 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
+        SmartDashboard.putNumber("X", odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Y", odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Angle", odometry.getPoseMeters().getRotation().getRadians());
+
         frontLeft.updateSensors();
         frontRight.updateSensors();
         rearLeft.updateSensors();
         rearRight.updateSensors();
 
-        SmartDashboard.putNumber("Front Left Module Angle", Math.toDegrees(frontLeft.getCurrentAngle()));
-        SmartDashboard.putNumber("Front Right Module Angle", Math.toDegrees(frontRight.getCurrentAngle()));
-        SmartDashboard.putNumber("Back Left Module Angle", Math.toDegrees(rearLeft.getCurrentAngle()));
-        SmartDashboard.putNumber("Back Right Module Angle", Math.toDegrees(rearRight.getCurrentAngle()));
-
         frontLeft.updateState(TimedRobot.kDefaultPeriod);
         frontRight.updateState(TimedRobot.kDefaultPeriod);
         rearLeft.updateState(TimedRobot.kDefaultPeriod);
         rearRight.updateState(TimedRobot.kDefaultPeriod);
+
+        odometry.update(new Rotation2d(imu.getAngle()), getModuleStates());
 
     }
 
@@ -139,8 +144,20 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public Pose2d getPose() {
+    public SwerveModuleState[] getModuleStates() {
 
+        SwerveModuleState[] states = {
+            new SwerveModuleState(frontLeft.getCurrentVelocity(), new Rotation2d(frontLeft.getCurrentAngle())),
+            new SwerveModuleState(frontRight.getCurrentVelocity(), new Rotation2d(frontRight.getCurrentAngle())),
+            new SwerveModuleState(rearLeft.getCurrentVelocity(), new Rotation2d(rearLeft.getCurrentAngle())),
+            new SwerveModuleState(rearRight.getCurrentVelocity(), new Rotation2d(rearRight.getCurrentAngle()))};
+
+        return states;
+
+    }
+
+    public Pose2d getPose() {
+        
         return odometry.getPoseMeters();
 
     }

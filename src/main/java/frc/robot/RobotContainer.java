@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -60,7 +61,46 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
     
-        return new FollowTrajectory(AutoTrajectories.testTrajectory);
+        TrajectoryConfig config =
+            new TrajectoryConfig(
+                    AutoConstants.maxVelMetersPerSec,
+                    AutoConstants.maxAccelMetersPerSecondSq)
+                // Add kinematics to ensure max speed is actually obeyed
+                .setKinematics(DriveConstants.kinematics);
+
+        // An example trajectory to follow.  All units in meters.
+        Trajectory exampleTrajectory =
+            TrajectoryGenerator.generateTrajectory(
+                // Start at the origin facing the +X direction
+                new Pose2d(0, 0, new Rotation2d(0)),
+                // Pass through these two interior waypoints, making an 's' curve path
+                List.of(new Translation2d(.25, .25), new Translation2d(1, -.5)),
+                // End 3 meters straight ahead of where we started, facing forward
+                new Pose2d(1.5, 0, new Rotation2d(0)),
+                config);
+
+        var rotationController =
+            new ProfiledPIDController(
+                0.5, 0, 0.0001, 
+                new TrapezoidProfile.Constraints(
+                    AutoConstants.maxVelMetersPerSec,
+                    AutoConstants.maxAccelMetersPerSecondSq));
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
+
+        SwerveControllerCommand swerveControllerCommand =
+            new SwerveControllerCommand(
+                exampleTrajectory,
+                drive::getPose, // Functional interface to feed supplier
+                DriveConstants.kinematics,
+
+                // Position controllers
+                new PIDController(0.5, 0, 0),
+                new PIDController(0.5, 0, 0),
+                rotationController,
+                drive::setModuleStates,
+                drive);
+
+        return swerveControllerCommand;
 
     }
 
