@@ -96,8 +96,11 @@ public class Constants {
 
     public static final class AutoConstants {
 
-        public static final double maxVelMetersPerSec = .5;
+        public static final double maxVelMetersPerSec = 1;
         public static final double maxAccelMetersPerSecondSq = .5;
+
+        public static final double maxAngularSpeedRadPerSec = 5;
+        public static final double maxAngularAccelRadPerSecSq = 5;
 
     }
 

@@ -38,7 +38,7 @@ public class OperatorControl extends CommandBase {
         double rot = Utilities.deadband(rotation.getAsDouble());
         rot = Math.copySign(Math.pow(rot, 2.0), rot);
         
-        driveSubsystem.drive(new Translation2d(fwd, stfe), rot, false);
+        driveSubsystem.drive(new Translation2d(-fwd, -stfe), rot, false);
 
     }
 

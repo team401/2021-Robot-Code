@@ -99,10 +99,6 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        SmartDashboard.putNumber("X", odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Y", odometry.getPoseMeters().getY());
-        SmartDashboard.putNumber("Angle", odometry.getPoseMeters().getRotation().getRadians());
-
         frontLeft.updateSensors();
         frontRight.updateSensors();
         rearLeft.updateSensors();
@@ -113,7 +109,9 @@ public class DriveSubsystem extends SubsystemBase {
         rearLeft.updateState(TimedRobot.kDefaultPeriod);
         rearRight.updateState(TimedRobot.kDefaultPeriod);
 
-        odometry.update(new Rotation2d(imu.getAngle()), getModuleStates());
+        odometry.update(getHeading(), getModuleStates());
+
+        SmartDashboard.putNumber("Gyro", getHeading().getRadians());
 
     }
 
@@ -159,6 +157,21 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         
         return odometry.getPoseMeters();
+
+    }
+
+    public void resetPose(Pose2d pose) {
+
+        imu.reset();
+        new Rotation2d();
+        odometry.resetPosition(pose, Rotation2d.fromDegrees(-imu.getAngle()));
+
+    }
+
+    public Rotation2d getHeading() {
+
+        new Rotation2d();
+        return Rotation2d.fromDegrees(-imu.getAngle());
 
     }
 

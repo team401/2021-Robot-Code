@@ -66,29 +66,30 @@ public class RobotContainer {
         Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(new Translation2d(.25, .25), new Translation2d(1, -.5)),
-                new Pose2d(1.5, 0, new Rotation2d(0)),
+                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+                new Pose2d(3, 0, new Rotation2d(0)),
                 config);
 
         var rotationController =
             new ProfiledPIDController(
-                0.5, 0, 0.0001, 
+                2, 0.0, 0,
                 new TrapezoidProfile.Constraints(
-                    AutoConstants.maxVelMetersPerSec,
-                    AutoConstants.maxAccelMetersPerSecondSq));
-        rotationController.enableContinuousInput(-Math.PI, Math.PI);
+                    AutoConstants.maxAngularSpeedRadPerSec,
+                    AutoConstants.maxAngularAccelRadPerSecSq));
+        //rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand swerveControllerCommand =
             new SwerveControllerCommand(
                 exampleTrajectory,
                 drive::getPose,
                 DriveConstants.kinematics,
-
-                new PIDController(0.5, 0, 0),
-                new PIDController(0.5, 0, 0),
+                new PIDController(1, 0, 0.25),
+                new PIDController(1, 0, 0.25),
                 rotationController,
                 drive::setModuleStates,
                 drive);
+
+        drive.resetPose(exampleTrajectory.getInitialPose());
 
         return swerveControllerCommand;
 
