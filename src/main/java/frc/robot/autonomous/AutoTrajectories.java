@@ -20,11 +20,7 @@ public class AutoTrajectories {
         )
         .setKinematics(DriveConstants.kinematics);
 
-    public static Trajectory testTrajectory;
-
-    public AutoTrajectories() {
-
-        testTrajectory = 
+    public static Trajectory testTrajectory = 
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(
@@ -34,7 +30,5 @@ public class AutoTrajectories {
                 ),
                 config
             );
-
-    }
 
 }

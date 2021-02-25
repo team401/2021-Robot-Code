@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
+import frc.robot.autonomous.AutoTrajectories;
+import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -33,12 +35,12 @@ public class RobotContainer {
 
     private DriveSubsystem drive = new DriveSubsystem();
     private IntakeSubsystem intake = new IntakeSubsystem();
-
+    
     public RobotContainer() {
 
         drive.setDefaultCommand(
             new RunCommand(
-                () -> 
+                () ->
                     drive.drive(
                         -leftJoystick.getY(GenericHID.Hand.kLeft), 
                         -leftJoystick.getX(GenericHID.Hand.kLeft), 
@@ -56,47 +58,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-    
-        TrajectoryConfig config =
-            new TrajectoryConfig(
-                    AutoConstants.maxVelMetersPerSec,
-                    AutoConstants.maxAccelMetersPerSecondSq
-                )
-            .setKinematics(DriveConstants.kinematics);
 
-        Trajectory exampleTrajectory =
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(
-                    new Translation2d(Units.feetToMeters(1), Units.feetToMeters(1)), 
-                    new Translation2d(Units.feetToMeters(1), Units.feetToMeters(-1))),
-                new Pose2d(Units.feetToMeters(1), Units.feetToMeters(1), new Rotation2d(0)),
-                config);
-
-        var rotationController =
-            new ProfiledPIDController(
-                2, 0.0, 0,
-                new TrapezoidProfile.Constraints(
-                    AutoConstants.maxAngularSpeedRadPerSec,
-                    AutoConstants.maxAngularAccelRadPerSecSq)
-            );
-        //rotationController.enableContinuousInput(-Math.PI, Math.PI);
-
-        SwerveControllerCommand swerveControllerCommand =
-            new SwerveControllerCommand(
-                exampleTrajectory,
-                drive::getPose,
-                DriveConstants.kinematics,
-                new PIDController(0.5, 0, 0.0001),
-                new PIDController(0.5, 0, 0.0001),
-                rotationController,
-                drive::setModuleStates,
-                drive
-            );
-
-        drive.resetPose(exampleTrajectory.getInitialPose());
-
-        return swerveControllerCommand;
+        return new FollowTrajectory(drive, AutoTrajectories.testTrajectory);
 
     }
 

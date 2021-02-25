@@ -13,7 +13,7 @@
             "artifactId": "adis16470-java",
             "version": "2020.r4"
         }
-    ],
+    ], 
     "jniDependencies": [],
     "cppDependencies": [
         {

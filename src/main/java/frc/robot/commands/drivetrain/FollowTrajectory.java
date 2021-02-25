@@ -12,30 +12,35 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowTrajectory extends SwerveControllerCommand {
 
-    private final static DriveSubsystem drive = new DriveSubsystem();
-
-    private final static ProfiledPIDController rotationController = 
-        new ProfiledPIDController(1, 0, 0,
+    private static final ProfiledPIDController rotationController = 
+        new ProfiledPIDController(2, 0, 0,
             new TrapezoidProfile.Constraints(AutoConstants.maxVelMetersPerSec,
-                    AutoConstants.maxAccelMetersPerSecondSq
+                AutoConstants.maxAccelMetersPerSecondSq
             )
         );
 
-    public FollowTrajectory(Trajectory trajectory) {
-        
-        super(
-            trajectory, 
-            drive::getPose, 
-            DriveConstants.kinematics, 
-            new PIDController(1, 0, 0),
-            new PIDController(1, 0, 0), 
-            rotationController,
-            drive::setModuleStates, 
-            drive
-        );
+    static {
 
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
     }
+
+    public FollowTrajectory(DriveSubsystem drive, Trajectory trajectory) {
+
+        super(
+            trajectory, 
+            drive::getPose, 
+            DriveConstants.kinematics, 
+            new PIDController(0.5, 0, 0.0001),
+            new PIDController(0.5, 0, 0.0001), 
+            rotationController,
+            drive::setModuleStates, 
+            drive
+        );
+    
+    }
     
 }
+
+
+        
