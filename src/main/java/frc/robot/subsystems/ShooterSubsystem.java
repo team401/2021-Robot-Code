@@ -30,7 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final DoubleSolenoid hoodSolenoid = 
         new DoubleSolenoid(
             PneumaticChannels.hoodSolenoidChannels[0], 
-            PneumaticChannels.hoodSolenoidChannels[1]);
+            PneumaticChannels.hoodSolenoidChannels[1]
+        );
 
     public ShooterSubsystem() {
 

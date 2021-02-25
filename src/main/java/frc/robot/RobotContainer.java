@@ -43,8 +43,11 @@ public class RobotContainer {
                         -leftJoystick.getY(GenericHID.Hand.kLeft), 
                         -leftJoystick.getX(GenericHID.Hand.kLeft), 
                         rightJoystick.getX(GenericHID.Hand.kRight), 
-                        true),
-                drive));
+                        true
+                    ),
+                drive
+            )
+        );
 
     }
 
@@ -57,8 +60,9 @@ public class RobotContainer {
         TrajectoryConfig config =
             new TrajectoryConfig(
                     AutoConstants.maxVelMetersPerSec,
-                    AutoConstants.maxAccelMetersPerSecondSq)
-                .setKinematics(DriveConstants.kinematics);
+                    AutoConstants.maxAccelMetersPerSecondSq
+                )
+            .setKinematics(DriveConstants.kinematics);
 
         Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
@@ -74,7 +78,8 @@ public class RobotContainer {
                 2, 0.0, 0,
                 new TrapezoidProfile.Constraints(
                     AutoConstants.maxAngularSpeedRadPerSec,
-                    AutoConstants.maxAngularAccelRadPerSecSq));
+                    AutoConstants.maxAngularAccelRadPerSecSq)
+            );
         //rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand swerveControllerCommand =
@@ -86,7 +91,8 @@ public class RobotContainer {
                 new PIDController(0.5, 0, 0.0001),
                 rotationController,
                 drive::setModuleStates,
-                drive);
+                drive
+            );
 
         drive.resetPose(exampleTrajectory.getInitialPose());
 
