@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
@@ -17,20 +16,19 @@ public class AutoTrajectories {
     private final static TrajectoryConfig config = 
         new TrajectoryConfig(
             AutoConstants.maxVelMetersPerSec, 
-            AutoConstants.maxAccelMetersPerSecondSq)
+            AutoConstants.maxAccelMetersPerSecondSq
+        )
         .setKinematics(DriveConstants.kinematics);
 
-    public static Trajectory testTrajectory;
-
-    public AutoTrajectories() {
-
-        testTrajectory = 
+    public static Trajectory testTrajectory = 
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(new Translation2d(1, 1), new Translation2d(2, -1)), 
-                new Pose2d(3, 0, new Rotation2d(0)),
-                config);
-
-    }
+                List.of(
+                    new Translation2d(1, 1), 
+                    new Translation2d(2, -1)),
+                    new Pose2d(3, 0, new Rotation2d(0)
+                ),
+                config
+            );
 
 }

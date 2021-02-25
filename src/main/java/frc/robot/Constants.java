@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.util.Units;
 
 public class Constants {
 
@@ -65,8 +66,8 @@ public class Constants {
 
     public static final class DriveConstants {
 
-        public static final double trackWidth = 16.5;
-        public static final double wheelBase = 16.5;
+        public static final double trackWidth = Units.inchesToMeters(16.5);
+        public static final double wheelBase = Units.inchesToMeters(16.5);
 
         public static final SwerveDriveKinematics kinematics = 
             new SwerveDriveKinematics(
@@ -74,6 +75,10 @@ public class Constants {
                 new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
                 new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
+
+        public static final double driveWheelGearReduction = 8.33;
+
+        public static final double wheelDiameterMeters = Units.inchesToMeters(4.0);
 
     }
 
@@ -91,8 +96,11 @@ public class Constants {
 
     public static final class AutoConstants {
 
-        public static final double maxVelMetersPerSec = 3;
-        public static final double maxAccelMetersPerSecondSq = 3;
+        public static final double maxVelMetersPerSec = 1;
+        public static final double maxAccelMetersPerSecondSq = .5;
+
+        public static final double maxAngularSpeedRadPerSec = 5;
+        public static final double maxAngularAccelRadPerSecSq = 5;
 
     }
 
