@@ -20,6 +20,7 @@ import frc.robot.Constants.DriveConstants;
 
 import org.frcteam2910.common.drivers.SwerveModule;
 import org.frcteam2910.common.math.Vector2;
+import org.frcteam2910.common.robot.Utilities;
 import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -115,14 +116,23 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public void drive(Translation2d translation, double rotation, boolean isFieldRelative) {
+    public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
+
+        forward = Utilities.deadband(forward);
+        forward = Math.copySign(Math.pow(forward, 2.0), forward);
+
+        strafe = Utilities.deadband(strafe);
+        strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
+
+        rotation = Utilities.deadband(rotation);
+        rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);
 
         rotation *= 2.0 / Math.hypot(DriveConstants.wheelBase, DriveConstants.trackWidth);
 
         ChassisSpeeds speeds = (isFieldRelative)
         ? ChassisSpeeds.fromFieldRelativeSpeeds(
-            translation.getX(), translation.getY(), rotation, Rotation2d.fromDegrees(imu.getAngle()))
-        : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+            forward, strafe, rotation, Rotation2d.fromDegrees(imu.getAngle()))
+        : new ChassisSpeeds(forward, strafe, rotation);
         
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
         
@@ -174,5 +184,22 @@ public class DriveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(-imu.getAngle());
 
     }
+
+    public Pose2d getRobotToTarget(Pose2d targetPose) {
+
+        Translation2d robotToTargetTranslation = 
+            new Translation2d(
+                targetPose.getX() - getPose().getX(), 
+                targetPose.getY() - getPose().getY());
+
+        Rotation2d robotToTargetRotation =
+            new Rotation2d(
+                targetPose.getRotation().getRadians() - getPose().getRotation().getDegrees()); //not sure if this'll work this way
+        
+        return new Pose2d(robotToTargetTranslation, robotToTargetRotation);
+
+    }
+
+    
 
 }

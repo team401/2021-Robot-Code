@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -13,14 +12,13 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
-import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -39,19 +37,18 @@ public class RobotContainer {
     public RobotContainer() {
 
         drive.setDefaultCommand(
-            new OperatorControl(
-                drive,
-                () -> leftJoystick.getY(GenericHID.Hand.kLeft),
-                () -> leftJoystick.getX(GenericHID.Hand.kLeft),
-                () -> rightJoystick.getX(GenericHID.Hand.kRight)));
-    
+            new RunCommand(
+                () -> 
+                    drive.drive(
+                        -leftJoystick.getY(GenericHID.Hand.kLeft), 
+                        -leftJoystick.getX(GenericHID.Hand.kLeft), 
+                        rightJoystick.getX(GenericHID.Hand.kRight), 
+                        true),
+                drive));
+
     }
 
     public void configureButtonBindings() {
-
-        new JoystickButton(gamepad, Button.kB.value)
-        .whenHeld(new InstantCommand(intake::extendIntake))
-        .whenReleased(new InstantCommand(intake::retractIntake));
 
     }
 
@@ -66,8 +63,10 @@ public class RobotContainer {
         Trajectory exampleTrajectory =
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-                new Pose2d(3, 0, new Rotation2d(0)),
+                List.of(
+                    new Translation2d(Units.feetToMeters(1), Units.feetToMeters(1)), 
+                    new Translation2d(Units.feetToMeters(1), Units.feetToMeters(-1))),
+                new Pose2d(Units.feetToMeters(1), Units.feetToMeters(1), new Rotation2d(0)),
                 config);
 
         var rotationController =
@@ -83,8 +82,8 @@ public class RobotContainer {
                 exampleTrajectory,
                 drive::getPose,
                 DriveConstants.kinematics,
-                new PIDController(1, 0, 0.25),
-                new PIDController(1, 0, 0.25),
+                new PIDController(0.5, 0, 0.0001),
+                new PIDController(0.5, 0, 0.0001),
                 rotationController,
                 drive::setModuleStates,
                 drive);
