@@ -59,7 +59,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        return new FollowTrajectory(drive, AutoTrajectories.testTrajectory);
+        return new FollowTrajectory(drive, AutoTrajectories.firstBarrel);
 
     }
 
