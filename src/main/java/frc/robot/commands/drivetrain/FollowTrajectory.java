@@ -13,7 +13,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class FollowTrajectory extends SwerveControllerCommand {
 
     private static final ProfiledPIDController rotationController = 
-        new ProfiledPIDController(2, 0, 0,
+        new ProfiledPIDController(0.5, 0, 0,
             new TrapezoidProfile.Constraints(AutoConstants.maxVelMetersPerSec,
                 AutoConstants.maxAccelMetersPerSecondSq
             )

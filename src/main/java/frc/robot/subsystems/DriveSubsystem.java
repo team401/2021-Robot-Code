@@ -18,89 +18,44 @@ import frc.robot.Constants.AnalogDevices;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
-import org.frcteam2910.common.drivers.SwerveModule;
-import org.frcteam2910.common.math.Vector2;
-import org.frcteam2910.common.robot.Utilities;
-import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
-
 public class DriveSubsystem extends SubsystemBase {
 
-    private static final double frontLeftAngleOffset = -Math.toRadians(236.5);
-    private static final double frontRightAngleOffset = -Math.toRadians(54.7 + 180);
-    private static final double rearLeftAngleOffset = -Math.toRadians(210.6);
-    private static final double rearRightAngleOffset = -Math.toRadians(55.7 + 180);
+    private static final double frontLeftAngleOffset = Units.degreesToRadians(90);
+    private static final double frontRightAngleOffset = -Math.toRadians(0);
+    private static final double rearLeftAngleOffset = -Math.toRadians(0);
+    private static final double rearRightAngleOffset = -Math.toRadians(0);
 
     private final SwerveModule frontLeft = 
-        new Mk2SwerveModuleBuilder(
-            new Vector2(DriveConstants.trackWidth / 2.0, DriveConstants.wheelBase / 2.0)
-        )
-        .angleEncoder(
-            new AnalogInput(AnalogDevices.frontLeftRotationEncoderPort), frontLeftAngleOffset
-        )
-        .angleMotor(
-            new CANSparkMax(CANDevices.frontLeftRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            Mk2SwerveModuleBuilder.MotorType.NEO
-        )
-        .driveMotor(
-            new CANSparkMax(CANDevices.frontLeftDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            DriveConstants.driveWheelGearReduction,
-            DriveConstants.wheelDiameterMeters
-        )
-        .build();
-
+        new SwerveModule(
+            CANDevices.frontLeftDriveMotorId, 
+            CANDevices.frontLeftRotationMotorId, 
+            AnalogDevices.frontLeftRotationEncoderPort, 
+            frontLeftAngleOffset
+        );
+    
     private final SwerveModule frontRight = 
-        new Mk2SwerveModuleBuilder(
-            new Vector2(DriveConstants.trackWidth / 2.0, -DriveConstants.wheelBase / 2.0)
-        )
-        .angleEncoder(
-            new AnalogInput(AnalogDevices.frontRightRotationEncoderPort), frontRightAngleOffset
-        )
-        .angleMotor(
-            new CANSparkMax(CANDevices.frontRightRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            Mk2SwerveModuleBuilder.MotorType.NEO
-        )
-        .driveMotor(
-            new CANSparkMax(CANDevices.frontRightDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            DriveConstants.driveWheelGearReduction,
-            DriveConstants.wheelDiameterMeters
-        )
-        .build();
+        new SwerveModule(
+            CANDevices.frontRightDriveMotorId, 
+            CANDevices.frontRightRotationMotorId, 
+            AnalogDevices.frontRightRotationEncoderPort, 
+            frontRightAngleOffset
+        );
 
     private final SwerveModule rearLeft = 
-        new Mk2SwerveModuleBuilder(
-            new Vector2(-DriveConstants.trackWidth / 2.0, DriveConstants.wheelBase / 2.0)
-        )
-        .angleEncoder(
-            new AnalogInput(AnalogDevices.rearLeftRotationEncoderPort), rearLeftAngleOffset
-        )
-        .angleMotor(
-            new CANSparkMax(CANDevices.rearLeftRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            Mk2SwerveModuleBuilder.MotorType.NEO
-        )
-        .driveMotor(
-            new CANSparkMax(CANDevices.rearLeftDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            DriveConstants.driveWheelGearReduction,
-            DriveConstants.wheelDiameterMeters
-        )
-        .build();
+        new SwerveModule(
+            CANDevices.rearLeftDriveMotorId, 
+            CANDevices.rearLeftRotationMotorId, 
+            AnalogDevices.rearLeftRotationEncoderPort, 
+            rearLeftAngleOffset
+        );
 
     private final SwerveModule rearRight = 
-        new Mk2SwerveModuleBuilder(
-            new Vector2(-DriveConstants.trackWidth / 2.0, -DriveConstants.wheelBase / 2.0)
-        )
-        .angleEncoder(
-            new AnalogInput(AnalogDevices.rearRightRotationEncoderPort), rearRightAngleOffset
-        )
-        .angleMotor(
-            new CANSparkMax(CANDevices.rearRightRotationMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            Mk2SwerveModuleBuilder.MotorType.NEO
-        )
-        .driveMotor(
-            new CANSparkMax(CANDevices.rearRightDriveMotorId, CANSparkMaxLowLevel.MotorType.kBrushless),
-            DriveConstants.driveWheelGearReduction,
-            DriveConstants.wheelDiameterMeters
-        )
-        .build();
+        new SwerveModule(
+            CANDevices.rearRightDriveMotorId,
+            CANDevices.rearRightRotationMotorId,
+            AnalogDevices.rearRightRotationEncoderPort,
+            rearRightAngleOffset
+        );
 
     private final ADIS16470_IMU imu = new ADIS16470_IMU();
 
@@ -116,33 +71,15 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        frontLeft.updateSensors();
-        frontRight.updateSensors();
-        rearLeft.updateSensors();
-        rearRight.updateSensors();
-
-        frontLeft.updateState(TimedRobot.kDefaultPeriod);
-        frontRight.updateState(TimedRobot.kDefaultPeriod);
-        rearLeft.updateState(TimedRobot.kDefaultPeriod);
-        rearRight.updateState(TimedRobot.kDefaultPeriod);
-
         odometry.update(getHeading(), getModuleStates());
-
-        SmartDashboard.putNumber("Gyro", getHeading().getRadians());
 
     }
 
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
 
-        forward = Utilities.deadband(forward);
         forward = Math.copySign(Math.pow(forward, 2.0), forward);
-
-        strafe = Utilities.deadband(strafe);
         strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
-
-        rotation = Utilities.deadband(rotation);
         rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);
-
         rotation *= 2.0 / Math.hypot(DriveConstants.wheelBase, DriveConstants.trackWidth);
 
         ChassisSpeeds speeds = (isFieldRelative)
@@ -154,29 +91,26 @@ public class DriveSubsystem extends SubsystemBase {
         
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
         
-        frontLeft.setTargetVelocity(states[0].speedMetersPerSecond, states[0].angle.getRadians());
-        frontRight.setTargetVelocity(states[1].speedMetersPerSecond, states[1].angle.getRadians());
-        rearLeft.setTargetVelocity(states[2].speedMetersPerSecond, states[2].angle.getRadians());
-        rearRight.setTargetVelocity(states[3].speedMetersPerSecond, states[3].angle.getRadians());
+        setModuleStates(states);
 
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        frontLeft.setTargetVelocity(moduleStates[0].speedMetersPerSecond, moduleStates[0].angle.getRadians());
-        frontRight.setTargetVelocity(moduleStates[1].speedMetersPerSecond, moduleStates[1].angle.getRadians());
-        rearLeft.setTargetVelocity(moduleStates[2].speedMetersPerSecond, moduleStates[2].angle.getRadians());
-        rearRight.setTargetVelocity(moduleStates[3].speedMetersPerSecond, moduleStates[3].angle.getRadians());
+        frontLeft.setDesiredState(moduleStates[0]);
+        frontRight.setDesiredState(moduleStates[1]);
+        rearLeft.setDesiredState(moduleStates[2]);
+        rearRight.setDesiredState(moduleStates[3]);
 
     }
 
     public SwerveModuleState[] getModuleStates() {
 
         SwerveModuleState[] states = {
-            new SwerveModuleState(frontLeft.getCurrentVelocity(), new Rotation2d(frontLeft.getCurrentAngle())),
-            new SwerveModuleState(frontRight.getCurrentVelocity(), new Rotation2d(frontRight.getCurrentAngle())),
-            new SwerveModuleState(rearLeft.getCurrentVelocity(), new Rotation2d(rearLeft.getCurrentAngle())),
-            new SwerveModuleState(rearRight.getCurrentVelocity(), new Rotation2d(rearRight.getCurrentAngle()))
+            new SwerveModuleState(frontLeft.getCurrentVelocity(), frontLeft.getCurrentAngle()),
+            new SwerveModuleState(frontRight.getCurrentVelocity(), frontRight.getCurrentAngle()),
+            new SwerveModuleState(rearLeft.getCurrentVelocity(), rearLeft.getCurrentAngle()),
+            new SwerveModuleState(rearRight.getCurrentVelocity(), rearRight.getCurrentAngle())
         };
 
         return states;

@@ -59,7 +59,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        return new FollowTrajectory(drive, AutoTrajectories.firstBarrel);
+        drive.resetPose(new Pose2d(0, 0, new Rotation2d(0)));
+
+        return new FollowTrajectory(drive, AutoTrajectories.testTrajectory);
 
     }
 

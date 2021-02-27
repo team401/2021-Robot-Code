@@ -77,6 +77,7 @@ public class Constants {
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
 
         public static final double driveWheelGearReduction = 8.33;
+        public static final double rotationWheelGearReduction = 19.0;
 
         public static final double wheelDiameterMeters = Units.inchesToMeters(4.0);
 
