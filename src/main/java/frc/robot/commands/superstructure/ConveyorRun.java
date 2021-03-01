@@ -19,5 +19,4 @@ public class ConveyorRun extends CommandBase{
     public boolean isFinished() {
         return true;
     }
-    
 }

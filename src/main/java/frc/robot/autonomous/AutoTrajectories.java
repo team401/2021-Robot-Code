@@ -2,21 +2,13 @@ package frc.robot.autonomous;
 
 import java.util.List;
 
-import org.frcteam2910.common.control.ITrajectoryConstraint;
-import org.frcteam2910.common.control.Path;
-import org.frcteam2910.common.control.PathArcSegment;
-import org.frcteam2910.common.control.SplinePathGenerator;
-import org.frcteam2910.common.math.Rotation2;
-import org.frcteam2910.common.math.Vector2;
-import org.frcteam2910.common.math.spline.*;
-
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
@@ -29,23 +21,44 @@ public class AutoTrajectories {
         )
         .setKinematics(DriveConstants.kinematics);
 
-    public static Trajectory testTrajectory = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(0)),
-            List.of(
-                new Translation2d(1, 1)
-            ),
-            new Pose2d(5, 0, new Rotation2d(Math.PI)),
-            config
-        );
-    
-    public static Trajectory firstBarrel = 
+    public static Trajectory autoNavBarrelRacingTrajectory = 
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(0)), 
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
                 List.of(
-                    new Translation2d(1.5, -1.0)
+                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
                 ), 
-                new Pose2d(3.24, -2.25, new Rotation2d(Math.PI)), 
-                config);
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                config
+            );
+
+    public static Trajectory autoNavSlalomTrajectory = 
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                List.of(
+                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
+                ), 
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                config
+            );
     
+    public static Trajectory autoNavBounceTrajectory = 
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                List.of(
+                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
+                ), 
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                config
+            );
+
+    public static Trajectory testTrajectory = 
+            TrajectoryGenerator.generateTrajectory(
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                List.of(
+                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
+                ), 
+                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                config
+            );
+
 }
