@@ -36,7 +36,7 @@ public class RobotContainer {
                         -leftJoystick.getY(GenericHID.Hand.kLeft), 
                         -leftJoystick.getX(GenericHID.Hand.kLeft), 
                         rightJoystick.getX(GenericHID.Hand.kRight), 
-                        true
+                        false
                     ),
                 drive
             )
@@ -52,7 +52,7 @@ public class RobotContainer {
 
         drive.resetPose(new Pose2d(0, 0, new Rotation2d(0)));
 
-        return new FollowTrajectory(drive, AutoTrajectories.testTrajectory);
+        return new FollowTrajectory(drive, AutoTrajectories.autoNavSlalomTrajectory);
 
     }
 

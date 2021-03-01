@@ -33,14 +33,14 @@ public class AutoTrajectories {
 
     public static Trajectory autoNavSlalomTrajectory = 
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0)), 
                 List.of(
-                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
+                    new Translation2d(Units.inchesToMeters(24), Units.inchesToMeters(24))
                 ), 
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                new Pose2d(Units.inchesToMeters(24), Units.inchesToMeters(24), new Rotation2d(0)), 
                 config
             );
-    
+
     public static Trajectory autoNavBounceTrajectory = 
             TrajectoryGenerator.generateTrajectory(
                 new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
