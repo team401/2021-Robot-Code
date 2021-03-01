@@ -26,7 +26,7 @@ public class Constants {
         public static final int leftFlywheelMotorId = 10;
 
         public static final int kickerMotorId = 11;
-        public static final int intakeMotorId = 12;
+        public static final int intakeMotorId = 12; 
         public static final int conveyorMotorId = 13;
 
     }
