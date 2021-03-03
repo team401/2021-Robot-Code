@@ -2,6 +2,7 @@ package frc.robot.autonomous;
 
 import java.util.List;
 
+import edu.wpi.first.wpilibj.Ultrasonic.Unit;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -21,43 +22,23 @@ public class AutoTrajectories {
         )
         .setKinematics(DriveConstants.kinematics);
 
-    public static Trajectory autoNavBarrelRacingTrajectory = 
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
-                List.of(
-                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
-                ), 
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
-                config
-            );
-
     public static Trajectory autoNavSlalomTrajectory = 
             TrajectoryGenerator.generateTrajectory(
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0)), 
+                new Pose2d(Units.inchesToMeters(48.5), Units.inchesToMeters(30), new Rotation2d(0)), 
                 List.of(
-                    new Translation2d(Units.inchesToMeters(24), Units.inchesToMeters(24))
-                ), 
-                new Pose2d(Units.inchesToMeters(24), Units.inchesToMeters(24), new Rotation2d(0)), 
-                config
-            );
-
-    public static Trajectory autoNavBounceTrajectory = 
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
-                List.of(
-                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
-                ), 
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
-                config
-            );
-
-    public static Trajectory testTrajectory = 
-            TrajectoryGenerator.generateTrajectory(
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
-                List.of(
-                    new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0))
-                ), 
-                new Pose2d(Units.feetToMeters(0), Units.feetToMeters(0), new Rotation2d(0)), 
+                    new Translation2d(Units.inchesToMeters(80), Units.inchesToMeters(60)),
+                    new Translation2d(Units.inchesToMeters(120), Units.inchesToMeters(90)),    
+                    new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(90)),
+                    new Translation2d(Units.inchesToMeters(270), Units.inchesToMeters(60)),     
+                    new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(30)),
+                    new Translation2d(Units.inchesToMeters(330), Units.inchesToMeters(60)),
+                    new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(90)),
+                    new Translation2d(Units.inchesToMeters(280), Units.inchesToMeters(60)),
+                    new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(20)),
+                    new Translation2d(Units.inchesToMeters(120), Units.inchesToMeters(20)),
+                    new Translation2d(Units.inchesToMeters(90), Units.inchesToMeters(55))
+                ),
+                new Pose2d(Units.inchesToMeters(48.5), Units.inchesToMeters(75), new Rotation2d(0)), 
                 config
             );
 

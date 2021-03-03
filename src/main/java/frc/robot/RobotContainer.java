@@ -1,11 +1,15 @@
 package frc.robot;
 
+import javax.management.InstanceNotFoundException;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.InputDevices;
 import frc.robot.autonomous.AutoTrajectories;
@@ -50,10 +54,12 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        drive.resetPose(new Pose2d(0, 0, new Rotation2d(0)));
+        FollowTrajectory runTrajectory = new FollowTrajectory(drive, AutoTrajectories.autoNavSlalomTrajectory);
+
+        drive.resetPose(runTrajectory.getInitialPose());
 
         return new FollowTrajectory(drive, AutoTrajectories.autoNavSlalomTrajectory);
 
     }
-
+    
 }
