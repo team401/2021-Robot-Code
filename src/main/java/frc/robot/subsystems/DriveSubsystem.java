@@ -128,7 +128,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         odometry.update(getHeading(), getModuleStates());
 
-        SmartDashboard.putNumber("Gyro", getHeading().getRadians());
+        SmartDashboard.putNumber("X", Units.inchesToMeters(odometry.getPoseMeters().getX()));
+        SmartDashboard.putNumber("Y", Units.inchesToMeters(odometry.getPoseMeters().getY()));
 
     }
 

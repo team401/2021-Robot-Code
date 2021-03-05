@@ -1,6 +1,9 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+
+import javax.xml.namespace.QName;
+
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -33,8 +36,8 @@ public class FollowTrajectory extends SwerveControllerCommand {
             trajectory, 
             drive::getPose, 
             DriveConstants.kinematics, 
-            new PIDController(1.1, 0, 0.3),
-            new PIDController(1.1, 0, 0.3), 
+            new PIDController(1.1, 0, 0.2),
+            new PIDController(1.1, 0, 0.2), 
             rotationController,
             drive::setModuleStates, 
             drive
@@ -45,7 +48,7 @@ public class FollowTrajectory extends SwerveControllerCommand {
     }
 
     public Pose2d getInitialPose() {
-
+        
         return trajectory.getInitialPose();
 
     }
