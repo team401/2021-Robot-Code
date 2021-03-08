@@ -39,16 +39,16 @@ public class RobotContainer {
     public RobotContainer() {
 
         drive.setDefaultCommand(
-            new RunCommand(
-                () ->
-                    drive.drive(
-                        -leftJoystick.getY(GenericHID.Hand.kLeft), 
-                        -leftJoystick.getX(GenericHID.Hand.kLeft), 
-                        rightJoystick.getX(GenericHID.Hand.kRight), 
-                        true
-                    ),
+            new RunCommand(() ->
+                drive.drive(
+                    -leftJoystick.getY(GenericHID.Hand.kLeft), 
+                    -leftJoystick.getX(GenericHID.Hand.kLeft), 
+                    rightJoystick.getX(GenericHID.Hand.kRight),
+                    true
+                ),
                 drive
             )
+
         );
 
     }

@@ -15,17 +15,16 @@ public class ConveyorSubsystem extends SubsystemBase {
     
     private final DigitalInput bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
     private final DigitalInput topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
-
     
     public ConveyorSubsystem() {}
 
-    public Boolean getTopBannerState() {
+    public boolean getTopBannerState() {
 
         return topBanner.get();
 
     }
 
-    public Boolean getBottomBannerState() {
+    public boolean getBottomBannerState() {
 
         return bottomBanner.get();
 
