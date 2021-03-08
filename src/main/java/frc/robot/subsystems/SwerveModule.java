@@ -50,6 +50,12 @@ public class SwerveModule {
         rotationEncoder = rotationMotor.getEncoder();
 
         externalRotationEncoder = new CANCoder(externalRotationEncoderId);
+
+        offset = new Rotation2d(measuredOffsetRadians);
+
+        driveMotor.setIdleMode(IdleMode.kBrake);
+
+        externalRotationEncoder.setPositionToAbsolute();
         
         driveController = driveMotor.getPIDController();
         rotationController = rotationMotor.getPIDController();
@@ -80,15 +86,11 @@ public class SwerveModule {
             Math.PI / (60 / 2) / DriveConstants.rotationWheelGearReduction
         );
 
-        offset = new Rotation2d(measuredOffsetRadians);
-
-        driveMotor.setIdleMode(IdleMode.kBrake);
-
     }
 
     public Rotation2d getCurrentAngle() {
 
-        return new Rotation2d(externalRotationEncoder.getPosition() % (2 * Math.PI) + offset.getRadians());
+        return new Rotation2d(externalRotationEncoder.getPosition() + offset.getRadians());
 
     }
 
