@@ -26,7 +26,11 @@ public class IntakeSubsystem extends SubsystemBase {
             PneumaticChannels.rightIntakeSolenoidChannels[1]
         );
 
-    public IntakeSubsystem() {}
+    public IntakeSubsystem() {
+
+        intakeMotor.setInverted(false);
+
+    }
 
     public void runIntakeMotor() {
 
