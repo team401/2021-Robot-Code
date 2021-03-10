@@ -84,7 +84,7 @@ public class FollowTrajectory extends CommandBase {
     @Override
     public void execute() {
 
-        Trajectory.State goal = trajectory.sample(time.get());
+        /*Trajectory.State goal = trajectory.sample(time.get());
 
         ChassisSpeeds adjustedSpeeds = 
             controller.calculate(
@@ -94,7 +94,7 @@ public class FollowTrajectory extends CommandBase {
             );
 
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(adjustedSpeeds);
-        drive.setModuleStates(moduleStates);
+        drive.setModuleStates(moduleStates);*/
 
     }
 
@@ -108,7 +108,9 @@ public class FollowTrajectory extends CommandBase {
     @Override
     public boolean isFinished() {
 
-        return time.hasElapsed(trajectory.getTotalTimeSeconds());
+        return true;
+
+        //return time.hasElapsed(trajectory.getTotalTimeSeconds());
 
     }
 

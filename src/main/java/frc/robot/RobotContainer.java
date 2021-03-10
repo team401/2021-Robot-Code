@@ -4,30 +4,16 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.FollowTrajectory;
+import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-
-import java.util.List; 
 
 public class RobotContainer {
 
@@ -38,6 +24,7 @@ public class RobotContainer {
 
     private DriveSubsystem drive = new DriveSubsystem();
     private IntakeSubsystem intake = new IntakeSubsystem();
+    private ConveyorSubsystem conveyor = new ConveyorSubsystem();
     
     public RobotContainer() {
 
@@ -58,15 +45,22 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
 
+        new JoystickButton(gamepad, Button.kB.value)
+            .whenPressed(intake::extendIntake)
+            .whenReleased(intake::retractIntake)
+            .whileHeld(intake::runIntakeMotor)
+            .whileHeld(conveyor::runConveyor);
+
     }
 
     public Command getAutonomousCommand() {
 
-        FollowTrajectory runTrajectory = new FollowTrajectory(drive, AutoTrajectories.autoNavBarrelTrajectory);
+        FollowTrajectory runTrajectory = new FollowTrajectory(drive, AutoTrajectories.trajectory);
 
-        drive.resetPose(runTrajectory.getInitialPose());
+        //drive.resetPose(runTrajectory.getInitialPose());
+        SmartDashboard.putString("hell yeah he's cool", "I'm mary poppins yall");
 
-        return new FollowTrajectory(drive, AutoTrajectories.autoNavBarrelTrajectory);
+        return runTrajectory;
 
     }
 }

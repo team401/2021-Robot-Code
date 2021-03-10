@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
@@ -205,10 +205,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public Pose2d getRobotToTarget(Pose2d targetPose) {
+    /*public Pose2d getRobotToTarget(Pose2d targetPose) {
 
-        Translation2d robotToTargetTranslation = 
-            new Translation2d(
+        Pose2d robotToTargetPose = 
+            new Pose2d(
                 targetPose.getX() - getPose().getX(), 
                 targetPose.getY() - getPose().getY()
             );
@@ -218,8 +218,8 @@ public class DriveSubsystem extends SubsystemBase {
             new Rotation2d(
                 targetPose.getRotation().getRadians() - getPose().getRotation().getDegrees()); 
         
-        return new Pose2d(robotToTargetTranslation, robotToTargetRotation);
+        return new Pose2d(robotToTargetPose, robotToTargetRotation);
 
-    }
+    }*/
 
 }

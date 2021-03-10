@@ -9,13 +9,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.util.Units;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
@@ -39,7 +35,7 @@ public class SwerveModule {
     private final Rotation2d offset;
 
     private final CANPIDController driveController;
-    private final CANPIDController rotationController;
+    private final ProfiledPIDController rotationController;
 
     public SwerveModule(int driveMotorId, int rotationMotorId, int externalRotationEncoderId, double measuredOffsetRadians) {
 
@@ -58,18 +54,22 @@ public class SwerveModule {
         externalRotationEncoder.setPositionToAbsolute();
         
         driveController = driveMotor.getPIDController();
-        rotationController = rotationMotor.getPIDController();
+
+        rotationController = 
+            new ProfiledPIDController(
+                rotationkP, 
+                rotationkI, 
+                rotationkD, 
+                new TrapezoidProfile.Constraints(
+                    DriveConstants.rotationMotorMaxSpeedRadPerSec,
+                    DriveConstants.rotationMotorMaxAccelRadPerSecSq
+                )
+            );
 
         driveController.setP(drivekP);
         driveController.setI(drivekI);
         driveController.setD(drivekD);
-
-        rotationController.setP(rotationkP);
-        rotationController.setI(rotationkI);
-        rotationController.setD(rotationkD);
-        rotationController.setSmartMotionMaxVelocity(DriveConstants.rotationMotorMaxSpeedRadPerSec, 0);
-        rotationController.setSmartMotionMaxAccel(DriveConstants.rotationMotorMaxAccelRadPerSecSq, 0);
-
+        
         driveEncoder.setPositionConversionFactor(
             DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction 
         );
@@ -105,7 +105,9 @@ public class SwerveModule {
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, getCurrentAngle());
 
         driveController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
-        rotationController.setReference(state.angle.getRadians(), ControlType.kSmartMotion);
+
+        double rotationOut = rotationController.calculate(getCurrentAngle().getRadians(), state.angle.getRadians());
+        rotationMotor.setVoltage(rotationOut);
 
     }
 
