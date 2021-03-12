@@ -2,6 +2,7 @@
 package frc.robot.autonomous;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class AutoTrajectories {
 
     public AutoTrajectories() {
 
-        config = new TrajectoryConfig(
+       /* config = new TrajectoryConfig(
             AutoConstants.maxVelMetersPerSec, 
             AutoConstants.maxAccelMetersPerSecondSq
         )
@@ -42,16 +43,19 @@ public class AutoTrajectories {
     
         try {
 
-            Path path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-            trajectory = TrajectoryUtil.fromPathweaverJson(path);
-            DriverStation.reportWarning("got path", true);
-
+            Path trajpath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            if (Files.exists(trajpath)){
+                trajectory = TrajectoryUtil.fromPathweaverJson(trajpath);
+                SmartDashboard.putString("yes", "yup file"); 
+            } else {
+                SmartDashboard.putString("none", "no file"); 
+            }
 
         } catch(IOException ex) {
 
-            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            //DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
 
-        }
+        }*/
 
     }
 

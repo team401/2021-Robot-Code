@@ -1,19 +1,30 @@
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
 import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.wpilibj.Filesystem;
+
 
 public class RobotContainer {
 
@@ -55,7 +66,35 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        FollowTrajectory runTrajectory = new FollowTrajectory(drive, AutoTrajectories.trajectory);
+        TrajectoryConfig config = new TrajectoryConfig(
+            AutoConstants.maxVelMetersPerSec, 
+            AutoConstants.maxAccelMetersPerSecondSq
+        )
+        .setKinematics(DriveConstants.kinematics);
+
+        config.setStartVelocity(0.0);
+        config.setEndVelocity(0.0);
+
+        String trajectoryJSON = "paths/AutoNavSlalomPath.wpilib.json";
+    
+        Trajectory trajectory = new Trajectory();
+    
+        try {
+
+            Path trajpath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            if (Files.exists(trajpath)){
+                trajectory = TrajectoryUtil.fromPathweaverJson(trajpath);
+                SmartDashboard.putString("yes", "yup file"); 
+            } else {
+                SmartDashboard.putString("none", "no file"); 
+            }
+
+        } catch(IOException ex) {
+
+
+        }
+
+        FollowTrajectory runTrajectory = new FollowTrajectory(drive, trajectory);
 
         //drive.resetPose(runTrajectory.getInitialPose());
         SmartDashboard.putString("hell yeah he's cool", "I'm mary poppins yall");
