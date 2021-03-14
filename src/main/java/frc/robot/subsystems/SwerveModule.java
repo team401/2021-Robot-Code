@@ -11,23 +11,19 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
 
-    private static final double drivekP = 0.0;
+    private static final double drivekP = 0.5;
     private static final double drivekI = 0.0;
     private static final double drivekD = 0.0;
 
-    private static final double rotationkP = 0.0;
+    private static final double rotationkP = .5;
     private static final double rotationkI = 0.0;
-    private static final double rotationkD = 0.0;
+    private static final double rotationkD = 0.0001;
 
     private final CANSparkMax driveMotor;
     private final CANSparkMax rotationMotor;
@@ -73,8 +69,8 @@ public class SwerveModule {
         rotationController.setP(rotationkP);
         rotationController.setI(rotationkI);
         rotationController.setD(rotationkD);
-        rotationController.setSmartMotionMaxVelocity(DriveConstants.rotationMotorMaxSpeedRadPerSec, 0);
-        rotationController.setSmartMotionMaxAccel(DriveConstants.rotationMotorMaxAccelRadPerSecSq, 0);
+        //rotationController.setSmartMotionMaxVelocity(DriveConstants.rotationMotorMaxSpeedRadPerSec, 0);
+        //rotationController.setSmartMotionMaxAccel(DriveConstants.rotationMotorMaxAccelRadPerSecSq, 0);
 
         driveEncoder.setPositionConversionFactor(
                 DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction);
@@ -109,7 +105,6 @@ public class SwerveModule {
         double currentAngle = rotationEncoder.getPosition();
         double unsignedAngle = currentAngle % (2 * Math.PI);
 
-        //double signedAngle = (currentAngle % (2 * Math.PI)) - Math.PI;
 
         return new Rotation2d(unsignedAngle);
 
@@ -137,14 +132,13 @@ public class SwerveModule {
 
         if (modAngle < 0.0) modAngle += 2.0 * Math.PI;
         
-        // Figure out target to send to Spark MAX because the encoder is continuous
         double newTarget = targetAngle + currentAngle - modAngle;
 
         if (targetAngle - modAngle > Math.PI) newTarget -= 2.0 * Math.PI;
         else if (targetAngle - modAngle < -Math.PI) newTarget += 2.0 * Math.PI;
 
         rotationController.setReference(newTarget, ControlType.kPosition);
-        //driveController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+        driveController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
 
     }
 
