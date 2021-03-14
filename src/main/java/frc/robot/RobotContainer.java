@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
-import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -90,7 +89,6 @@ public class RobotContainer {
             }
 
         } catch(IOException ex) {
-
 
         }
 
