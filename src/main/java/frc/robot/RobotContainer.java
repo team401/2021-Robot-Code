@@ -3,15 +3,21 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -73,8 +79,8 @@ public class RobotContainer {
 
         config.setStartVelocity(0.0);
         config.setEndVelocity(0.0);
-
-        String trajectoryJSON = "paths/AutoNavSlalomPath.wpilib.json";
+/*
+        String trajectoryJSON = "paths/Test.wpilib.json";
     
         Trajectory trajectory = new Trajectory();
     
@@ -91,8 +97,23 @@ public class RobotContainer {
         } catch(IOException ex) {
 
         }
+*/
+        Trajectory autoNavSlalomTrajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(48.5), Units.inchesToMeters(30), new Rotation2d(0)),
+            List.of(new Translation2d(Units.inchesToMeters(80), Units.inchesToMeters(60)),
+                    new Translation2d(Units.inchesToMeters(120), Units.inchesToMeters(90)),
+                    new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(90)),
+                    new Translation2d(Units.inchesToMeters(270), Units.inchesToMeters(60)),
+                    new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(30)),
+                    new Translation2d(Units.inchesToMeters(330), Units.inchesToMeters(60)),
+                    new Translation2d(Units.inchesToMeters(300), Units.inchesToMeters(90)),
+                    new Translation2d(Units.inchesToMeters(280), Units.inchesToMeters(60)),
+                    new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(20)),
+                    new Translation2d(Units.inchesToMeters(120), Units.inchesToMeters(20)),
+                    new Translation2d(Units.inchesToMeters(90), Units.inchesToMeters(55))),
+            new Pose2d(Units.inchesToMeters(48.5), Units.inchesToMeters(75), new Rotation2d(0)), config);
 
-        FollowTrajectory runTrajectory = new FollowTrajectory(drive, trajectory);
+        FollowTrajectory runTrajectory = new FollowTrajectory(drive, autoNavSlalomTrajectory);
 
         //drive.resetPose(runTrajectory.getInitialPose());
         SmartDashboard.putString("hell yeah he's cool", "I'm mary poppins yall");
