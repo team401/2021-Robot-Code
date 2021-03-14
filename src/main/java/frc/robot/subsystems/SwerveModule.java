@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.DoubleConsumer;
-
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -17,13 +15,13 @@ import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
 
-    private static final double drivekP = 0.5;
+    private static final double drivekP = 1.5;
     private static final double drivekI = 0.0;
-    private static final double drivekD = 0.0;
+    private static final double drivekD = 0.5;
 
-    private static final double rotationkP = .5;
-    private static final double rotationkI = 0.0;
-    private static final double rotationkD = 0.0001;
+    private static final double rotationkP = 1;
+    private static final double rotationkI = 0;
+    private static final double rotationkD = 0.5;
 
     private final CANSparkMax driveMotor;
     private final CANSparkMax rotationMotor;
@@ -37,8 +35,6 @@ public class SwerveModule {
 
     private final CANPIDController driveController;
     private final CANPIDController rotationController;
-
-    DoubleConsumer targetAnglConsumer;
 
     public SwerveModule(
         int driveMotorId, 
@@ -73,13 +69,13 @@ public class SwerveModule {
         //rotationController.setSmartMotionMaxAccel(DriveConstants.rotationMotorMaxAccelRadPerSecSq, 0);
 
         driveEncoder.setPositionConversionFactor(
-                DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction);
+            DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction);
 
         driveEncoder.setVelocityConversionFactor(
-                DriveConstants.wheelDiameterMeters * Math.PI / 60 / DriveConstants.driveWheelGearReduction);
+            DriveConstants.wheelDiameterMeters * Math.PI / 60 / DriveConstants.driveWheelGearReduction);
 
         rotationEncoder.setPositionConversionFactor(
-            (2 * Math.PI / DriveConstants.rotationWheelGearReduction)
+            2 * Math.PI / DriveConstants.rotationWheelGearReduction
         );
 
         rotationEncoder.setVelocityConversionFactor(Math.PI / (60 / 2) / DriveConstants.rotationWheelGearReduction);
@@ -104,7 +100,6 @@ public class SwerveModule {
 
         double currentAngle = rotationEncoder.getPosition();
         double unsignedAngle = currentAngle % (2 * Math.PI);
-
 
         return new Rotation2d(unsignedAngle);
 

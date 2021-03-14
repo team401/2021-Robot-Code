@@ -80,19 +80,13 @@ public class DriveSubsystem extends SubsystemBase {
 
         odometry.update(getHeading(), getModuleStates());
 
-        SmartDashboard.putNumber("front left integrated encoder angle reading degrees", frontLeft.getCurrentAngle().getDegrees());
-        SmartDashboard.putNumber("front left external encoder angle reading degrees", frontLeft.getAnalogEncoderAngle().getDegrees());
-        
     }
 
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
 
         forward = Math.copySign(Math.pow(forward, 2.0), forward);
-
         strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
-
         rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);
-
         rotation *= 2.0 / Math.hypot(DriveConstants.wheelBase, DriveConstants.trackWidth);
 
         ChassisSpeeds speeds = (isFieldRelative)
@@ -104,19 +98,16 @@ public class DriveSubsystem extends SubsystemBase {
         
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
 
-        frontLeft.setDesiredState(states[0]);
-        frontRight.setDesiredState(states[1]);
-        rearLeft.setDesiredState(states[2]);
-        rearRight.setDesiredState(states[3]);
+        setModuleStates(states);
 
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        /*frontLeft.setTargetVelocity(moduleStates[0].speedMetersPerSecond, moduleStates[0].angle.getRadians());
-        frontRight.setTargetVelocity(moduleStates[1].speedMetersPerSecond, moduleStates[1].angle.getRadians());
-        rearLeft.setTargetVelocity(moduleStates[2].speedMetersPerSecond, moduleStates[2].angle.getRadians());
-        rearRight.setTargetVelocity(moduleStates[3].speedMetersPerSecond, moduleStates[3].angle.getRadians());*/
+        frontLeft.setDesiredState(moduleStates[0]);
+        frontRight.setDesiredState(moduleStates[1]);
+        rearLeft.setDesiredState(moduleStates[2]);
+        rearRight.setDesiredState(moduleStates[3]);
 
     }
 
