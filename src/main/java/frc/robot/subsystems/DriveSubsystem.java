@@ -18,11 +18,6 @@ import frc.robot.Constants.AnalogDevices;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
-//import org.frcteam2910.common.drivers.SwerveModule;
-import org.frcteam2910.common.math.Vector2;
-import org.frcteam2910.common.robot.Utilities;
-import org.frcteam2910.common.robot.drivers.Mk2SwerveModuleBuilder;
-
 public class DriveSubsystem extends SubsystemBase {
 
     private static final double frontLeftAngleOffset = -Math.toRadians(236.5);
@@ -92,13 +87,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
 
-        forward = Utilities.deadband(forward);
         forward = Math.copySign(Math.pow(forward, 2.0), forward);
 
-        strafe = Utilities.deadband(strafe);
         strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
 
-        rotation = Utilities.deadband(rotation);
         rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);
 
         rotation *= 2.0 / Math.hypot(DriveConstants.wheelBase, DriveConstants.trackWidth);
