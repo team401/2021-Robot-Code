@@ -80,21 +80,17 @@ public class DriveSubsystem extends SubsystemBase {
 
         odometry.update(getHeading(), getModuleStates());
 
+        SmartDashboard.putNumber("send epic yes", frontLeft.getCurrentVelocity());
+
     }
 
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
 
-        forward = Math.copySign(Math.pow(forward, 2.0), forward);
-        strafe = Math.copySign(Math.pow(strafe, 2.0), strafe);
-        rotation = Math.copySign(Math.pow(rotation, 2.0), rotation);
-        rotation *= 2.0 / Math.hypot(DriveConstants.wheelBase, DriveConstants.trackWidth);
-
-        ChassisSpeeds speeds = (isFieldRelative)
-
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                forward, strafe, rotation, Rotation2d.fromDegrees(imu.getAngle())
-            )
-            : new ChassisSpeeds(forward, strafe, rotation);
+        ChassisSpeeds speeds = 
+            isFieldRelative
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                    forward, strafe, rotation, Rotation2d.fromDegrees(imu.getAngle()))
+                : new ChassisSpeeds(forward, strafe, rotation);
         
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
 
@@ -144,22 +140,5 @@ public class DriveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(-imu.getAngle());
 
     }
-
-    /*public Pose2d getRobotToTarget(Pose2d targetPose) {
-
-        Pose2d robotToTargetPose = 
-            new Pose2d(
-                targetPose.getX() - getPose().getX(), 
-                targetPose.getY() - getPose().getY()
-            );
-
-        Rotation2d robotToTargetRotation =
-            //not sure if this'll work this way
-            new Rotation2d(
-                targetPose.getRotation().getRadians() - getPose().getRotation().getDegrees()); 
-        
-        return new Pose2d(robotToTargetPose, robotToTargetRotation);
-
-    }*/
 
 }

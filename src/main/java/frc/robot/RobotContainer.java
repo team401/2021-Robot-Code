@@ -28,8 +28,6 @@ import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import edu.wpi.first.wpilibj.Filesystem;
-
 
 public class RobotContainer {
 
@@ -47,14 +45,13 @@ public class RobotContainer {
         drive.setDefaultCommand(
             new RunCommand(() ->
                 drive.drive(
-                    -leftJoystick.getY(GenericHID.Hand.kLeft), 
-                    -leftJoystick.getX(GenericHID.Hand.kLeft), 
-                    rightJoystick.getX(GenericHID.Hand.kRight),
-                    true
+                    -leftJoystick.getY(GenericHID.Hand.kLeft) * DriveConstants.maxDriveSpeed, 
+                    -leftJoystick.getX(GenericHID.Hand.kLeft) * DriveConstants.maxDriveSpeed, 
+                    rightJoystick.getX(GenericHID.Hand.kRight) * DriveConstants.maxDriveSpeed,
+                    false
                 ),
                 drive
             )
-
         );
 
     }
@@ -116,7 +113,6 @@ public class RobotContainer {
         FollowTrajectory runTrajectory = new FollowTrajectory(drive, autoNavSlalomTrajectory);
 
         //drive.resetPose(runTrajectory.getInitialPose());
-        SmartDashboard.putString("hell yeah he's cool", "I'm mary poppins yall");
 
         return runTrajectory;
 

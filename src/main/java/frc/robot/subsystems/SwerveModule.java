@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -11,13 +12,11 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-public class SwerveModule {
-
-    private static final double drivekP = 1.5;
-    private static final double drivekI = 0.0;
-    private static final double drivekD = 0.5;
+public class SwerveModule extends SubsystemBase {
 
     private static final double rotationkP = 1;
     private static final double rotationkI = 0;
@@ -30,18 +29,19 @@ public class SwerveModule {
     private final CANEncoder rotationEncoder;
 
     private final AnalogInput analogEncoder;
+    // private final CANCoder canCoder;
 
     private final Rotation2d offset;
 
-    private final CANPIDController driveController;
     private final CANPIDController rotationController;
 
-    public SwerveModule(
-        int driveMotorId, 
-        int rotationMotorId,
-        int analogEncoderPort, 
-        double measuredOffsetRadians
-        ) {
+    public SwerveModule(int driveMotorId, int rotationMotorId, int analogEncoderPort,
+            // int canCoderId,
+            double measuredOffsetRadians) {
+
+        SmartDashboard.putNumber("drive kp", 0);
+        SmartDashboard.putNumber("drive ki", 0);
+        SmartDashboard.putNumber("drive kd", 0);
 
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         rotationMotor = new CANSparkMax(rotationMotorId, MotorType.kBrushless);
@@ -50,33 +50,25 @@ public class SwerveModule {
         rotationEncoder = rotationMotor.getEncoder();
 
         analogEncoder = new AnalogInput(analogEncoderPort);
+        // canCoder = new CANCoder(canCoderId);
 
         offset = new Rotation2d(measuredOffsetRadians);
 
         driveMotor.setIdleMode(IdleMode.kBrake);
 
-        driveController = driveMotor.getPIDController();
         rotationController = rotationMotor.getPIDController();
-
-        driveController.setP(drivekP);
-        driveController.setI(drivekI);
-        driveController.setD(drivekD);
 
         rotationController.setP(rotationkP);
         rotationController.setI(rotationkI);
         rotationController.setD(rotationkD);
-        //rotationController.setSmartMotionMaxVelocity(DriveConstants.rotationMotorMaxSpeedRadPerSec, 0);
-        //rotationController.setSmartMotionMaxAccel(DriveConstants.rotationMotorMaxAccelRadPerSecSq, 0);
 
         driveEncoder.setPositionConversionFactor(
-            DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction);
+                DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction);
 
         driveEncoder.setVelocityConversionFactor(
-            DriveConstants.wheelDiameterMeters * Math.PI / 60 / DriveConstants.driveWheelGearReduction);
+                DriveConstants.wheelDiameterMeters * Math.PI / 60 / DriveConstants.driveWheelGearReduction);
 
-        rotationEncoder.setPositionConversionFactor(
-            2 * Math.PI / DriveConstants.rotationWheelGearReduction
-        );
+        rotationEncoder.setPositionConversionFactor(2 * Math.PI / DriveConstants.rotationWheelGearReduction);
 
         rotationEncoder.setVelocityConversionFactor(Math.PI / (60 / 2) / DriveConstants.rotationWheelGearReduction);
 
@@ -111,6 +103,21 @@ public class SwerveModule {
 
     }
 
+    public double calculateAdjustedAngleAnalogInput(double targetAngle, double currentAngle) {
+
+        double modAngle = currentAngle % (2.0 * Math.PI);
+
+        if (modAngle < 0.0) modAngle += 2.0 * Math.PI;
+        
+        double newTarget = targetAngle + currentAngle - modAngle;
+
+        if (targetAngle - modAngle > Math.PI) newTarget -= 2.0 * Math.PI;
+        else if (targetAngle - modAngle < -Math.PI) newTarget += 2.0 * Math.PI;
+
+        return newTarget;
+
+    }
+
     public void initRotationMotorOffset() {
 
         rotationEncoder.setPosition(getAnalogEncoderAngle().getRadians());
@@ -121,20 +128,14 @@ public class SwerveModule {
 
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, getCurrentAngle());
 
-        double targetAngle = state.angle.getRadians();
-        double currentAngle = rotationEncoder.getPosition();
-        double modAngle = currentAngle % (2.0 * Math.PI);
+        rotationController.setReference(
+            calculateAdjustedAngleAnalogInput(
+                state.angle.getRadians(), 
+                rotationEncoder.getPosition()), 
+            ControlType.kPosition
+        );
 
-        if (modAngle < 0.0) modAngle += 2.0 * Math.PI;
-        
-        double newTarget = targetAngle + currentAngle - modAngle;
-
-        if (targetAngle - modAngle > Math.PI) newTarget -= 2.0 * Math.PI;
-        else if (targetAngle - modAngle < -Math.PI) newTarget += 2.0 * Math.PI;
-
-        rotationController.setReference(newTarget, ControlType.kPosition);
-        driveController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
-
+        driveMotor.set(state.speedMetersPerSecond);
     }
 
     public void resetEncoders() {

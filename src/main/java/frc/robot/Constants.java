@@ -85,6 +85,8 @@ public class Constants {
         public static final double rotationMotorMaxSpeedRadPerSec = 1.0;
         public static final double rotationMotorMaxAccelRadPerSecSq = 1.0;
 
+        public static final double maxDriveSpeed = 3.75; // meters per second
+
     }
 
     public static final class SuperstructureConstants {
