@@ -1,8 +1,5 @@
 package frc.robot;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -12,11 +9,9 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,6 +20,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.FollowTrajectory;
+import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.subsystems.ConveyorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -40,17 +36,16 @@ public class RobotContainer {
     private IntakeSubsystem intake = new IntakeSubsystem();
     private ConveyorSubsystem conveyor = new ConveyorSubsystem();
     
+    
     public RobotContainer() {
 
         drive.setDefaultCommand(
-            new RunCommand(() ->
-                drive.drive(
-                    -leftJoystick.getY(GenericHID.Hand.kLeft) * DriveConstants.maxDriveSpeed, 
-                    -leftJoystick.getX(GenericHID.Hand.kLeft) * DriveConstants.maxDriveSpeed, 
-                    rightJoystick.getX(GenericHID.Hand.kRight) * DriveConstants.maxDriveSpeed,
-                    false
-                ),
-                drive
+            new OperatorControl(
+                drive, 
+                () -> leftJoystick.getX(GenericHID.Hand.kLeft), 
+                () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
+                () -> rightJoystick.getX(GenericHID.Hand.kRight),
+                false
             )
         );
 
@@ -65,6 +60,8 @@ public class RobotContainer {
             .whileHeld(conveyor::runConveyor);
 
     }
+
+    
 
     public Command getAutonomousCommand() {
 

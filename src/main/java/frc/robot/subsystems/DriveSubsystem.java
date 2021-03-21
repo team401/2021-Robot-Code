@@ -1,35 +1,29 @@
 package frc.robot.subsystems;
 
 import com.analog.adis16470.frc.ADIS16470_IMU;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
-import frc.robot.Constants.AnalogDevices;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private static final double frontLeftAngleOffset = -Math.toRadians(236.5);
-    private static final double frontRightAngleOffset = -Math.toRadians(54.7 + 180);
-    private static final double rearLeftAngleOffset = -Math.toRadians(210.6);
-    private static final double rearRightAngleOffset = -Math.toRadians(55.7 + 180);
+    private static final double frontLeftAngleOffset = Units.degreesToRadians(326.78 + 180);
+    private static final double frontRightAngleOffset = Units.degreesToRadians(344.27 + 180);
+    private static final double rearLeftAngleOffset = Units.degreesToRadians(50.00);
+    private static final double rearRightAngleOffset = Units.degreesToRadians(266.13);
 
         private final SwerveModule frontLeft = 
             new SwerveModule(
                 CANDevices.frontLeftDriveMotorId,
                 CANDevices.frontLeftRotationMotorId,
-                AnalogDevices.frontLeftRotationEncoderPort,
+                CANDevices.frontLeftRotationEncoderId,
                 frontLeftAngleOffset
             );
 
@@ -37,7 +31,7 @@ public class DriveSubsystem extends SubsystemBase {
             new SwerveModule(
                 CANDevices.frontRightDriveMotorId,
                 CANDevices.frontRightRotationMotorId,
-                AnalogDevices.frontRightRotationEncoderPort,
+                CANDevices.frontRightRotationEncoderId,
                 frontRightAngleOffset
             );
 
@@ -45,14 +39,15 @@ public class DriveSubsystem extends SubsystemBase {
             new SwerveModule(
                 CANDevices.rearLeftDriveMotorId,
                 CANDevices.rearLeftRotationMotorId,
-                AnalogDevices.rearLeftRotationEncoderPort,
+                CANDevices.rearLeftRotationEncoderId,
                 rearLeftAngleOffset
             );
+
         private final SwerveModule rearRight = 
             new SwerveModule(
                 CANDevices.rearRightDriveMotorId,
                 CANDevices.rearRightRotationMotorId,
-                AnalogDevices.rearRightRotationEncoderPort,
+                CANDevices.rearRightRotationEncoderId,
                 rearRightAngleOffset
             );
 
@@ -80,7 +75,15 @@ public class DriveSubsystem extends SubsystemBase {
 
         odometry.update(getHeading(), getModuleStates());
 
-        SmartDashboard.putNumber("send epic yes", frontLeft.getCurrentVelocity());
+        SmartDashboard.putNumber("front Left canCoder", frontLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("front Right canCoder", frontRight.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear Left canCoder", rearLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear Right canCoder", rearRight.getCanCoderAngle().getDegrees());
+
+        SmartDashboard.putNumber("front Left canEncoder", frontLeft.getCanEncoderAngle().getDegrees());
+        SmartDashboard.putNumber("front Right canEncoder", frontRight.getCanEncoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear Left canEncoder", rearLeft.getCanEncoderAngle().getDegrees());
+        SmartDashboard.putNumber("rear Right canEncoder", rearRight.getCanEncoderAngle().getDegrees());
 
     }
 
@@ -110,10 +113,10 @@ public class DriveSubsystem extends SubsystemBase {
     public SwerveModuleState[] getModuleStates() {
 
         SwerveModuleState[] states = {
-            new SwerveModuleState(frontLeft.getCurrentVelocity(), frontLeft.getCurrentAngle()),
-            new SwerveModuleState(frontRight.getCurrentVelocity(), frontRight.getCurrentAngle()),
-            new SwerveModuleState(rearLeft.getCurrentVelocity(), rearLeft.getCurrentAngle()),
-            new SwerveModuleState(rearRight.getCurrentVelocity(), rearRight.getCurrentAngle())
+            new SwerveModuleState(frontLeft.getCurrentVelocity(), frontLeft.getCanCoderAngle()),
+            new SwerveModuleState(frontRight.getCurrentVelocity(), frontRight.getCanCoderAngle()),
+            new SwerveModuleState(rearLeft.getCurrentVelocity(), rearLeft.getCanCoderAngle()),
+            new SwerveModuleState(rearRight.getCurrentVelocity(), rearRight.getCanCoderAngle())
         };
 
         return states;

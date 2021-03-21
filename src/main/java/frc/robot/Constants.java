@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
 
@@ -11,33 +10,29 @@ public class Constants {
 
     public static final class CANDevices {
 
-        public static final int frontLeftRotationMotorId = 2;
-        public static final int frontLeftDriveMotorId = 1;
+        public static final int frontLeftRotationMotorId = 7;
+        public static final int frontLeftDriveMotorId = 8;
 
-        public static final int frontRightRotationMotorId = 4;
-        public static final int frontRightDriveMotorId = 3;
+        public static final int frontRightRotationMotorId = 1;
+        public static final int frontRightDriveMotorId = 2;
 
         public static final int rearLeftRotationMotorId = 6;
         public static final int rearLeftDriveMotorId = 5;
 
-        public static final int rearRightRotationMotorId = 8;
-        public static final int rearRightDriveMotorId = 7;
+        public static final int rearRightRotationMotorId = 3;
+        public static final int rearRightDriveMotorId = 4;
 
-        public static final int rightFlywheelMotorId = 9;
-        public static final int leftFlywheelMotorId = 10;
+        public static final int frontLeftRotationEncoderId = 17;
+        public static final int frontRightRotationEncoderId = 13;
+        public static final int rearLeftRotationEncoderId = 15;
+        public static final int rearRightRotationEncoderId = 14;
 
-        public static final int kickerMotorId = 11;
-        public static final int intakeMotorId = 12; 
-        public static final int conveyorMotorId = 13;
+        public static final int rightFlywheelMotorId = 12;
+        public static final int leftFlywheelMotorId = 11;
 
-    }
-
-    public static final class AnalogDevices {
-
-        public static final int frontLeftRotationEncoderPort = 1;
-        public static final int frontRightRotationEncoderPort = 0;
-        public static final int rearLeftRotationEncoderPort = 2;
-        public static final int rearRightRotationEncoderPort = 3;
+        public static final int kickerMotorId = 10;
+        public static final int intakeMotorId = 16; 
+        public static final int conveyorMotorId = 9;
 
     }
 
@@ -77,8 +72,8 @@ public class Constants {
                 new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
 
-        public static final double driveWheelGearReduction = 8.31;
-        public static final double rotationWheelGearReduction = 18.0;
+        public static final double driveWheelGearReduction = 6.86;
+        public static final double rotationWheelGearReduction = 12.8;
 
         public static final double wheelDiameterMeters = Units.inchesToMeters(4.0);
 

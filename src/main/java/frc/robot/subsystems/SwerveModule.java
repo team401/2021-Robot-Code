@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -28,20 +29,18 @@ public class SwerveModule extends SubsystemBase {
     private final CANEncoder driveEncoder;
     private final CANEncoder rotationEncoder;
 
-    private final AnalogInput analogEncoder;
-    // private final CANCoder canCoder;
+    private final CANCoder canCoder;
 
     private final Rotation2d offset;
 
     private final CANPIDController rotationController;
 
-    public SwerveModule(int driveMotorId, int rotationMotorId, int analogEncoderPort,
-            // int canCoderId,
-            double measuredOffsetRadians) {
-
-        SmartDashboard.putNumber("drive kp", 0);
-        SmartDashboard.putNumber("drive ki", 0);
-        SmartDashboard.putNumber("drive kd", 0);
+    public SwerveModule(
+        int driveMotorId, 
+        int rotationMotorId,
+        int canCoderId,
+        double measuredOffsetRadians
+    ) {
 
         driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
         rotationMotor = new CANSparkMax(rotationMotorId, MotorType.kBrushless);
@@ -49,12 +48,12 @@ public class SwerveModule extends SubsystemBase {
         driveEncoder = driveMotor.getEncoder();
         rotationEncoder = rotationMotor.getEncoder();
 
-        analogEncoder = new AnalogInput(analogEncoderPort);
-        // canCoder = new CANCoder(canCoderId);
+        canCoder = new CANCoder(canCoderId);
 
         offset = new Rotation2d(measuredOffsetRadians);
 
         driveMotor.setIdleMode(IdleMode.kBrake);
+        rotationMotor.setIdleMode(IdleMode.kCoast);
 
         rotationController = rotationMotor.getPIDController();
 
@@ -72,26 +71,19 @@ public class SwerveModule extends SubsystemBase {
 
         rotationEncoder.setVelocityConversionFactor(Math.PI / (60 / 2) / DriveConstants.rotationWheelGearReduction);
 
-    }
-
-    public Rotation2d getAnalogEncoderAngle() {
-
-            double angle = 
-                (1.0 - analogEncoder.getVoltage() / RobotController.getVoltage5V()) * 2.0 * Math.PI;
-
-            angle += offset.getRadians();
-            angle %= 2.0 * Math.PI;
-
-            if (angle < 0.0) angle += 2.0 * Math.PI;
-
-        return new Rotation2d(angle);
+        canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
     }
 
-    public Rotation2d getCurrentAngle() {
+    public Rotation2d getCanCoderAngle() {
 
-        double currentAngle = rotationEncoder.getPosition();
-        double unsignedAngle = currentAngle % (2 * Math.PI);
+        return Rotation2d.fromDegrees(canCoder.getAbsolutePosition());
+
+    }
+
+    public Rotation2d getCanEncoderAngle() {
+
+        double unsignedAngle = rotationEncoder.getPosition() % (2 * Math.PI);
 
         return new Rotation2d(unsignedAngle);
 
@@ -103,7 +95,7 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
-    public double calculateAdjustedAngleAnalogInput(double targetAngle, double currentAngle) {
+    public double calculateAdjustedAngle(double targetAngle, double currentAngle) {
 
         double modAngle = currentAngle % (2.0 * Math.PI);
 
@@ -120,22 +112,23 @@ public class SwerveModule extends SubsystemBase {
 
     public void initRotationMotorOffset() {
 
-        rotationEncoder.setPosition(getAnalogEncoderAngle().getRadians());
+        rotationEncoder.setPosition(getCanCoderAngle().getRadians() + (offset.getRadians() % (2 * Math.PI)));
 
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
 
-        SwerveModuleState state = SwerveModuleState.optimize(desiredState, getCurrentAngle());
+        SwerveModuleState state = SwerveModuleState.optimize(desiredState, getCanEncoderAngle());
 
         rotationController.setReference(
-            calculateAdjustedAngleAnalogInput(
+            calculateAdjustedAngle(
                 state.angle.getRadians(), 
                 rotationEncoder.getPosition()), 
             ControlType.kPosition
         );
 
         driveMotor.set(state.speedMetersPerSecond);
+
     }
 
     public void resetEncoders() {
