@@ -77,7 +77,7 @@ public class SwerveModule extends SubsystemBase {
 
     public Rotation2d getCanCoderAngle() {
 
-        return Rotation2d.fromDegrees(canCoder.getAbsolutePosition());
+        return Rotation2d.fromDegrees(canCoder.getAbsolutePosition()).plus(offset);
 
     }
 
@@ -112,7 +112,7 @@ public class SwerveModule extends SubsystemBase {
 
     public void initRotationMotorOffset() {
 
-        rotationEncoder.setPosition(getCanCoderAngle().getRadians() + (offset.getRadians() % (2 * Math.PI)));
+        rotationEncoder.setPosition(getCanCoderAngle().getRadians());
 
     }
 
