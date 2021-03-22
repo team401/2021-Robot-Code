@@ -85,17 +85,22 @@ public class FollowTrajectory extends CommandBase {
     public void execute() {
 
         Trajectory.State goal = trajectory.sample(time.get());
+
         SmartDashboard.putString("X wanted", " " + goal.poseMeters.getX()); 
         SmartDashboard.putString("Y wanted", " " + goal.poseMeters.getY()); 
+
         ChassisSpeeds adjustedSpeeds = 
             controller.calculate(
                 getCurrentPose(), 
                 goal, 
                 Rotation2d.fromDegrees(0.0)
             );
+
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(adjustedSpeeds);
+
         SmartDashboard.putString("Actual speed", " " + (drive.getModuleStates())[1].speedMetersPerSecond);
         SmartDashboard.putString("Speed wanted", " " + moduleStates[1].speedMetersPerSecond);     
+        
         drive.setModuleStates(moduleStates);
 
     }

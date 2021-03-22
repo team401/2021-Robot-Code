@@ -1,4 +1,4 @@
-/*package frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
@@ -40,32 +40,32 @@ public class Limelight extends SubsystemBase {
         ty = table.getEntry("ty").getDouble(0.0);
         ta = table.getEntry("ta").getDouble(0.0);
 
-        hasValidTarget.forceSetBoolean(isTargetValid());
+        hasValidTarget.forceSetBoolean(hasValidTarget());
 
         if (targets.size() >= maxTableEntries) targets.remove(0);
         targets.add(ta);
 
     }
 
-    public boolean isTargetValid() {
+    public boolean hasValidTarget() {
 
         return tv > 0;
         
     }
 
-    public double getTx() {
+    public double gettX() {
 
         return tx;
 
     }
 
-    public double getTy() {
+    public double gettY() {
 
         return ty;
 
     }
 
-    public double getTa() {
+    public double gettA() {
 
         int sum = 0;
 
@@ -78,12 +78,6 @@ public class Limelight extends SubsystemBase {
 
     }
 
-    public Rotation2d getDesiredRobotToTargetAngle() {
-
-
-    
-    }
-
     public void setLedMode(int ledMode) {
 
         table.getEntry("ledMode").forceSetDouble(ledMode);
@@ -91,4 +85,3 @@ public class Limelight extends SubsystemBase {
     }
     
 }
-*/
