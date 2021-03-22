@@ -9,11 +9,10 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -62,14 +61,14 @@ public class SwerveModule extends SubsystemBase {
         rotationController.setD(rotationkD);
 
         driveEncoder.setPositionConversionFactor(
-                DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction);
+            DriveConstants.wheelDiameterMeters * Math.PI / DriveConstants.driveWheelGearReduction
+        );
 
         driveEncoder.setVelocityConversionFactor(
-                DriveConstants.wheelDiameterMeters * Math.PI / 60 / DriveConstants.driveWheelGearReduction);
+            DriveConstants.wheelDiameterMeters * Math.PI / 60 / DriveConstants.driveWheelGearReduction
+        );
 
         rotationEncoder.setPositionConversionFactor(2 * Math.PI / DriveConstants.rotationWheelGearReduction);
-
-        rotationEncoder.setVelocityConversionFactor(Math.PI / (60 / 2) / DriveConstants.rotationWheelGearReduction);
 
         canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
@@ -77,13 +76,17 @@ public class SwerveModule extends SubsystemBase {
 
     public Rotation2d getCanCoderAngle() {
 
-        return Rotation2d.fromDegrees(canCoder.getAbsolutePosition()).plus(offset);
+        double unsignedAngle = (Units.degreesToRadians(canCoder.getAbsolutePosition()) - offset.getRadians()) % (2 * Math.PI);
+
+        return new Rotation2d(unsignedAngle);
 
     }
 
     public Rotation2d getCanEncoderAngle() {
 
         double unsignedAngle = rotationEncoder.getPosition() % (2 * Math.PI);
+
+        if (unsignedAngle < 0) unsignedAngle += 2 * Math.PI;
 
         return new Rotation2d(unsignedAngle);
 
@@ -110,7 +113,7 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
-    public void initRotationMotorOffset() {
+    public void initRotationOffset() {
 
         rotationEncoder.setPosition(getCanCoderAngle().getRadians());
 
@@ -123,7 +126,7 @@ public class SwerveModule extends SubsystemBase {
         rotationController.setReference(
             calculateAdjustedAngle(
                 state.angle.getRadians(), 
-                rotationEncoder.getPosition()), 
+                rotationEncoder.getPosition()), // could be changed to canCoder.getPosition()?
             ControlType.kPosition
         );
 

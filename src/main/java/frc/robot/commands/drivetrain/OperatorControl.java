@@ -17,10 +17,11 @@ public class OperatorControl extends CommandBase {
 
     public OperatorControl(
         DriveSubsystem subsystem, 
-        DoubleSupplier fwdX, DoubleSupplier fwdY, 
+        DoubleSupplier fwdX, 
+        DoubleSupplier fwdY, 
         DoubleSupplier rot,
         boolean fieldRelative
-        ) {
+    ) {
 
         drive = subsystem;
         forwardX = fwdX;
@@ -50,8 +51,8 @@ public class OperatorControl extends CommandBase {
 
         drive.drive(
             fwdX,
-            fwdY,
-            rot,
+            -fwdY,
+            -rot,
             isFieldRelative
         );
 

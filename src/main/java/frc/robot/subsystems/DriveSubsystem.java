@@ -14,10 +14,10 @@ import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private static final double frontLeftAngleOffset = Units.degreesToRadians(326.78 + 180);
-    private static final double frontRightAngleOffset = Units.degreesToRadians(344.27 + 180);
-    private static final double rearLeftAngleOffset = Units.degreesToRadians(50.00);
-    private static final double rearRightAngleOffset = Units.degreesToRadians(266.13);
+    private static final double frontLeftAngleOffset = Units.degreesToRadians(239.5 - 90);
+    private static final double frontRightAngleOffset = Units.degreesToRadians(256.7 + 180 - 90);
+    private static final double rearLeftAngleOffset = Units.degreesToRadians(322.8 - 90);
+    private static final double rearRightAngleOffset = Units.degreesToRadians(180 + 180 - 90);
 
         private final SwerveModule frontLeft = 
             new SwerveModule(
@@ -63,10 +63,10 @@ public class DriveSubsystem extends SubsystemBase {
 
         imu.calibrate();
 
-        frontLeft.initRotationMotorOffset();
-        frontRight.initRotationMotorOffset();
-        rearLeft.initRotationMotorOffset();
-        rearRight.initRotationMotorOffset();
+        frontLeft.initRotationOffset();
+        frontRight.initRotationOffset();
+        rearLeft.initRotationOffset();
+        rearRight.initRotationOffset();
 
     }
 
@@ -89,7 +89,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
 
-        ChassisSpeeds speeds = 
+        ChassisSpeeds speeds =
             isFieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
                     forward, strafe, rotation, Rotation2d.fromDegrees(imu.getAngle()))
@@ -103,10 +103,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        frontLeft.setDesiredState(moduleStates[0]);
-        frontRight.setDesiredState(moduleStates[1]);
-        rearLeft.setDesiredState(moduleStates[2]);
-        rearRight.setDesiredState(moduleStates[3]);
+        frontLeft.setDesiredState(moduleStates[2]);
+        frontRight.setDesiredState(moduleStates[0]);
+        rearLeft.setDesiredState(moduleStates[3]);
+        rearRight.setDesiredState(moduleStates[1]);
 
     }
 
@@ -132,14 +132,12 @@ public class DriveSubsystem extends SubsystemBase {
     public void resetPose(Pose2d pose) {
 
         imu.reset();
-        new Rotation2d();
         odometry.resetPosition(pose, Rotation2d.fromDegrees(-imu.getAngle()));
 
     }
 
     public Rotation2d getHeading() {
 
-        new Rotation2d();
         return Rotation2d.fromDegrees(-imu.getAngle());
 
     }
