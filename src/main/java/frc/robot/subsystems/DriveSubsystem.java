@@ -75,18 +75,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         odometry.update(getHeading(), getModuleStates());
 
-        SmartDashboard.putNumber("front Left canCoder", frontLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("front Right canCoder", frontRight.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear Left canCoder", rearLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear Right canCoder", rearRight.getCanCoderAngle().getDegrees());
-
-        SmartDashboard.putNumber("front Left canEncoder", frontLeft.getCanEncoderAngle().getDegrees());
-        SmartDashboard.putNumber("front Right canEncoder", frontRight.getCanEncoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear Left canEncoder", rearLeft.getCanEncoderAngle().getDegrees());
-        SmartDashboard.putNumber("rear Right canEncoder", rearRight.getCanEncoderAngle().getDegrees());
-
     }
-
+    
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
 
         ChassisSpeeds speeds =
@@ -113,10 +103,10 @@ public class DriveSubsystem extends SubsystemBase {
     public SwerveModuleState[] getModuleStates() {
 
         SwerveModuleState[] states = {
-            new SwerveModuleState(frontLeft.getCurrentVelocity(), frontLeft.getCanCoderAngle()),
-            new SwerveModuleState(frontRight.getCurrentVelocity(), frontRight.getCanCoderAngle()),
-            new SwerveModuleState(rearLeft.getCurrentVelocity(), rearLeft.getCanCoderAngle()),
-            new SwerveModuleState(rearRight.getCurrentVelocity(), rearRight.getCanCoderAngle())
+            new SwerveModuleState(frontRight.getCurrentVelocity(), frontRight.getCanEncoderAngle()),
+            new SwerveModuleState(rearRight.getCurrentVelocity(), rearRight.getCanEncoderAngle()),
+            new SwerveModuleState(frontLeft.getCurrentVelocity(), frontLeft.getCanEncoderAngle()),
+            new SwerveModuleState(rearLeft.getCurrentVelocity(), rearLeft.getCanEncoderAngle())
         };
 
         return states;
@@ -124,7 +114,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        
+
         return odometry.getPoseMeters();
 
     }

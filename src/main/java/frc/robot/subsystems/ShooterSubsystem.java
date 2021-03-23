@@ -35,7 +35,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem() {
 
-        leftFlywheelMotor.setInverted(true);
+        flywheel.setInverted(true);
+
+    }
+
+    public void runShooterPercent(double percent) {
+
+        leftFlywheelMotor.set(percent);
 
     }
 
