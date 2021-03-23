@@ -75,6 +75,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         odometry.update(getHeading(), getModuleStates());
 
+        SmartDashboard.putNumber("heading", getHeading().getDegrees());
+
     }
     
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {

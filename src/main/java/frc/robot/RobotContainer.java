@@ -5,6 +5,7 @@ import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -52,7 +53,7 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
 
-        new JoystickButton(leftJoystick, 1)
+        new JoystickButton(gamepad, Button.kB.value)
             //.whenPressed(intake::extendIntake)
             //.whenReleased(intake::retractIntake)
             .whileHeld(() -> shooter.runShooterPercent(0.5));
