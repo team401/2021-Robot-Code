@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -39,6 +40,8 @@ public class RobotContainer {
     
     public RobotContainer() {
 
+        configureButtonBindings();
+
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
@@ -56,7 +59,10 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kB.value)
             //.whenPressed(intake::extendIntake)
             //.whenReleased(intake::retractIntake)
-            .whileHeld(() -> shooter.runShooterPercent(0.5));
+            .whileHeld(new InstantCommand(shooter::runShooterPercent, shooter))
+            .whileHeld(new InstantCommand(intake::runIntakeMotor, intake))
+            .whileHeld(new InstantCommand(conveyor::runConveyor, conveyor));
+
 
     }
 

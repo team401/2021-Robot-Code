@@ -40,10 +40,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void runShooterPercent(double percent) {
+    public void runShooterPercent() {
 
-        leftFlywheelMotor.set(percent);
-        SmartDashboard.putNumber("shooter running", percent);
+        flywheel.set(1.0);
+
 
     }
 

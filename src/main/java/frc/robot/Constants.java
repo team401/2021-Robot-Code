@@ -34,6 +34,8 @@ public class Constants {
         public static final int intakeMotorId = 16; 
         public static final int conveyorMotorId = 9;
 
+        public static final int imuId = 18;
+
     }
 
     public static final class DIOChannels {

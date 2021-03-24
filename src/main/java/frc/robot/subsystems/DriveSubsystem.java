@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
-import com.analog.adis16470.frc.ADIS16470_IMU;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -51,17 +53,17 @@ public class DriveSubsystem extends SubsystemBase {
                 rearRightAngleOffset
             );
 
-    private final ADIS16470_IMU imu = new ADIS16470_IMU();
+    private final PigeonIMU imu = new PigeonIMU(CANDevices.imuId);
 
     private final SwerveDriveOdometry odometry = 
         new SwerveDriveOdometry(
             DriveConstants.kinematics, 
-            new Rotation2d(Units.degreesToRadians(imu.getAngle()))
+            new Rotation2d(getHeading().getRadians())
         );
 
     public DriveSubsystem() {
 
-        imu.calibrate();
+        imu.enterCalibrationMode(CalibrationMode.Accelerometer);
 
         frontLeft.initRotationOffset();
         frontRight.initRotationOffset();
@@ -84,7 +86,7 @@ public class DriveSubsystem extends SubsystemBase {
         ChassisSpeeds speeds =
             isFieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                    forward, strafe, rotation, Rotation2d.fromDegrees(imu.getAngle()))
+                    forward, strafe, rotation, getHeading())
                 : new ChassisSpeeds(forward, strafe, rotation);
         
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
@@ -123,14 +125,18 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetPose(Pose2d pose) {
 
-        imu.reset();
-        odometry.resetPosition(pose, Rotation2d.fromDegrees(-imu.getAngle()));
+        imu.setYaw(0);
+        odometry.resetPosition(pose, getHeading());
 
     }
 
     public Rotation2d getHeading() {
 
-        return Rotation2d.fromDegrees(-imu.getAngle());
+        double[] ypr = new double[3];
+
+        imu.getYawPitchRoll(ypr);
+
+        return Rotation2d.fromDegrees(ypr[0]);
 
     }
 
