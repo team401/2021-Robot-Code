@@ -56,9 +56,8 @@ public class Constants {
 
     public static final class PneumaticChannels {
 
-        public static final int[] leftIntakeSolenoidChannels = {0, 1};
-        public static final int[] rightIntakeSolenoidChannels = {2, 3};
-        public static final int[] hoodSolenoidChannels = {4, 5};
+        public static final int[] intakeSolenoidChannels = {0, 1};
+        //public static final int[] hoodSolenoidChannels = {4, 5};
 
     }
 
@@ -88,9 +87,9 @@ public class Constants {
 
     public static final class SuperstructureConstants {
 
-        public static final double intakingPower = 0.35;
+        public static final double intakingPower = 0.5;
         public static final double kickerPower = 0.85;
-        public static final double conveyorPower = 1.0;
+        public static final double conveyorPower = 0.5;
 
         public static final double spacingDelaySeconds = 0.5;
 

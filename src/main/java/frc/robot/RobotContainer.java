@@ -47,7 +47,7 @@ public class RobotContainer {
     public RobotContainer() {
 
         configureButtonBindings();
-
+        
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
@@ -57,6 +57,8 @@ public class RobotContainer {
                 false
             )
         );
+
+        intake.compressorPSI();
 
     }
 

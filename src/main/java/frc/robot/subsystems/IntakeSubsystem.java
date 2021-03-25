@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,17 +14,18 @@ import frc.robot.Constants.SuperstructureConstants;
 public class IntakeSubsystem extends SubsystemBase {
 
     private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
-
-    private final DoubleSolenoid leftIntakeSolenoid = 
-        new DoubleSolenoid(
-            PneumaticChannels.leftIntakeSolenoidChannels[0], 
-            PneumaticChannels.leftIntakeSolenoidChannels[1]
-        );
     
-    private final DoubleSolenoid rightIntakeSolenoid = 
+    Compressor compressor = new Compressor(0);
+
+    boolean enabled = compressor.enabled();
+    boolean pressureSwitch = compressor.getPressureSwitchValue();
+
+    
+
+    private final DoubleSolenoid intakeSolenoid = 
         new DoubleSolenoid(
-            PneumaticChannels.rightIntakeSolenoidChannels[0], 
-            PneumaticChannels.rightIntakeSolenoidChannels[1]
+            PneumaticChannels.intakeSolenoidChannels[0], 
+            PneumaticChannels.intakeSolenoidChannels[1]
         );
 
     public IntakeSubsystem() {
@@ -46,15 +48,23 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void extendIntake() {
 
-        leftIntakeSolenoid.set(Value.kForward);
-        rightIntakeSolenoid.set(Value.kForward);
+        intakeSolenoid.set(Value.kForward);
 
     }
 
     public void retractIntake() {
 
-        leftIntakeSolenoid.set(Value.kReverse);
-        rightIntakeSolenoid.set(Value.kReverse);
+        intakeSolenoid.set(Value.kReverse);
+
+    }
+
+    public void compressorPSI() {
+
+        if(pressureSwitch){
+    
+            compressor.start();
+    
+        }   
 
     }
 
