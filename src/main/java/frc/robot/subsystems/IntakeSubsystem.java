@@ -14,16 +14,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
 
-    private final DoubleSolenoid leftIntakeSolenoid = 
+    private final DoubleSolenoid intakeSolenoid = 
         new DoubleSolenoid(
-            PneumaticChannels.leftIntakeSolenoidChannels[0], 
-            PneumaticChannels.leftIntakeSolenoidChannels[1]
-        );
-    
-    private final DoubleSolenoid rightIntakeSolenoid = 
-        new DoubleSolenoid(
-            PneumaticChannels.rightIntakeSolenoidChannels[0], 
-            PneumaticChannels.rightIntakeSolenoidChannels[1]
+            PneumaticChannels.intakeSolenoidChannels[0], 
+            PneumaticChannels.intakeSolenoidChannels[1]
         );
 
     public IntakeSubsystem() {
@@ -46,15 +40,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void extendIntake() {
 
-        leftIntakeSolenoid.set(Value.kForward);
-        rightIntakeSolenoid.set(Value.kForward);
+        intakeSolenoid.set(Value.kForward);
 
     }
 
     public void retractIntake() {
 
-        leftIntakeSolenoid.set(Value.kReverse);
-        rightIntakeSolenoid.set(Value.kReverse);
+        intakeSolenoid.set(Value.kReverse);
 
     }
 

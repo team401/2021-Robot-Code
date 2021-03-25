@@ -38,11 +38,14 @@ public class ShooterSubsystem extends SubsystemBase {
             )
         );
 
-    private final DoubleSolenoid hoodSolenoid = 
+    /*
+        private final DoubleSolenoid hoodSolenoid = 
         new DoubleSolenoid(
             PneumaticChannels.hoodSolenoidChannels[0], 
             PneumaticChannels.hoodSolenoidChannels[1]
         );
+
+    */
 
     public ShooterSubsystem() {
 
@@ -56,12 +59,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
+    /*
     public void setHoodState(boolean state) {
 
         if (state) hoodSolenoid.set(Value.kForward);
         else hoodSolenoid.set(Value.kReverse);
 
     }
+    */
 
     public void runFlywheel(double desiredVelocityRadPerSec) {
 
