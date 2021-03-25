@@ -8,8 +8,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.PneumaticChannels;
@@ -24,9 +27,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final SpeedControllerGroup flywheel = new SpeedControllerGroup(leftFlywheelMotor, rightFlywheelMotor);
 
-    private final PIDController flywheelController = new PIDController(0.0, 0.0, 0.0);
-
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, 0.0, 0.0);
+    private final ProfiledPIDController flywheelController = 
+        new ProfiledPIDController(
+            0.2, 
+            0.0, 
+            0.0,
+            new TrapezoidProfile.Constraints(
+                100,
+                1
+            )
+        );
 
     private final DoubleSolenoid hoodSolenoid = 
         new DoubleSolenoid(
@@ -36,14 +46,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem() {
 
-        flywheel.setInverted(true);
+        rightFlywheelMotor.setInverted(true);
 
     }
 
     public void runShooterPercent() {
 
-        flywheel.set(1.0);
-
+        flywheel.set(.5);
 
     }
 
@@ -58,9 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         double power = flywheelController.calculate(getFlywheelVelRadPerSec(), desiredVelocityRadPerSec);
 
-        double calculatedFeedForward = feedforward.calculate(flywheelController.getSetpoint());
-
-        flywheel.setVoltage(power + calculatedFeedForward);
+        flywheel.set(power);
 
     }
 

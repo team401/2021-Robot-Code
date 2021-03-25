@@ -48,7 +48,7 @@ public class RobotContainer {
                 () -> leftJoystick.getX(GenericHID.Hand.kLeft), 
                 () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
                 () -> rightJoystick.getX(GenericHID.Hand.kRight),
-                true
+                false
             )
         );
 
@@ -57,12 +57,11 @@ public class RobotContainer {
     public void configureButtonBindings() {
 
         new JoystickButton(gamepad, Button.kB.value)
-            //.whenPressed(intake::extendIntake)
-            //.whenReleased(intake::retractIntake)
-            .whileHeld(new InstantCommand(shooter::runShooterPercent, shooter))
-            .whileHeld(new InstantCommand(intake::runIntakeMotor, intake))
-            .whileHeld(new InstantCommand(conveyor::runConveyor, conveyor));
 
+            .whileHeld(shooter::runShooterPercent, conveyor)
+            .whileHeld(intake::runIntakeMotor, intake)    
+            .whileHeld(conveyor::runConveyor, conveyor)
+            .whileHeld(shooter::runKicker, shooter);    
 
     }
 

@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,7 +10,7 @@ import frc.robot.Constants.SuperstructureConstants;
 
 public class ConveyorSubsystem extends SubsystemBase {
 
-    private final CANSparkMax conveyorMotor = new CANSparkMax(CANDevices.conveyorMotorId, MotorType.kBrushless);
+    private final WPI_TalonFX conveyorMotor = new WPI_TalonFX(CANDevices.conveyorMotorId);
     
     private final DigitalInput bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
     private final DigitalInput topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
