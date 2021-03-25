@@ -63,7 +63,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveSubsystem() {
 
-        imu.enterCalibrationMode(CalibrationMode.Accelerometer);
+        imu.setYaw(0.0);
 
         frontLeft.initRotationOffset();
         frontRight.initRotationOffset();

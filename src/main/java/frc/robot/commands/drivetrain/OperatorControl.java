@@ -38,15 +38,15 @@ public class OperatorControl extends CommandBase {
     public void execute() {
 
         double fwdX = forwardX.getAsDouble();
-        fwdX = Math.copySign(Math.pow(fwdX, 2), fwdX);
+        fwdX = Math.copySign(Math.pow(fwdX, 1), fwdX);
         fwdX = deadbandInputs(fwdX);
 
         double fwdY = forwardY.getAsDouble();
-        fwdY = Math.copySign(Math.pow(fwdY, 2), fwdY);
+        fwdY = Math.copySign(Math.pow(fwdY, 1), fwdY);
         fwdY = deadbandInputs(fwdY);
 
         double rot = rotation.getAsDouble();
-        rot = Math.copySign(Math.pow(rot, 2), rot);
+        rot = Math.copySign(Math.pow(rot, 1), rot);
         rot = deadbandInputs(rot);
 
         drive.drive(
