@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,6 +14,13 @@ import frc.robot.Constants.SuperstructureConstants;
 public class IntakeSubsystem extends SubsystemBase {
 
     private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
+    
+    Compressor compressor = new Compressor(0);
+
+    boolean enabled = compressor.enabled();
+    boolean pressureSwitch = compressor.getPressureSwitchValue();
+
+    
 
     private final DoubleSolenoid intakeSolenoid = 
         new DoubleSolenoid(
@@ -47,6 +55,16 @@ public class IntakeSubsystem extends SubsystemBase {
     public void retractIntake() {
 
         intakeSolenoid.set(Value.kReverse);
+
+    }
+
+    public void compressorPSI() {
+
+        if(pressureSwitch){
+    
+            compressor.start();
+    
+        }   
 
     }
 
