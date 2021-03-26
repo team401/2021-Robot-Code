@@ -20,8 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
     boolean enabled = compressor.enabled();
     boolean pressureSwitch = compressor.getPressureSwitchValue();
 
-    
-
     private final DoubleSolenoid intakeSolenoid = 
         new DoubleSolenoid(
             PneumaticChannels.intakeSolenoidChannels[0], 
@@ -60,7 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void compressorPSI() {
 
-        if(pressureSwitch){
+        if (pressureSwitch) {
     
             compressor.start();
     

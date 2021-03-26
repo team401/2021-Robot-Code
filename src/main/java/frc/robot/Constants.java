@@ -89,7 +89,7 @@ public class Constants {
 
         public static final double intakingPower = 0.5;
         public static final double kickerPower = 0.85;
-        public static final double conveyorPower = 0.5;
+        public static final double conveyorPower = 0.25;
 
         public static final double spacingDelaySeconds = 0.5;
 

@@ -55,7 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void runShooterPercent() {
 
-        flywheel.set(.5);
+        flywheel.set(.65);
 
     }
 
