@@ -5,6 +5,8 @@ import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -31,7 +33,7 @@ public class RobotContainer {
     private final Joystick leftJoystick = new Joystick(InputDevices.leftJoystickPort);
     private final Joystick rightJoystick = new Joystick(InputDevices.rightJoystickPort);
 
-    private final XboxController gamepad = new XboxController(InputDevices.gamepadPort);
+    private final static XboxController gamepad = new XboxController(InputDevices.gamepadPort);
 
     private DriveSubsystem drive = new DriveSubsystem();
     private IntakeSubsystem intake = new IntakeSubsystem();
@@ -58,13 +60,28 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
 
+        // Collects balls 
         new JoystickButton(gamepad, Button.kB.value)
 
-            .whileHeld(shooter::runShooterPercent, conveyor)
             .whileHeld(intake::runIntakeMotor, intake)    
-            .whileHeld(conveyor::runConveyor, conveyor)
-            .whileHeld(shooter::runKicker, shooter);    
-
+            .whileHeld(conveyor::runConveyor, conveyor);
+        
+        // Rev up shooter
+     /*
+        new JoystickButton(gamepad, Button.kB.value)
+            
+            .whileHeld(shooter::runShooterPercent, shooter);           
+    */
+        new JoystickButton(gamepad, Axis.kLeftTrigger.value)
+        
+            .whileHeld(shooter::runShooterPercent, shooter); 
+            
+        // Shoots balls
+        new JoystickButton(gamepad, Axis.kRightTrigger.value)
+        
+            .whileHeld(shooter::runKicker, shooter)
+            .whileHeld(conveyor::runConveyor, conveyor); 
+    
     }
 
     public Command getAutonomousCommand() {
@@ -116,6 +133,16 @@ public class RobotContainer {
         //drive.resetPose(runTrajectory.getInitialPose());
 
         return runTrajectory;
+
+    }
+    
+    public static final class Gamepad {
+       
+        public static double getGamepadTrigger() {
+
+            return gamepad.getTriggerAxis(Hand.kLeft);
+    
+        }
 
     }
 }
