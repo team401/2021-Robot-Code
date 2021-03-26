@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
+import frc.robot.RobotContainer.Gamepad;
 
 public class Constants {
 
@@ -56,8 +57,9 @@ public class Constants {
 
     public static final class PneumaticChannels {
 
+        public  static final int PCMId = 0;
+
         public static final int[] intakeSolenoidChannels = {0, 1};
-        //public static final int[] hoodSolenoidChannels = {4, 5};
 
     }
 
@@ -86,6 +88,9 @@ public class Constants {
     }
 
     public static final class SuperstructureConstants {
+
+        // Test
+        public static final double shooterPower = Gamepad.getGamepadTrigger();
 
         public static final double intakingPower = 0.5;
         public static final double kickerPower = 0.85;

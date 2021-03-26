@@ -15,9 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
     
-    Compressor compressor = new Compressor(0);
-
-    boolean enabled = compressor.enabled();
+    private Compressor compressor = new Compressor(PneumaticChannels.PCMId);
     boolean pressureSwitch = compressor.getPressureSwitchValue();
 
     private final DoubleSolenoid intakeSolenoid = 
@@ -62,7 +60,11 @@ public class IntakeSubsystem extends SubsystemBase {
     
             compressor.start();
     
-        }   
+        } else {
+
+            compressor.stop();
+
+        } 
 
     }
 

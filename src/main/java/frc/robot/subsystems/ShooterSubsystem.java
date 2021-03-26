@@ -4,9 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -15,7 +13,6 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
-import frc.robot.Constants.PneumaticChannels;
 import frc.robot.Constants.SuperstructureConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -35,17 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
             new TrapezoidProfile.Constraints(
                 100,
                 1
-            )
-        );
-
-    /*
-        private final DoubleSolenoid hoodSolenoid = 
-        new DoubleSolenoid(
-            PneumaticChannels.hoodSolenoidChannels[0], 
-            PneumaticChannels.hoodSolenoidChannels[1]
-        );
-
-    */
+            ));
 
     public ShooterSubsystem() {
 
@@ -55,18 +42,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void runShooterPercent() {
 
-        flywheel.set(.65);
+        flywheel.set(SuperstructureConstants.shooterPower);
 
     }
-
-    /*
-    public void setHoodState(boolean state) {
-
-        if (state) hoodSolenoid.set(Value.kForward);
-        else hoodSolenoid.set(Value.kReverse);
-
-    }
-    */
 
     public void runFlywheel(double desiredVelocityRadPerSec) {
 
