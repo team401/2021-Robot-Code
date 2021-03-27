@@ -40,8 +40,8 @@ public class Constants {
 
     public static final class DIOChannels {
 
-        public static final int bottomBannerPort = 9;
-        public static final int topBannerPort = 0;
+        public static final int bottomBannerPort = 0;
+        public static final int topBannerPort = 9;
 
     }
 
@@ -88,19 +88,19 @@ public class Constants {
 
     public static final class SuperstructureConstants {
 
-        public static final double shooterPower = .75;
+        public static final double shooterPower = .4;
 
         public static final double intakingPower = 0.65;
-        public static final double jogFowardPower = 0.1;
+        public static final double jogFowardPower = 0.2;
 
         public static final double kickerPower = 1.0;
-        public static final double conveyorPower = 0.25;
+        public static final double conveyorPower = 0.35;
 
         public static final double spacingDelaySeconds = 0.5;
 
         public static final double flywheelGearRatio = 1.0 / 1.0;
 
-        public static final double jogForwardTime = 0.05/2.0; // seconds
+        public static final double jogForwardTime = 0.1; // seconds
 
     }
 

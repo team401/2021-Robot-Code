@@ -14,7 +14,7 @@ import frc.robot.Constants.InputDevices;
 import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
-import frc.robot.commands.superstructure.IndexingHandler.Waiting;
+import frc.robot.commands.superstructure.Indexing.Waiting;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;

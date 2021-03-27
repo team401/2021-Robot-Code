@@ -1,4 +1,4 @@
-package frc.robot.commands.superstructure.IndexingHandler;
+package frc.robot.commands.superstructure.Indexing;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,36 +22,26 @@ public class Jogging extends CommandBase {
 
     @Override
     public void initialize() {
-        
+
         timer.reset();
         timer.start();
 
-    }
-
-    @Override
-    public void execute() {
-
-    while (timer.get() < SuperstructureConstants.jogForwardTime) 
-    
         indexer.runConveyor();
-    
+
     }
 
     @Override
     public void end(boolean interrupted) {
 
         new Waiting(indexer).schedule();
-        SmartDashboard.putString("done", "going to waiting");
 
     }
 
     @Override
     public boolean isFinished() {
 
-        return timer.get() < SuperstructureConstants.jogForwardTime;
+        return timer.get() >= SuperstructureConstants.jogForwardTime;
         
     }
 
 }
-    
-

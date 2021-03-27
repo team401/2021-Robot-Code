@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -26,13 +27,13 @@ public class IndexingSubsystem extends SubsystemBase {
 
     public boolean getTopBannerState() {
 
-        return topBanner.get();
+        return !topBanner.get();
 
     }
 
     public boolean getBottomBannerState() {
 
-        return bottomBanner.get();
+        return !bottomBanner.get();
 
     }
 
@@ -57,6 +58,14 @@ public class IndexingSubsystem extends SubsystemBase {
     public void reverseConveyor() {
 
         conveyorMotor.set(-SuperstructureConstants.conveyorPower);
+
+    }
+
+    @Override
+    public void periodic() {
+
+        SmartDashboard.putBoolean("topSensorState", getTopBannerState());
+        SmartDashboard.putBoolean("bottomSensorState", getBottomBannerState());
 
     }
 

@@ -1,39 +1,47 @@
-package frc.robot.commands.superstructure.IndexingHandler;
+package frc.robot.commands.superstructure.Indexing;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
 
-public class Waiting extends CommandBase {
+public class Feeding extends CommandBase {
 
     private final IndexingSubsystem indexer;
 
     private boolean isFinishedFlag = false;
 
-    public Waiting(IndexingSubsystem subsystem) {
+    public Feeding(IndexingSubsystem subsystem) {
 
         indexer = subsystem;
 
         addRequirements(indexer);
 
     }
-    
+
     @Override
     public void execute() {
 
         boolean bottomSensorState = indexer.getBottomBannerState();
         boolean topSensorState = indexer.getTopBannerState();
 
-        indexer.stopConveyor();    
+        if (bottomSensorState && topSensorState) {
 
-        if (bottomSensorState && !topSensorState) {
-
-            new Feeding(indexer).schedule();
             isFinishedFlag = true;
+            new Full(indexer).schedule();
 
-        } else if (!bottomSensorState && topSensorState) {
-
+        } else if (topSensorState) {
+            
+            isFinishedFlag = true;
             new Reversing(indexer).schedule();
+
+        } else if (!bottomSensorState) {
+
             isFinishedFlag = true;
+            new Jogging(indexer).schedule();
+
+        } else {
+
+            indexer.runConveyor();
 
         }
 
@@ -45,5 +53,5 @@ public class Waiting extends CommandBase {
         return isFinishedFlag;
 
     }
-
+    
 }

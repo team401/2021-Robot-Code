@@ -1,4 +1,4 @@
-package frc.robot.commands.superstructure.IndexingHandler;
+package frc.robot.commands.superstructure.Indexing;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -7,7 +7,7 @@ public class Reversing extends CommandBase {
 
     private final IndexingSubsystem indexer;
 
-    private boolean isFinishedFlag =  false;
+    private boolean isFinishedFlag = false;
 
     public Reversing(IndexingSubsystem subsystem) {
 
@@ -26,8 +26,8 @@ public class Reversing extends CommandBase {
 
         if (bottomSensorState) {
 
-            new Waiting(indexer).schedule();
             isFinishedFlag = true;
+            new Jogging(indexer).schedule();
 
         } 
 

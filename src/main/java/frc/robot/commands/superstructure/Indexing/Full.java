@@ -1,4 +1,4 @@
-package frc.robot.commands.superstructure.IndexingHandler;
+package frc.robot.commands.superstructure.Indexing;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -27,8 +27,8 @@ public class Full extends CommandBase {
 
         if (!bottomSensorState || !topSensorState) {
 
-            new Waiting(indexer).schedule();
             isFinshedFlag = true;
+            new Waiting(indexer).schedule();
 
         }
 
