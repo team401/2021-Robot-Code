@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -8,14 +11,18 @@ import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DIOChannels;
 import frc.robot.Constants.SuperstructureConstants;
 
-public class ConveyorSubsystem extends SubsystemBase {
+public class IndexingSubsystem extends SubsystemBase {
 
     private final WPI_TalonFX conveyorMotor = new WPI_TalonFX(CANDevices.conveyorMotorId);
     
     private final DigitalInput bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
     private final DigitalInput topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
     
-    public ConveyorSubsystem() {}
+    public IndexingSubsystem() {
+
+        conveyorMotor.setNeutralMode(NeutralMode.Brake);
+
+    }
 
     public boolean getTopBannerState() {
 
@@ -35,9 +42,21 @@ public class ConveyorSubsystem extends SubsystemBase {
 
     }
 
+    public void runJoggingPower() {
+
+        conveyorMotor.set(SuperstructureConstants.jogFowardPower);
+
+    }
+
     public void stopConveyor() {
 
         conveyorMotor.set(0);
+
+    }
+
+    public void reverseConveyor() {
+
+        conveyorMotor.set(-SuperstructureConstants.conveyorPower);
 
     }
 

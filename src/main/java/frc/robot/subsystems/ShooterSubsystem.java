@@ -5,12 +5,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.SuperstructureConstants;
@@ -32,7 +28,8 @@ public class ShooterSubsystem extends SubsystemBase {
             new TrapezoidProfile.Constraints(
                 100,
                 1
-            ));
+            )
+        );
 
     public ShooterSubsystem() {
 
@@ -43,6 +40,12 @@ public class ShooterSubsystem extends SubsystemBase {
     public void runShooterPercent() {
 
         flywheel.set(SuperstructureConstants.shooterPower);
+
+    }
+
+    public void stopShooter() {
+
+        flywheel.set(0);
 
     }
 
@@ -70,6 +73,18 @@ public class ShooterSubsystem extends SubsystemBase {
     public void runKicker() {
 
         kickerMotor.set(SuperstructureConstants.kickerPower);
+
+    }
+
+    public void stopKicker() {
+
+        kickerMotor.set(0);
+    
+    }
+
+    public void reverseKicker() {
+
+        kickerMotor.set(-SuperstructureConstants.kickerPower);
 
     }
 

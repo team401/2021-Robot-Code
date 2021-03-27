@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
-import frc.robot.RobotContainer.Gamepad;
 
 public class Constants {
 
@@ -41,8 +40,8 @@ public class Constants {
 
     public static final class DIOChannels {
 
-        public static final int bottomBannerPort = 0;
-        public static final int topBannerPort = 1;
+        public static final int bottomBannerPort = 9;
+        public static final int topBannerPort = 0;
 
     }
 
@@ -57,7 +56,7 @@ public class Constants {
 
     public static final class PneumaticChannels {
 
-        public  static final int PCMId = 0;
+        public  static final int PCMId = 19;
 
         public static final int[] intakeSolenoidChannels = {0, 1};
 
@@ -89,16 +88,19 @@ public class Constants {
 
     public static final class SuperstructureConstants {
 
-        // Test
-        public static final double shooterPower = Gamepad.getGamepadTrigger();
+        public static final double shooterPower = .75;
 
-        public static final double intakingPower = 0.5;
-        public static final double kickerPower = 0.85;
+        public static final double intakingPower = 0.65;
+        public static final double jogFowardPower = 0.1;
+
+        public static final double kickerPower = 1.0;
         public static final double conveyorPower = 0.25;
 
         public static final double spacingDelaySeconds = 0.5;
 
         public static final double flywheelGearRatio = 1.0 / 1.0;
+
+        public static final double jogForwardTime = 0.05/2.0; // seconds
 
     }
 

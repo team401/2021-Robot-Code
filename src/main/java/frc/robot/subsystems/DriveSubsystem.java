@@ -137,7 +137,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         imu.getYawPitchRoll(ypr);
 
-        return Rotation2d.fromDegrees(ypr[0]);
+        return Rotation2d.fromDegrees(-ypr[0]);
 
     }
 

@@ -42,6 +42,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     }
 
+    public void reverseIntakeMotor() {
+
+        intakeMotor.set(-SuperstructureConstants.intakingPower);
+
+    }
+
     public void extendIntake() {
 
         intakeSolenoid.set(Value.kForward);

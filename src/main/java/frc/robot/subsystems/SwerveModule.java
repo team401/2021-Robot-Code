@@ -125,7 +125,7 @@ public class SwerveModule extends SubsystemBase {
 
         rotationController.setReference(
             calculateAdjustedAngle(
-                state.angle.getRadians(), 
+                state.angle.getRadians(),
                 rotationEncoder.getPosition()), // could be changed to canCoder.getPosition()?
             ControlType.kPosition
         );
