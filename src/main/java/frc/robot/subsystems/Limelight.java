@@ -3,10 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,13 +20,13 @@ public class Limelight extends SubsystemBase {
 
     private ArrayList<Double> targets;
 
-    private NetworkTableEntry hasValidTarget;
-
     public Limelight() {
 
         table = NetworkTableInstance.getDefault().getTable("limelight");
 
         targets = new ArrayList<Double>(maxTableEntries);
+
+        setLedMode(1);
 
     }
 
@@ -40,8 +37,6 @@ public class Limelight extends SubsystemBase {
         tx = table.getEntry("tx").getDouble(0.0);
         ty = table.getEntry("ty").getDouble(0.0);
         ta = table.getEntry("ta").getDouble(0.0);
-
-        //hasValidTarget.forceSetBoolean(hasValidTarget());
 
         if (targets.size() >= maxTableEntries) targets.remove(0);
         targets.add(ta);

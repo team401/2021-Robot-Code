@@ -54,13 +54,9 @@ public class RobotContainer {
             )
         );
 
-        //intake.setDefaultCommand(new InstantCommand(intake::stopIntakeMotor, intake));
-
         indexer.setDefaultCommand(
             new Waiting(indexer)
         );
-
-        //shooter.setDefaultCommand(new InstantCommand(shooter::stop, shooter));
 
     }
 
@@ -76,9 +72,11 @@ public class RobotContainer {
         // ramp up shooter with vision
         new JoystickButton(gamepad, Button.kBumperRight.value)
 
+            .whenPressed(() -> limelight.setLedMode(0))
             .whileHeld(new ShootWithVision(shooter, limelight))
-
-            .whenReleased(shooter::stopShooter, shooter);
+    
+            .whenReleased(shooter::stopShooter, shooter)
+            .whenReleased(() -> limelight.setLedMode(1));
 
         // spin up for manual control
         new JoystickButton(gamepad, Button.kBumperLeft.value)
@@ -87,22 +85,6 @@ public class RobotContainer {
 
             .whenReleased(shooter::stopShooter, shooter);
 
-        // spin up for far position  
-        /*new JoystickButton(gamepad, )
-
-            .whileHeld(() -> shooter.runShooterPercent(0.75), shooter);
-
-        // spin up for mid position
-        new JoystickButton(gamepad, Button.kBumperLeft.value) 
-
-            .whileHeld(() -> shooter.runShooterPercent(0.5), shooter);
-
-        // spin up for close position
-        new JoystickButton(gamepad, Button.kBumperLeft.value) 
-
-            .whileHeld(() -> shooter.runShooterPercent(0.25), shooter);*/
-
-        
         // shoot a ball
         new JoystickButton(gamepad, Button.kY.value)
         
@@ -126,9 +108,10 @@ public class RobotContainer {
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
 
-            .whileHeld(new AlignWithTargetVision(drive, limelight));
+            .whenPressed(() -> limelight.setLedMode(0))
+            .whileHeld(new AlignWithTargetVision(drive, limelight))
 
-
+            .whenReleased(() -> limelight.setLedMode(1));
 
     }
 

@@ -20,7 +20,7 @@ public class AlignWithTargetVision extends CommandBase {
         1.5, 0, 0, 
         new TrapezoidProfile.Constraints(
             0, 
-            0
+            0  // actaully add values here
         )
     );
 
@@ -28,13 +28,6 @@ public class AlignWithTargetVision extends CommandBase {
 
         drive = subsystem;
         limelight = vision;
-
-    }
-
-    @Override
-    public void initialize() {
-
-        limelight.setLedMode(0);
 
     }
 
