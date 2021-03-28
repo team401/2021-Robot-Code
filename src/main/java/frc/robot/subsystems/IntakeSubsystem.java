@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
         new DoubleSolenoid(
             PneumaticChannels.intakeSolenoidChannels[0], 
             PneumaticChannels.intakeSolenoidChannels[1]
-        );
+        ); 
 
     public IntakeSubsystem() {
 
