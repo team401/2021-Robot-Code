@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
+import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
@@ -66,7 +67,7 @@ public class RobotContainer {
         // ramp up shooter
         new JoystickButton(gamepad, Button.kBumperRight.value)
 
-            .whileHeld(shooter::runShooterPercent, shooter)
+            .whileHeld(() -> shooter.runShooterPercent(SuperstructureConstants.shooterPower), shooter)
 
             .whenReleased(shooter::stopShooter, shooter);
             

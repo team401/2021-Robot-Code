@@ -5,8 +5,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.SuperstructureConstants;
@@ -20,26 +18,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final SpeedControllerGroup flywheel = new SpeedControllerGroup(leftFlywheelMotor, rightFlywheelMotor);
 
-    private final ProfiledPIDController flywheelController = 
-        new ProfiledPIDController(
-            0.2, 
-            0.0, 
-            0.0,
-            new TrapezoidProfile.Constraints(
-                100,
-                1
-            )
-        );
-
     public ShooterSubsystem() {
 
         rightFlywheelMotor.setInverted(true);
 
     }
 
-    public void runShooterPercent() {
+    public void runShooterPercent(double speed) {
 
-        flywheel.set(SuperstructureConstants.shooterPower);
+        flywheel.set(speed);
 
     }
 
@@ -49,24 +36,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void runFlywheel(double desiredVelocityRadPerSec) {
-
-        double power = flywheelController.calculate(getFlywheelVelRadPerSec(), desiredVelocityRadPerSec);
-
-        flywheel.set(power);
-
-    }
-
     public double getFlywheelVelRadPerSec() {
 
-        return ((leftFlywheelMotor.getSelectedSensorVelocity() + rightFlywheelMotor.getSelectedSensorVelocity()) / 2) * 600
-            / 2048 * (2 * Math.PI) / SuperstructureConstants.flywheelGearRatio; 
-
-    }
-
-    public Boolean isFlywheelAtSetpoint(double desiredVelocityRadPerSec) {
-
-        return flywheelController.atSetpoint();
+        return (((leftFlywheelMotor.getSelectedSensorVelocity() + rightFlywheelMotor.getSelectedSensorVelocity()) / 2) 
+        / 2048 * (2 * Math.PI) * 1000); // raw sensor unit/100ms *1 rotation/2048 units Talon * 2pi rad/1 rotation * 1000ms/1 sec = rad/sec
 
     }
 
