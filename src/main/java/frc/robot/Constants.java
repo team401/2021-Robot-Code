@@ -90,13 +90,15 @@ public class Constants {
 
         public static final double shooterPower = 0.4;
 
+        public static final double shootingPowerConstant = 1;
+
         public static final double intakingPower = 0.4;
         public static final double jogFowardPower = 0.2;
 
         public static final double kickerPower = 1.0;
         public static final double conveyorPower = 0.35;
 
-        public static final double flywheelGearRatio = 1.0 / 1.0;
+        public static final double flywheelGearRatio = 32.0 / 18.0;
 
         public static final double jogDelaySeconds = 0.1;
 

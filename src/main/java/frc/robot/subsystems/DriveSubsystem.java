@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleToLongFunction;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -21,37 +23,43 @@ public class DriveSubsystem extends SubsystemBase {
     private static final double rearLeftAngleOffset = Units.degreesToRadians(322.8 - 90);
     private static final double rearRightAngleOffset = Units.degreesToRadians(180 + 180 - 90);
 
-        private final SwerveModule frontLeft = 
-            new SwerveModule(
-                CANDevices.frontLeftDriveMotorId,
-                CANDevices.frontLeftRotationMotorId,
-                CANDevices.frontLeftRotationEncoderId,
-                frontLeftAngleOffset
-            );
+    private final SwerveModule frontLeft = 
+        new SwerveModule(
+            CANDevices.frontLeftDriveMotorId,
+            CANDevices.frontLeftRotationMotorId,
+            CANDevices.frontLeftRotationEncoderId,
+            frontLeftAngleOffset
+        );
 
-        private final SwerveModule frontRight = 
-            new SwerveModule(
-                CANDevices.frontRightDriveMotorId,
-                CANDevices.frontRightRotationMotorId,
-                CANDevices.frontRightRotationEncoderId,
-                frontRightAngleOffset
-            );
+    private final SwerveModule frontRight = 
+        new SwerveModule(
+            CANDevices.frontRightDriveMotorId,
+            CANDevices.frontRightRotationMotorId,
+            CANDevices.frontRightRotationEncoderId,
+            frontRightAngleOffset
+        );
 
-        private final SwerveModule rearLeft = 
-            new SwerveModule(
-                CANDevices.rearLeftDriveMotorId,
-                CANDevices.rearLeftRotationMotorId,
-                CANDevices.rearLeftRotationEncoderId,
-                rearLeftAngleOffset
-            );
+    private final SwerveModule rearLeft = 
+        new SwerveModule(
+            CANDevices.rearLeftDriveMotorId,
+            CANDevices.rearLeftRotationMotorId,
+            CANDevices.rearLeftRotationEncoderId,
+            rearLeftAngleOffset
+        );
 
-        private final SwerveModule rearRight = 
-            new SwerveModule(
-                CANDevices.rearRightDriveMotorId,
-                CANDevices.rearRightRotationMotorId,
-                CANDevices.rearRightRotationEncoderId,
-                rearRightAngleOffset
-            );
+    private final SwerveModule rearRight = 
+        new SwerveModule(
+            CANDevices.rearRightDriveMotorId,
+            CANDevices.rearRightRotationMotorId,
+            CANDevices.rearRightRotationEncoderId,
+            rearRightAngleOffset
+        );
+
+    private double commandedForward = 0;
+    private double commandedStrafe = 0;
+    private double commandedRotation = 0;
+
+    private boolean isCommandedFieldRelative = false;
 
     private final PigeonIMU imu = new PigeonIMU(CANDevices.imuId);
 
@@ -83,6 +91,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
     
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
+
+        commandedForward = forward;
+        commandedStrafe = strafe;
+        commandedRotation = rotation;
+
+        isCommandedFieldRelative = isFieldRelative;
 
         ChassisSpeeds speeds =
             isFieldRelative
@@ -138,6 +152,20 @@ public class DriveSubsystem extends SubsystemBase {
         imu.getYawPitchRoll(ypr);
 
         return Rotation2d.fromDegrees(-ypr[0]);
+
+    }
+
+    public double[] getCommandedDriveValues() {
+
+        double[] values = {commandedForward, commandedStrafe, commandedRotation};
+
+        return values;
+
+    }
+
+    public boolean getIsFieldRelative() {
+
+        return isCommandedFieldRelative;
 
     }
 

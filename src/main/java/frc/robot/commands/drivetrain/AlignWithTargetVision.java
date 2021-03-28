@@ -17,7 +17,7 @@ public class AlignWithTargetVision extends CommandBase {
     private final Limelight limelight;
 
     private final ProfiledPIDController controller = new ProfiledPIDController(
-        0, 0, 0, 
+        1.5, 0, 0, 
         new TrapezoidProfile.Constraints(
             0, 
             0
@@ -34,15 +34,21 @@ public class AlignWithTargetVision extends CommandBase {
     @Override
     public void initialize() {
 
+        limelight.setLedMode(0);
+
     }
 
     public void execute() {
 
         if (limelight.hasValidTarget()) {
-
-            SwerveModuleState[] currentSpeeds = drive.getModuleStates();
-
             
+            double rotationOut = controller.calculate(-limelight.gettX(), 0);
+
+            drive.drive(
+                drive.getCommandedDriveValues()[0], 
+                drive.getCommandedDriveValues()[1], 
+                rotationOut, 
+                drive.getIsFieldRelative());
 
         }
 

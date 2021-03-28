@@ -14,9 +14,6 @@ import frc.robot.Constants.SuperstructureConstants;
 public class IntakeSubsystem extends SubsystemBase {
 
     private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
-    
-    private Compressor compressor = new Compressor(PneumaticChannels.PCMId);
-    boolean pressureSwitch = compressor.getPressureSwitchValue();
 
     private final DoubleSolenoid intakeSolenoid = 
         new DoubleSolenoid(
@@ -57,20 +54,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public void retractIntake() {
 
         intakeSolenoid.set(Value.kReverse);
-
-    }
-
-    public void compressorPSI() {
-
-        if (pressureSwitch) {
-    
-            compressor.start();
-    
-        } else {
-
-            compressor.stop();
-
-        } 
 
     }
 

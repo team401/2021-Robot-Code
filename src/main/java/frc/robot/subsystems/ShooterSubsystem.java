@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.SuperstructureConstants;
@@ -36,23 +37,25 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
+    public void stopKicker() {
+
+        kickerMotor.set(0);
+
+    }
+
     public double getFlywheelVelRadPerSec() {
 
         return (((leftFlywheelMotor.getSelectedSensorVelocity() + rightFlywheelMotor.getSelectedSensorVelocity()) / 2) 
-        / 2048 * (2 * Math.PI) * 1000); // raw sensor unit/100ms *1 rotation/2048 units Talon * 2pi rad/1 rotation * 1000ms/1 sec = rad/sec
+        / 2048 * (2 * Math.PI) * 10) * SuperstructureConstants.flywheelGearRatio; // raw sensor unit/100ms * 1 rotation/2048 units Talon * 2pi rad/1 rotation / 10 100ms/sec = rad/sec
 
     }
 
     public void runKicker() {
 
+        
+
         kickerMotor.set(SuperstructureConstants.kickerPower);
 
-    }
-
-    public void stopKicker() {
-
-        kickerMotor.set(0);
-    
     }
 
     public void reverseKicker() {
