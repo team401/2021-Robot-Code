@@ -42,14 +42,12 @@ public class RobotContainer {
                 () -> leftJoystick.getX(GenericHID.Hand.kLeft), 
                 () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
                 () -> rightJoystick.getX(GenericHID.Hand.kRight),
-                true
+                false
             )
         );
 
         indexer.setDefaultCommand(
-
             new Waiting(indexer)
-            
         );
 
         intake.compressorPSI();

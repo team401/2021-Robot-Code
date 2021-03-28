@@ -88,19 +88,17 @@ public class Constants {
 
     public static final class SuperstructureConstants {
 
-        public static final double shooterPower = .4;
+        public static final double shooterPower = 0.4;
 
-        public static final double intakingPower = 0.65;
+        public static final double intakingPower = 0.4;
         public static final double jogFowardPower = 0.2;
 
         public static final double kickerPower = 1.0;
         public static final double conveyorPower = 0.35;
 
-        public static final double spacingDelaySeconds = 0.5;
-
         public static final double flywheelGearRatio = 1.0 / 1.0;
 
-        public static final double jogForwardTime = 0.1; // seconds
+        public static final double jogDelaySeconds = 0.1;
 
     }
 
@@ -111,7 +109,7 @@ public class Constants {
 
         public static final double maxAngularSpeedRadPerSec = 5;
         public static final double maxAngularAccelRadPerSecSq = 5;
-
+        
     }
 
     public static final class FieldConstants {

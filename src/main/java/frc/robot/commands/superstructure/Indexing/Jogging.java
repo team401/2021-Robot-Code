@@ -40,7 +40,7 @@ public class Jogging extends CommandBase {
     @Override
     public boolean isFinished() {
 
-        return timer.get() >= SuperstructureConstants.jogForwardTime;
+        return timer.get() >= SuperstructureConstants.jogDelaySeconds;
         
     }
 
