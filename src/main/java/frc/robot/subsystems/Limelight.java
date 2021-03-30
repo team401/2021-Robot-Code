@@ -62,15 +62,18 @@ public class Limelight extends SubsystemBase {
     }
 
     public double gettA() {
+    
+        return ta;
+    
 
-        int sum = 0;
+        /*int sum = 0;
 
         for (Double entry : targets) {
 
             sum += entry;
 
         }
-        return sum / maxTableEntries;
+        return sum / maxTableEntries;*/
 
     }
 

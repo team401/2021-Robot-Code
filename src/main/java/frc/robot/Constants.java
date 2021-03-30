@@ -88,11 +88,9 @@ public class Constants {
 
     public static final class SuperstructureConstants {
 
-        public static final double shooterPower = 0.4;
+        public static final double baseShootingSpeed = 5000;
 
-        public static final double shootingPowerConstant = 1;
-
-        public static final double intakingPower = 0.4;
+        public static final double intakingPower = 0.6;
         public static final double jogFowardPower = 0.2;
 
         public static final double kickerPower = 1.0;

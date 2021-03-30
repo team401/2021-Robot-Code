@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
-import java.util.function.DoubleToLongFunction;
-
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -151,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         imu.getYawPitchRoll(ypr);
 
-        return Rotation2d.fromDegrees(-ypr[0]);
+        return Rotation2d.fromDegrees(ypr[0]);
 
     }
 

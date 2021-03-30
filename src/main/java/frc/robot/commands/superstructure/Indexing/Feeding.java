@@ -1,6 +1,5 @@
-package frc.robot.commands.superstructure.Indexing;
+package frc.robot.commands.superstructure.indexing;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
 

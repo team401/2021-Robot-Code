@@ -1,26 +1,15 @@
 package frc.robot;
 
-import java.nio.BufferOverflowException;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
-import frc.robot.Constants.SuperstructureConstants;
-import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
-import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
-import frc.robot.commands.superstructure.ShootWithVision;
-import frc.robot.commands.superstructure.Indexing.Waiting;
+import frc.robot.commands.superstructure.indexing.Waiting;
+import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -50,7 +39,7 @@ public class RobotContainer {
                 () -> leftJoystick.getX(GenericHID.Hand.kLeft), 
                 () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
                 () -> rightJoystick.getX(GenericHID.Hand.kRight),
-                false
+                true
             )
         );
 
@@ -72,16 +61,14 @@ public class RobotContainer {
         // ramp up shooter with vision
         new JoystickButton(gamepad, Button.kBumperRight.value)
 
-            .whenPressed(() -> limelight.setLedMode(0))
-            .whileHeld(new ShootWithVision(shooter, limelight))
+            .whileHeld(new RampUpWithVision(shooter, limelight))
     
-            .whenReleased(shooter::stopShooter, shooter)
-            .whenReleased(() -> limelight.setLedMode(1));
+            .whenReleased(shooter::stopShooter, shooter);
 
         // spin up for manual control
         new JoystickButton(gamepad, Button.kBumperLeft.value)
             
-            .whileHeld(() -> shooter.runShooterPercent(0.4))
+            .whileHeld(() -> shooter.runShooterPercent(0.65))
 
             .whenReleased(shooter::stopShooter, shooter);
 
@@ -109,13 +96,13 @@ public class RobotContainer {
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
 
             .whenPressed(() -> limelight.setLedMode(0))
-            .whileHeld(new AlignWithTargetVision(drive, limelight))
+            .whileHeld(new AlignWithTargetVision(drive, limelight))   
 
             .whenReleased(() -> limelight.setLedMode(1));
 
     }
 
-    public Command getAutonomousCommand() {
+    /*public Command getAutonomousCommand() {
 
         TrajectoryConfig config = new TrajectoryConfig(
             AutoConstants.maxVelMetersPerSec, 
@@ -132,6 +119,6 @@ public class RobotContainer {
 
         return new FollowTrajectory(drive, AutoTrajectories.autoNavBarrelTrajectory);
 
-    }
+    }*/
 
 }
