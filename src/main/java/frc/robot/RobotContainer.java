@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
@@ -21,7 +24,7 @@ public class RobotContainer {
     private final Joystick leftJoystick = new Joystick(InputDevices.leftJoystickPort);
     private final Joystick rightJoystick = new Joystick(InputDevices.rightJoystickPort);
 
-    private final static XboxController gamepad = new XboxController(InputDevices.gamepadPort);
+    private final XboxController gamepad = new XboxController(InputDevices.gamepadPort);
 
     private DriveSubsystem drive = new DriveSubsystem();
     private IntakeSubsystem intake = new IntakeSubsystem();
@@ -53,52 +56,50 @@ public class RobotContainer {
 
         // intake
         new JoystickButton(gamepad, Button.kB.value)
-
-            .whileHeld(intake::runIntakeMotor, intake)
-
-            .whenReleased(intake::stopIntakeMotor, intake);
+            .whenPressed(new InstantCommand(intake::runIntakeMotor))
+            .whenReleased(new InstantCommand(intake::stopIntakeMotor));
         
-        // ramp up shooter with vision
+        // ramp up shooter
         new JoystickButton(gamepad, Button.kBumperRight.value)
+            .whenPressed(new RampUpWithVision(shooter, limelight))
+            .whenReleased(new InstantCommand(shooter::stopShooter));
 
-            .whileHeld(new RampUpWithVision(shooter, limelight))
-    
-            .whenReleased(shooter::stopShooter, shooter);
-
-        // spin up for manual control
-        new JoystickButton(gamepad, Button.kBumperLeft.value)
-            
-            .whileHeld(() -> shooter.runShooterPercent(0.65))
-
-            .whenReleased(shooter::stopShooter, shooter);
-
-        // shoot a ball
+        // shoot
         new JoystickButton(gamepad, Button.kY.value)
-        
-            .whileHeld(shooter::runKicker, shooter)
-            .whileHeld(indexer::runConveyor, indexer)
-            
-            .whenReleased(shooter::stopKicker, shooter)
-            .whenReleased(indexer::stopConveyor, indexer);
+            .whenPressed(
+                new ConditionalCommand(
+                    new InstantCommand(indexer::runConveyor)
+                    .alongWith(new InstantCommand(shooter::runKicker)), 
+                    new InstantCommand(), // maybe has to have stopConveyor and stopKicker?
+                shooter::atGoal
+                )
+            )
+            .whenReleased(
+                new InstantCommand(shooter::stopKicker)
+                .alongWith(new InstantCommand(indexer::stopConveyor))
+            );
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
-
-            .whileHeld(shooter::reverseKicker, shooter)
-            .whileHeld(indexer::reverseConveyor, indexer)
-            .whileHeld(intake::reverseIntakeMotor, intake)
-
-            .whenReleased(shooter::stopKicker, shooter)
-            .whenReleased(indexer::stopConveyor, indexer)
-            .whenReleased(intake::stopIntakeMotor, intake);
+            .whenPressed(
+                new ParallelCommandGroup(
+                    new InstantCommand(shooter::reverseKicker),
+                    new InstantCommand(indexer::reverseConveyor),
+                    new InstantCommand(intake::reverseIntakeMotor)
+                )
+            )
+            .whenReleased(
+                new ParallelCommandGroup(
+                    new InstantCommand(shooter::stopKicker),
+                    new InstantCommand(indexer::stopConveyor),
+                    new InstantCommand(intake::stopIntakeMotor)
+                )
+            );
 
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
 
-            .whenPressed(() -> limelight.setLedMode(0))
-            .whileHeld(new AlignWithTargetVision(drive, limelight))   
-
-            .whenReleased(() -> limelight.setLedMode(1));
+            .whileHeld(new AlignWithTargetVision(drive, limelight));
 
     }
 

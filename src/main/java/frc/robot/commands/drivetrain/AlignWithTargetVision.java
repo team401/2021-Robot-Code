@@ -21,6 +21,14 @@ public class AlignWithTargetVision extends CommandBase {
 
     }
 
+    @Override
+    public void initialize() {
+
+        limelight.setLedMode(0);
+
+    }
+
+    @Override
     public void execute() {
 
         if (limelight.hasValidTarget()) {
@@ -34,6 +42,13 @@ public class AlignWithTargetVision extends CommandBase {
                 drive.getIsFieldRelative());
 
         }
+
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
+        limelight.setLedMode(1);
 
     }
 
