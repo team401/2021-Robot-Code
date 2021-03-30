@@ -56,52 +56,60 @@ public class RobotContainer {
 
         // intake
         new JoystickButton(gamepad, Button.kB.value)
-            .whenPressed(new InstantCommand(intake::runIntakeMotor))
-            .whenReleased(new InstantCommand(intake::stopIntakeMotor));
+            .whenPressed(
+                new InstantCommand(intake::runIntakeMotor)
+            )
+            .whenReleased(
+                new InstantCommand(intake::stopIntakeMotor)
+            );
         
         // ramp up shooter
         new JoystickButton(gamepad, Button.kBumperRight.value)
             .whenPressed(new RampUpWithVision(shooter, limelight))
-            .whenReleased(new InstantCommand(shooter::stopShooter));
+            .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
-            .whenPressed(
+            .whileHeld(
                 new ConditionalCommand(
-                    new InstantCommand(indexer::runConveyor)
-                    .alongWith(new InstantCommand(shooter::runKicker)), 
-                    new InstantCommand(), // maybe has to have stopConveyor and stopKicker?
-                shooter::atGoal
+                    new InstantCommand(indexer::runConveyor, indexer)
+                    .alongWith(new InstantCommand(shooter::runKicker, shooter)), 
+                    new InstantCommand(),
+                    shooter::atGoal
                 )
             )
             .whenReleased(
                 new InstantCommand(shooter::stopKicker)
-                .alongWith(new InstantCommand(indexer::stopConveyor))
+                .alongWith(new InstantCommand(indexer::stopConveyor, indexer))
             );
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
-            .whenPressed(
+            .whileHeld(
                 new ParallelCommandGroup(
-                    new InstantCommand(shooter::reverseKicker),
-                    new InstantCommand(indexer::reverseConveyor),
-                    new InstantCommand(intake::reverseIntakeMotor)
+                    new InstantCommand(shooter::reverseKicker, shooter),
+                    new InstantCommand(indexer::reverseConveyor, indexer),
+                    new InstantCommand(intake::reverseIntakeMotor, intake)
                 )
             )
             .whenReleased(
                 new ParallelCommandGroup(
-                    new InstantCommand(shooter::stopKicker),
-                    new InstantCommand(indexer::stopConveyor),
-                    new InstantCommand(intake::stopIntakeMotor)
+                    new InstantCommand(shooter::stopKicker, shooter),
+                    new InstantCommand(indexer::stopConveyor, indexer),
+                    new InstantCommand(intake::stopIntakeMotor, intake)
                 )
             );
 
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
-
             .whileHeld(new AlignWithTargetVision(drive, limelight));
 
+        // reset imu 
+        new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
+            .whenPressed(new InstantCommand(drive::resetImu));
     }
+
+
 
     /*public Command getAutonomousCommand() {
 

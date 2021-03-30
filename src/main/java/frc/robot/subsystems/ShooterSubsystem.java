@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,6 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
         )
     );
 
+    private double desiredSpeedRadPerSec = 0;
+
     public ShooterSubsystem() {
 
         rightFlywheelMotor.setInverted(true);
@@ -47,18 +50,24 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void runVelocityProfileController(double desiredSpeedRadPerSec) {
 
+        this.desiredSpeedRadPerSec = desiredSpeedRadPerSec;
+
         double powerOut = controller.calculate(
                 getFlywheelVelRadPerSec(), 
-                Units.rotationsPerMinuteToRadiansPerSecond(desiredSpeedRadPerSec)
+                desiredSpeedRadPerSec
             );
 
         flywheel.set(powerOut);
+
+        SmartDashboard.putBoolean("atGoal", atGoal());
+        SmartDashboard.putNumber("desired", this.desiredSpeedRadPerSec);
+        SmartDashboard.putNumber("current", getFlywheelVelRadPerSec());
 
     } 
 
     public boolean atGoal() {
 
-        return controller.atGoal();
+        return Math.abs(desiredSpeedRadPerSec - getFlywheelVelRadPerSec()) <= Units.rotationsPerMinuteToRadiansPerSecond(100);
 
     }
 

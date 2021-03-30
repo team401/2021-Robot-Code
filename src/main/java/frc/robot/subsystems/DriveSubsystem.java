@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -81,9 +80,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
 
         odometry.update(getHeading(), getModuleStates());
-
-        SmartDashboard.putNumber("X distance", odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Y distance", odometry.getPoseMeters().getY());
 
     }
     
@@ -163,6 +159,12 @@ public class DriveSubsystem extends SubsystemBase {
     public boolean getIsFieldRelative() {
 
         return isCommandedFieldRelative;
+
+    }
+
+    public void resetImu() {
+
+        imu.setYaw(0);
 
     }
 
