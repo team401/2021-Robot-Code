@@ -4,13 +4,20 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputDevices;
+import frc.robot.autonomous.AutoTrajectories;
+import frc.robot.commands.drivetrain.AlignWithGyro;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
+import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Shooting;
 import frc.robot.commands.superstructure.indexing.Waiting;
@@ -20,7 +27,6 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
-import jdk.nashorn.api.tree.InstanceOfTree;
 
 public class RobotContainer {
 
@@ -38,7 +44,7 @@ public class RobotContainer {
     public RobotContainer() {
 
         configureButtonBindings();
-        
+
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
@@ -63,7 +69,7 @@ public class RobotContainer {
             .whenReleased(
                 new InstantCommand(intake::stopIntakeMotor, intake)
             );
-        
+
         // ramp up shooter
         new JoystickButton(gamepad, Button.kBumperRight.value)
             .whenPressed(new RampUpWithVision(shooter, limelight))
@@ -71,8 +77,8 @@ public class RobotContainer {
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
-            .whileHeld(new Shooting(indexer).alongWith(new InstantCommand(shooter::runKicker, shooter)))
-            .whenReleased(new InstantCommand(shooter::stopKicker));         
+            .whileHeld(new Shooting(indexer, shooter).alongWith(new InstantCommand(shooter::runKicker)))
+            .whenReleased(new InstantCommand(shooter::stopKicker));
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
@@ -93,25 +99,33 @@ public class RobotContainer {
 
             new POVButton(gamepad, 0)
                 .whileHeld(
-                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(6000)))
+                    new InstantCommand(
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(5800))
+                    )
                 )
                 .whenReleased(new InstantCommand(shooter::stopShooter));
 
             new POVButton(gamepad, 90)
                 .whileHeld(
-                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4500)))
+                    new InstantCommand(
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4450))
+                    )
                 )
                 .whenReleased(new InstantCommand(shooter::stopShooter));
 
             new POVButton(gamepad, 180)
                 .whileHeld(
-                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4600)))
+                    new InstantCommand(
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4550))
+                    )
                 )
                 .whenReleased(new InstantCommand(shooter::stopShooter));
 
             new POVButton(gamepad, 270)
                 .whileHeld(
-                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4800)))
+                    new InstantCommand(
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4800))
+                    )
                 )
                 .whenReleased(new InstantCommand(shooter::stopShooter));
 
@@ -119,13 +133,22 @@ public class RobotContainer {
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
             .whileHeld(new AlignWithTargetVision(drive, limelight));
 
+        // align with 0 degrees
+        new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value)
+            .whileHeld(new AlignWithGyro(drive, Math.PI)
+        );
+
+        new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value) 
+            .whileHeld(new AlignWithGyro(drive, 0)
+        );
+
         // reset imu 
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
             .whenPressed(new InstantCommand(drive::resetImu));
-    
+
     }
 
-    /*public Command getAutonomousCommand() {
+    public Command getAutonomousCommand() {
 
         TrajectoryConfig config = new TrajectoryConfig(
             AutoConstants.maxVelMetersPerSec, 
@@ -142,6 +165,6 @@ public class RobotContainer {
 
         return new FollowTrajectory(drive, AutoTrajectories.autoNavBarrelTrajectory);
 
-    }*/
+    }
 
 }

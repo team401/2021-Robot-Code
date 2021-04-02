@@ -22,12 +22,6 @@ public class FollowTrajectory extends SwerveControllerCommand {
             )
         );
 
-    static {
-
-        rotationController.enableContinuousInput(-Math.PI, Math.PI);
-
-    }
-
     public FollowTrajectory(DriveSubsystem drive, Trajectory trajectory) {
 
         super(
@@ -40,6 +34,8 @@ public class FollowTrajectory extends SwerveControllerCommand {
             drive::setModuleStates, 
             drive
         );
+
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         this.trajectory = trajectory;
     

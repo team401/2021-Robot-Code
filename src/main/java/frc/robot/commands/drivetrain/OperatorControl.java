@@ -46,13 +46,13 @@ public class OperatorControl extends CommandBase {
         fwdY = deadbandInputs(fwdY);
 
         double rot = rotation.getAsDouble();
-        // rot = Math.copySign(Math.pow(rot, 1), r\ot);
+        rot = Math.copySign(Math.pow(rot, 1), rot);
         rot = deadbandInputs(rot);
 
         drive.drive(
             fwdX,
             -fwdY,
-            -rot * 1.5, // needs to be edited
+            -rot, // needs to be edited
             isFieldRelative
         );
 
@@ -60,7 +60,7 @@ public class OperatorControl extends CommandBase {
 
     public double deadbandInputs(double input) {
 
-        if (Math.abs(input) < 0.02) return 0.0;
+        if (Math.abs(input) < 0.025) return 0.0;
         return input;
 
     }

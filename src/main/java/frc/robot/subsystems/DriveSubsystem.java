@@ -81,7 +81,8 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
 
         odometry.update(getHeading(), getModuleStates());
-
+        
+        SmartDashboard.putNumber("drive speed", (frontLeft.getCurrentVelocity() + frontRight.getCurrentVelocity() + rearLeft.getCurrentVelocity() + rearRight.getCurrentVelocity()) / 4);
     }
     
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
