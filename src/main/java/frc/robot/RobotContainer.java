@@ -4,13 +4,15 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
 import frc.robot.commands.drivetrain.OperatorControl;
+import frc.robot.commands.superstructure.indexing.Shooting;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -18,6 +20,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShooterSubsystem;
+import jdk.nashorn.api.tree.InstanceOfTree;
 
 public class RobotContainer {
 
@@ -46,9 +49,7 @@ public class RobotContainer {
             )
         );
 
-        indexer.setDefaultCommand(
-            new Waiting(indexer)
-        );
+        indexer.setDefaultCommand(new Waiting(indexer));
 
     }
 
@@ -57,10 +58,10 @@ public class RobotContainer {
         // intake
         new JoystickButton(gamepad, Button.kB.value)
             .whenPressed(
-                new InstantCommand(intake::runIntakeMotor)
+                new InstantCommand(intake::runIntakeMotor, intake)
             )
             .whenReleased(
-                new InstantCommand(intake::stopIntakeMotor)
+                new InstantCommand(intake::stopIntakeMotor, intake)
             );
         
         // ramp up shooter
@@ -70,18 +71,8 @@ public class RobotContainer {
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
-            .whileHeld(
-                new ConditionalCommand(
-                    new InstantCommand(indexer::runConveyor, indexer)
-                    .alongWith(new InstantCommand(shooter::runKicker, shooter)), 
-                    new InstantCommand(),
-                    shooter::atGoal
-                )
-            )
-            .whenReleased(
-                new InstantCommand(shooter::stopKicker)
-                .alongWith(new InstantCommand(indexer::stopConveyor, indexer))
-            );
+            .whileHeld(new Shooting(indexer).alongWith(new InstantCommand(shooter::runKicker, shooter)))
+            .whenReleased(new InstantCommand(shooter::stopKicker));         
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
@@ -100,6 +91,30 @@ public class RobotContainer {
                 )
             );
 
+            new POVButton(gamepad, 0)
+                .whileHeld(
+                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(6000)))
+                )
+                .whenReleased(new InstantCommand(shooter::stopShooter));
+
+            new POVButton(gamepad, 90)
+                .whileHeld(
+                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4500)))
+                )
+                .whenReleased(new InstantCommand(shooter::stopShooter));
+
+            new POVButton(gamepad, 180)
+                .whileHeld(
+                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4600)))
+                )
+                .whenReleased(new InstantCommand(shooter::stopShooter));
+
+            new POVButton(gamepad, 270)
+                .whileHeld(
+                    new InstantCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4800)))
+                )
+                .whenReleased(new InstantCommand(shooter::stopShooter));
+
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
             .whileHeld(new AlignWithTargetVision(drive, limelight));
@@ -107,9 +122,8 @@ public class RobotContainer {
         // reset imu 
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
             .whenPressed(new InstantCommand(drive::resetImu));
+    
     }
-
-
 
     /*public Command getAutonomousCommand() {
 

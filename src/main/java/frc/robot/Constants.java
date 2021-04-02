@@ -58,7 +58,7 @@ public class Constants {
 
         public  static final int PCMId = 19;
 
-        public static final int[] intakeSolenoidChannels = {0, 1};
+        //public static final int[] intakeSolenoidChannels = {0, 1};
 
     }
 
@@ -88,13 +88,13 @@ public class Constants {
 
     public static final class SuperstructureConstants {
 
-        public static final double baseShootingSpeed = 5000;
+        public static final double baseShootingSpeed = 6000;
 
         public static final double intakingPower = 0.6;
         public static final double jogFowardPower = 0.2;
 
         public static final double kickerPower = 1.0;
-        public static final double conveyorPower = 0.5;
+        public static final double conveyorPower = 0.35;
 
         public static final double flywheelGearRatio = 32.0 / 18.0;
 

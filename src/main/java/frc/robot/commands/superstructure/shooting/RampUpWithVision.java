@@ -1,5 +1,6 @@
 package frc.robot.commands.superstructure.shooting;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SuperstructureConstants;
@@ -23,18 +24,21 @@ public class RampUpWithVision extends CommandBase {
     @Override
     public void execute() {
 
-        if (limelight.hasValidTarget()) {
+        SmartDashboard.putNumber("ta", limelight.gettA());
+
+        if (limelight.hasValidTarget()) { 
 
             double ta = limelight.gettA();
-            double desiredFlywheelVelRadPerSec = (1803.29 * Math.pow(ta, 2)) - (4540.2 * ta) + 8289.72;
+            double desiredFlywheelVelRPM = 418.27 * Math.pow(ta, 5) + -4633.42 * Math.pow(ta, 4) + 19538 * Math.pow(ta, 3) + -38570.7 * Math.pow(ta, 2) + 35110.1 * ta + -6960.68;
 
-            shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(desiredFlywheelVelRadPerSec));
+            shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(desiredFlywheelVelRPM));
 
         } else {
             
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SuperstructureConstants.baseShootingSpeed));
 
         }
+
         
     }
 
