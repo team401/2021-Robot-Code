@@ -32,7 +32,7 @@ public class Intake extends CommandBase {
 
         intake.retractIntake();
         intake.stopIntakeMotor();
-
+ 
     }
 
 }

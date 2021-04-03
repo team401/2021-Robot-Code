@@ -22,6 +22,7 @@ import frc.robot.commands.drivetrain.AlignWithTargetVision;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.Intake;
+import frc.robot.commands.superstructure.Shoot;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -73,13 +74,7 @@ public class RobotContainer {
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
-            .whileHeld(
-                new InstantCommand(indexer::runConveyor, indexer)
-                .alongWith(new InstantCommand(shooter::runKicker, shooter)))
-            .whenReleased(
-                new InstantCommand(shooter::stopKicker, shooter)
-                .alongWith(new InstantCommand(indexer::stopConveyor, indexer))
-            );
+            .whileHeld(new Shoot(indexer, shooter));
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
