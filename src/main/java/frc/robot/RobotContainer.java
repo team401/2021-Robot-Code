@@ -43,8 +43,6 @@ public class RobotContainer {
     
     public RobotContainer() {
 
-        configureButtonBindings();
-
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
@@ -56,6 +54,8 @@ public class RobotContainer {
         );
 
         indexer.setDefaultCommand(new Waiting(indexer));
+
+        configureButtonBindings();
 
     }
 
