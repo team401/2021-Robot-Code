@@ -73,7 +73,8 @@ public class Constants {
                 new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
                 new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
                 new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
-                new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0));
+                new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
+            );
 
         public static final double driveWheelGearReduction = 6.86;
         public static final double rotationWheelGearReduction = 12.8;

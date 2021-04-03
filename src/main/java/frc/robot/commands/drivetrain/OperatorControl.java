@@ -45,7 +45,7 @@ public class OperatorControl extends CommandBase {
         fwdY = Math.copySign(Math.pow(fwdY, 1), fwdY);
         fwdY = deadbandInputs(fwdY);
 
-        double rot = rotation.getAsDouble() * 2; // max 3.5
+        double rot = rotation.getAsDouble() * 2;
         rot = Math.copySign(Math.pow(rot, 2), rot);
         rot = deadbandInputs(rot);
 
