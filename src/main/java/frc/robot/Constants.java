@@ -58,7 +58,8 @@ public class Constants {
 
         public  static final int PCMId = 19;
 
-        //public static final int[] intakeSolenoidChannels = {0, 1};
+        public static final int[] intakeSolenoidChannels = {0, 1};
+        public static final int[] hoodSolenoidChannels = {2, 3};
 
     }
 

@@ -4,13 +4,16 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
+import frc.robot.Constants.PneumaticChannels;
 import frc.robot.Constants.SuperstructureConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -22,6 +25,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final SpeedControllerGroup flywheel = new SpeedControllerGroup(leftFlywheelMotor, rightFlywheelMotor);
 
+    private final DoubleSolenoid hoodSolenoid = 
+        new DoubleSolenoid(
+            PneumaticChannels.hoodSolenoidChannels[0], 
+            PneumaticChannels.hoodSolenoidChannels[1]
+        );
+
     private final ProfiledPIDController controller = new ProfiledPIDController(
         0.005, 0.005, 0,
         new TrapezoidProfile.Constraints(
@@ -29,8 +38,6 @@ public class ShooterSubsystem extends SubsystemBase {
             Units.rotationsPerMinuteToRadiansPerSecond(2000)
         )
     );
-
-    private double desiredSpeed = 0;
 
     public ShooterSubsystem() {
 
@@ -50,7 +57,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void runVelocityProfileController(double desiredSpeedRadPerSec) {
 
-        desiredSpeed = desiredSpeedRadPerSec;
 
         double powerOut = controller.calculate(
                 getFlywheelVelRadPerSec(), 
@@ -59,15 +65,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         flywheel.set(powerOut);
 
-        SmartDashboard.putBoolean("atGoal", atGoal());
         SmartDashboard.putNumber("desired", desiredSpeedRadPerSec);
         SmartDashboard.putNumber("current", getFlywheelVelRadPerSec());
-
-    }
-
-    public boolean atGoal() {
-
-        return Math.abs(desiredSpeed - getFlywheelVelRadPerSec()) <= Units.rotationsPerMinuteToRadiansPerSecond(50);
 
     }
 
@@ -98,6 +97,25 @@ public class ShooterSubsystem extends SubsystemBase {
     public void reverseKicker() {
 
         kickerMotor.set(-SuperstructureConstants.kickerPower);
+
+    }
+
+    public void extendHood() {
+
+        hoodSolenoid.set(Value.kReverse);
+
+    }
+
+    public void retractHood() {
+
+        hoodSolenoid.set(Value.kForward);
+
+    }
+
+    public void toggleHood() {
+
+        if (hoodSolenoid.get() == Value.kForward) hoodSolenoid.set(Value.kReverse);
+        else hoodSolenoid.set(Value.kForward);
 
     }
 

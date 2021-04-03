@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +21,7 @@ import frc.robot.commands.drivetrain.AlignWithGyro;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
-import frc.robot.commands.superstructure.indexing.Shooting;
+import frc.robot.commands.superstructure.Intake;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -43,8 +45,6 @@ public class RobotContainer {
     
     public RobotContainer() {
 
-        configureButtonBindings();
-
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
@@ -57,28 +57,29 @@ public class RobotContainer {
 
         indexer.setDefaultCommand(new Waiting(indexer));
 
+        configureButtonBindings();
+
     }
 
     public void configureButtonBindings() {
 
         // intake
         new JoystickButton(gamepad, Button.kB.value)
-            .whenPressed(
-                new InstantCommand(intake::runIntakeMotor, intake)
-            )
-            .whenReleased(
-                new InstantCommand(intake::stopIntakeMotor, intake)
-            );
+            .whenPressed(new Intake(intake));
 
-        // ramp up shooter
+        // ramp up shooter using vision
         new JoystickButton(gamepad, Button.kBumperRight.value)
-            .whenPressed(new RampUpWithVision(shooter, limelight))
-            .whenReleased(new InstantCommand(shooter::stopShooter, shooter));
+            .whenPressed(new RampUpWithVision(shooter, limelight));
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
-            .whileHeld(new Shooting(indexer, shooter).alongWith(new InstantCommand(shooter::runKicker)))
-            .whenReleased(new InstantCommand(shooter::stopKicker));
+            .whileHeld(
+                new InstantCommand(indexer::runConveyor, indexer)
+                .alongWith(new InstantCommand(shooter::runKicker, shooter)))
+            .whenReleased(
+                new InstantCommand(shooter::stopKicker, shooter)
+                .alongWith(new InstantCommand(indexer::stopConveyor, indexer))
+            );
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
@@ -97,37 +98,47 @@ public class RobotContainer {
                 )
             );
 
+            // shoot close
             new POVButton(gamepad, 0)
                 .whileHeld(
                     new InstantCommand(
-                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(5800))
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4500))
                     )
                 )
                 .whenReleased(new InstantCommand(shooter::stopShooter));
 
+            // shoot mid-close
             new POVButton(gamepad, 90)
                 .whileHeld(
                     new InstantCommand(
-                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4450))
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(3800))
                     )
                 )
                 .whenReleased(new InstantCommand(shooter::stopShooter));
 
+            // shoot mid-far
             new POVButton(gamepad, 180)
                 .whileHeld(
                     new InstantCommand(
-                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4550))
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(6000))
                     )
+                    .alongWith(new InstantCommand(shooter::extendHood))
                 )
-                .whenReleased(new InstantCommand(shooter::stopShooter));
+                .whenReleased(
+                    new InstantCommand(shooter::stopShooter)
+                );
 
+            // shoot far
             new POVButton(gamepad, 270)
                 .whileHeld(
                     new InstantCommand(
-                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4800))
+                        () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(6300))
                     )
+                    .alongWith(new InstantCommand(shooter::extendHood, shooter))
                 )
-                .whenReleased(new InstantCommand(shooter::stopShooter));
+                .whenReleased(
+                    new InstantCommand(shooter::stopShooter)
+                );
 
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
@@ -138,6 +149,7 @@ public class RobotContainer {
             .whileHeld(new AlignWithGyro(drive, Math.PI)
         );
 
+        // align with 180 degrees
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value) 
             .whileHeld(new AlignWithGyro(drive, 0)
         );
@@ -145,6 +157,9 @@ public class RobotContainer {
         // reset imu 
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
             .whenPressed(new InstantCommand(drive::resetImu));
+
+        new JoystickButton(gamepad, Button.kX.value)
+            .whenPressed(new InstantCommand(shooter::toggleHood));
 
     }
 
@@ -161,7 +176,7 @@ public class RobotContainer {
 
         FollowTrajectory runTrajectory = new FollowTrajectory(drive, AutoTrajectories.autoNavBarrelTrajectory);
 
-        drive.resetPose(runTrajectory.getInitialPose());
+        drive.resetPose(new Pose2d(runTrajectory.getInitialPose().getX(), runTrajectory.getInitialPose().getY(), Rotation2d.fromDegrees(90)));
 
         return new FollowTrajectory(drive, AutoTrajectories.autoNavBarrelTrajectory);
 

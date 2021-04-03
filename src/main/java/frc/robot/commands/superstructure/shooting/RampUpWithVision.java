@@ -39,7 +39,13 @@ public class RampUpWithVision extends CommandBase {
 
         }
 
-        
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
+        shooter.stopKicker();
+
     }
 
 }

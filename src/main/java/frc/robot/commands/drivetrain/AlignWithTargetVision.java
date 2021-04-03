@@ -1,6 +1,7 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
@@ -33,7 +34,7 @@ public class AlignWithTargetVision extends CommandBase {
 
         if (limelight.hasValidTarget()) {
             
-            double rotationOut = controller.calculate(limelight.gettX(), 0);
+            double rotationOut = controller.calculate(limelight.gettX(), Units.degreesToRadians(0));
 
             drive.drive(
                 drive.getCommandedDriveValues()[0], 
