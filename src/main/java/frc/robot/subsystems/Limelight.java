@@ -57,4 +57,10 @@ public class Limelight extends SubsystemBase {
 
     }
     
+    public void setPipeline(int pipeline) {
+
+        
+
+    }
+
 }

@@ -12,7 +12,7 @@ public class AlignWithTargetVision extends CommandBase {
     private final Limelight limelight;
 
     private final PIDController controller = new PIDController(
-        2.5, 0, 0
+        2.5, 0, 0.25
     );
 
     public AlignWithTargetVision(DriveSubsystem subsystem, Limelight vision) {

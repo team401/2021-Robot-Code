@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,10 +16,10 @@ import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private static final double frontLeftAngleOffset = Units.degreesToRadians(239.5 - 90);
-    private static final double frontRightAngleOffset = Units.degreesToRadians(256.7 + 180 - 90);
-    private static final double rearLeftAngleOffset = Units.degreesToRadians(322.8 - 90);
-    private static final double rearRightAngleOffset = Units.degreesToRadians(180 + 180 - 90);
+    private static final double frontLeftAngleOffset = Units.degreesToRadians(239.5);
+    private static final double frontRightAngleOffset = Units.degreesToRadians(256.7 + 180);
+    private static final double rearLeftAngleOffset = Units.degreesToRadians(322.8);
+    private static final double rearRightAngleOffset = Units.degreesToRadians(180.0 + 180);
 
     private final SwerveModule frontLeft = 
         new SwerveModule(
@@ -75,6 +76,11 @@ public class DriveSubsystem extends SubsystemBase {
         rearLeft.initRotationOffset();
         rearRight.initRotationOffset();
 
+        frontLeft.resetDistance();
+        frontRight.resetDistance();
+        rearLeft.resetDistance();
+        rearRight.resetDistance();
+
     }
 
     @Override
@@ -82,8 +88,13 @@ public class DriveSubsystem extends SubsystemBase {
 
         odometry.update(getHeading(), getModuleStates());
 
-        SmartDashboard.putNumber("imu", getHeading().getDegrees());
         SmartDashboard.putNumber("odometry y", odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("odometry x", odometry.getPoseMeters().getX());
+
+        SmartDashboard.putNumber("front left pos", frontLeft.getDriveDistanceRadians());
+        SmartDashboard.putNumber("front right pos", frontRight.getDriveDistanceRadians());
+        SmartDashboard.putNumber("rear left pos", rearLeft.getDriveDistanceRadians());
+        SmartDashboard.putNumber("rear right pos", rearRight.getDriveDistanceRadians());
         
     }
     
@@ -103,26 +114,28 @@ public class DriveSubsystem extends SubsystemBase {
         
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
 
+        SwerveDriveKinematics.normalizeWheelSpeeds(states, DriveConstants.maxDriveSpeed);
+        
         setModuleStates(states);
 
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        frontLeft.setDesiredState(moduleStates[2]);
-        frontRight.setDesiredState(moduleStates[0]);
-        rearLeft.setDesiredState(moduleStates[3]);
-        rearRight.setDesiredState(moduleStates[1]);
+        frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
+        frontRight.setDesiredStateClosedLoop(moduleStates[1]);
+        rearLeft.setDesiredStateClosedLoop(moduleStates[2]);
+        rearRight.setDesiredStateClosedLoop(moduleStates[3]);
 
     }
 
     public SwerveModuleState[] getModuleStates() {
 
         SwerveModuleState[] states = {
-            new SwerveModuleState(frontRight.getCurrentVelocity(), frontRight.getCanEncoderAngle()),
-            new SwerveModuleState(rearRight.getCurrentVelocity(), rearRight.getCanEncoderAngle()),
-            new SwerveModuleState(frontLeft.getCurrentVelocity(), frontLeft.getCanEncoderAngle()),
-            new SwerveModuleState(rearLeft.getCurrentVelocity(), rearLeft.getCanEncoderAngle())
+            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), frontRight.getCanEncoderAngle()),
+            new SwerveModuleState(rearRight.getCurrentVelocityMetersPerSecond(), rearRight.getCanEncoderAngle()),
+            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), frontLeft.getCanEncoderAngle()),
+            new SwerveModuleState(rearLeft.getCurrentVelocityMetersPerSecond(), rearLeft.getCanEncoderAngle())
         };
 
         return states;
@@ -139,6 +152,35 @@ public class DriveSubsystem extends SubsystemBase {
 
         imu.setYaw(0);
         odometry.resetPosition(pose, getHeading());
+
+    }
+
+    public void resetDriveDistances() {
+
+        frontLeft.resetDistance();
+        frontRight.resetDistance();
+        rearLeft.resetDistance();
+        rearRight.resetDistance();
+
+    }
+
+    public double getAverageDriveDistanceRadians() {
+
+        return ((
+            Math.abs(frontLeft.getDriveDistanceRadians())
+            + Math.abs(frontRight.getDriveDistanceRadians())
+            + Math.abs(rearLeft.getDriveDistanceRadians())
+            + Math.abs(rearRight.getDriveDistanceRadians())) / 4.0);
+
+    }
+
+    public double getAverageDriveVelocityRadiansPerSecond() {
+
+        return ((
+            Math.abs(frontLeft.getCurrentVelocityRadiansPerSecond())
+            + Math.abs(frontRight.getCurrentVelocityRadiansPerSecond()) 
+            + Math.abs(rearLeft.getCurrentVelocityRadiansPerSecond()) 
+            + Math.abs(rearRight.getCurrentVelocityRadiansPerSecond())) / 4.0);
 
     }
 

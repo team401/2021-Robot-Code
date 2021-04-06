@@ -30,13 +30,6 @@ public class Jogging extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-
-        new Waiting(indexer).schedule();
-
-    }
-
-    @Override
     public boolean isFinished() {
 
         return timer.get() >= SuperstructureConstants.jogDelaySeconds;

@@ -60,12 +60,4 @@ public class IndexingSubsystem extends SubsystemBase {
 
     }
 
-    @Override
-    public void periodic() {
-
-        SmartDashboard.putBoolean("topSensorState", getTopBannerState());
-        SmartDashboard.putBoolean("bottomSensorState", getBottomBannerState());
-
-    }
-
 }

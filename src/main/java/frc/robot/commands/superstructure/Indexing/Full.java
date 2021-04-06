@@ -25,12 +25,8 @@ public class Full extends CommandBase {
 
         indexer.stopConveyor();
 
-        if (!bottomSensorState || !topSensorState) {
-
+        if (!bottomSensorState || !topSensorState) 
             isFinshedFlag = true;
-            new Waiting(indexer).schedule();
-
-        }
 
     }
 

@@ -2,7 +2,9 @@ package frc.robot.commands.drivetrain;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class OperatorControl extends CommandBase {
@@ -38,19 +40,19 @@ public class OperatorControl extends CommandBase {
     public void execute() {
 
         double fwdX = forwardX.getAsDouble();
-        fwdX = Math.copySign(Math.pow(fwdX, 1), fwdX);
-        fwdX = deadbandInputs(fwdX);
+        fwdX = Math.copySign(fwdX, fwdX);
+        fwdX = deadbandInputs(fwdX) * Units.feetToMeters(DriveConstants.maxDriveSpeed);
 
         double fwdY = forwardY.getAsDouble();
-        fwdY = Math.copySign(Math.pow(fwdY, 1), fwdY);
-        fwdY = deadbandInputs(fwdY);
+        fwdY = Math.copySign(fwdY, fwdY);
+        fwdY = deadbandInputs(fwdY) * Units.feetToMeters(DriveConstants.maxDriveSpeed);
 
-        double rot = rotation.getAsDouble() * 2;
-        rot = Math.copySign(Math.pow(rot, 2), rot);
-        rot = deadbandInputs(rot);
+        double rot = rotation.getAsDouble();
+        rot = Math.copySign(rot * rot, rot);
+        rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec);
 
         drive.drive(
-            fwdX,
+            -fwdX,
             -fwdY,
             -rot,
             isFieldRelative
@@ -60,7 +62,7 @@ public class OperatorControl extends CommandBase {
 
     public double deadbandInputs(double input) {
 
-        if (Math.abs(input) < 0.025) return 0.0;
+        if (Math.abs(input) < 0.035) return 0.0;
         return input;
 
     }
