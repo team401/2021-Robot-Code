@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -87,14 +86,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
 
         odometry.update(getHeading(), getModuleStates());
-
-        SmartDashboard.putNumber("odometry y", odometry.getPoseMeters().getY());
-        SmartDashboard.putNumber("odometry x", odometry.getPoseMeters().getX());
-
-        SmartDashboard.putNumber("front left pos", frontLeft.getDriveDistanceRadians());
-        SmartDashboard.putNumber("front right pos", frontRight.getDriveDistanceRadians());
-        SmartDashboard.putNumber("rear left pos", rearLeft.getDriveDistanceRadians());
-        SmartDashboard.putNumber("rear right pos", rearRight.getDriveDistanceRadians());
         
     }
     
@@ -115,7 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
 
         SwerveDriveKinematics.normalizeWheelSpeeds(states, DriveConstants.maxDriveSpeed);
-        
+
         setModuleStates(states);
 
     }

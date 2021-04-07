@@ -19,8 +19,7 @@ public class SwerveModule extends SubsystemBase {
     private static final double rotationkP = 1;
     private static final double rotationkD = 0.5;
 
-    private static final double drivekP = 0;
-    private static final double drivekD = 0;
+    private static final double drivekP = 0.01;
 
     private final CANSparkMax driveMotor;
     private final CANSparkMax rotationMotor;
@@ -62,7 +61,6 @@ public class SwerveModule extends SubsystemBase {
         rotationController.setD(rotationkD);
 
         driveController.setP(drivekP);
-        driveController.setD(drivekD);
 
         driveEncoder.setPositionConversionFactor(
             2.0 * Math.PI / DriveConstants.driveWheelGearReduction

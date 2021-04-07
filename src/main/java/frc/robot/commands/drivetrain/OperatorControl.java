@@ -2,6 +2,7 @@ package frc.robot.commands.drivetrain;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
@@ -62,7 +63,7 @@ public class OperatorControl extends CommandBase {
 
     public double deadbandInputs(double input) {
 
-        if (Math.abs(input) < 0.035) return 0.0;
+        if (Math.abs(input) < 0.02) return 0.0;
         return input;
 
     }
