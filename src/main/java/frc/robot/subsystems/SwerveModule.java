@@ -139,24 +139,8 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
-    public void setDesiredState(SwerveModuleState desiredState) {
-
-        SwerveModuleState state = SwerveModuleState.optimize(desiredState, getCanEncoderAngle());
-
-        rotationController.setReference(
-            calculateAdjustedAngle(
-                state.angle.getRadians(),
-                rotationEncoder.getPosition()),
-            ControlType.kPosition
-        );
-
-        driveMotor.set(state.speedMetersPerSecond);
-
-    }
-
     public void setDesiredStateClosedLoop(SwerveModuleState desiredState) {
         
-        //SwerveModuleState state = SwerveModuleState.optimize(desiredState, getCanEncoderAngle());
         SwerveModuleState state = desiredState;
         rotationController.setReference(
             calculateAdjustedAngle(

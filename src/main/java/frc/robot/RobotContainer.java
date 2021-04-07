@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.InputDevices;
@@ -160,11 +162,13 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        Trajectory trajectory = AutoTrajectories.autoNavBarrelTrajectory;
+        Trajectory trajectory = AutoTrajectories.galacticSearchRedBTrajectory;
 
         drive.resetPose(trajectory.getInitialPose());
 
-        return new FollowTrajectory(drive, trajectory);
+        return new InstantCommand(intake::extendIntake)
+        .andThen(new RunCommand(intake::runIntakeMotor))
+        .alongWith(new FollowTrajectory(drive, trajectory));
 
     }
 

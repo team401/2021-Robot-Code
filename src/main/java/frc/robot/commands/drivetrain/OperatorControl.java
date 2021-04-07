@@ -63,7 +63,7 @@ public class OperatorControl extends CommandBase {
 
     public double deadbandInputs(double input) {
 
-        if (Math.abs(input) < 0.02) return 0.0;
+        if (Math.abs(input) < 0.035) return 0.0;
         return input;
 
     }

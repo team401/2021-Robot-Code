@@ -40,43 +40,72 @@ public class AutoTrajectories {
                 new Translation2d(Units.inchesToMeters(120), Units.inchesToMeters(30)),
                 new Translation2d(Units.inchesToMeters(90), Units.inchesToMeters(60)),
                 new Translation2d(Units.inchesToMeters(59), Units.inchesToMeters(100))
-            ),  
+            ),
             new Pose2d(Units.inchesToMeters(30), Units.inchesToMeters(90), new Rotation2d(0)),
             config
         );
 
     public static Trajectory autoNavBounceTrajectory = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(90), Units.inchesToMeters(160), new Rotation2d(0)), 
+            new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(90), new Rotation2d(0)), 
             List.of(
-                new Translation2d(Units.inchesToMeters(150), Units.inchesToMeters(30)),
-                new Translation2d(Units.inchesToMeters(180), Units.inchesToMeters(160)),
-                new Translation2d(Units.inchesToMeters(200), Units.inchesToMeters(30)),
-                new Translation2d(Units.inchesToMeters(250), Units.inchesToMeters(30)),
-                new Translation2d(Units.inchesToMeters(270), Units.inchesToMeters(160))
-            ), 
-            new Pose2d(Units.inchesToMeters(330), Units.inchesToMeters(90), new Rotation2d(0)), 
+                new Translation2d(Units.inchesToMeters(80), Units.inchesToMeters(90)),
+                new Translation2d(Units.inchesToMeters(85), Units.inchesToMeters(150)),
+                new Translation2d(Units.inchesToMeters(110), Units.inchesToMeters(75)),
+                new Translation2d(Units.inchesToMeters(165), Units.inchesToMeters(75)),
+                new Translation2d(Units.inchesToMeters(170), Units.inchesToMeters(215)),
+                new Translation2d(Units.inchesToMeters(180), Units.inchesToMeters(130)),
+                new Translation2d(Units.inchesToMeters(260), Units.inchesToMeters(130)),
+                new Translation2d(Units.inchesToMeters(270), Units.inchesToMeters(275)),
+                new Translation2d(Units.inchesToMeters(280), Units.inchesToMeters(240))
+            ),
+            new Pose2d(Units.inchesToMeters(320), Units.inchesToMeters(240), new Rotation2d(0)), 
             config
         );
 
     public static Trajectory autoNavBarrelTrajectory =
-    TrajectoryGenerator.generateTrajectory(
-        new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(90), new Rotation2d(0)),
-        List.of(
-            new Translation2d(Units.inchesToMeters(158), Units.inchesToMeters(78)),
-            new Translation2d(Units.inchesToMeters(170), Units.inchesToMeters(60)),
-            new Translation2d(Units.inchesToMeters(150), Units.inchesToMeters(30)),
-            new Translation2d(Units.inchesToMeters(115), Units.inchesToMeters(70)),
-            new Translation2d(Units.inchesToMeters(160), Units.inchesToMeters(90)),
-            new Translation2d(Units.inchesToMeters(262), Units.inchesToMeters(106)),
-            new Translation2d(Units.inchesToMeters(275), Units.inchesToMeters(126)),
-            new Translation2d(Units.inchesToMeters(248), Units.inchesToMeters(165)),
-            new Translation2d(Units.inchesToMeters(195), Units.inchesToMeters(121)),
-            new Translation2d(Units.inchesToMeters(280), Units.inchesToMeters(20)),
-            new Translation2d(Units.inchesToMeters(330), Units.inchesToMeters(20)),
-            new Translation2d(Units.inchesToMeters(330), Units.inchesToMeters(80))
-        ),  
-        new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(80), new Rotation2d(0)),
-        config
-    );
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(90), new Rotation2d(0)),
+            List.of(
+                new Translation2d(Units.inchesToMeters(158), Units.inchesToMeters(78)),
+                new Translation2d(Units.inchesToMeters(170), Units.inchesToMeters(60)),
+                new Translation2d(Units.inchesToMeters(150), Units.inchesToMeters(30)),
+                new Translation2d(Units.inchesToMeters(115), Units.inchesToMeters(70)),
+                new Translation2d(Units.inchesToMeters(160), Units.inchesToMeters(90)),
+                new Translation2d(Units.inchesToMeters(262), Units.inchesToMeters(106)),
+                new Translation2d(Units.inchesToMeters(275), Units.inchesToMeters(126)),
+                new Translation2d(Units.inchesToMeters(248), Units.inchesToMeters(165)),
+                new Translation2d(Units.inchesToMeters(195), Units.inchesToMeters(121)),
+                new Translation2d(Units.inchesToMeters(280), Units.inchesToMeters(20)),
+                new Translation2d(Units.inchesToMeters(330), Units.inchesToMeters(20)),
+                new Translation2d(Units.inchesToMeters(330), Units.inchesToMeters(80))
+            ),  
+            new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(80), new Rotation2d(0)),
+            config
+        );
+
+    public static Trajectory galacticSearchRedATrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(96), new Rotation2d(0)),
+            List.of(    
+                new Translation2d(Units.inchesToMeters(90), Units.inchesToMeters(90)),
+                new Translation2d(Units.inchesToMeters(150), Units.inchesToMeters(60)),
+                new Translation2d(Units.inchesToMeters(160), Units.inchesToMeters(140))
+            ),
+            new Pose2d(Units.inchesToMeters(370), Units.inchesToMeters(140), new Rotation2d(0)),
+            config
+        );
+
+        public static Trajectory galacticSearchRedBTrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(96), new Rotation2d(0)),
+            List.of(
+                new Translation2d(Units.inchesToMeters(90), Units.inchesToMeters(120)),
+                new Translation2d(Units.inchesToMeters(150), Units.inchesToMeters(30)),
+                new Translation2d(Units.inchesToMeters(210), Units.inchesToMeters(120))
+            ),
+            new Pose2d(Units.inchesToMeters(370), Units.inchesToMeters(120), new Rotation2d(0)),
+            config
+        );
+
 }

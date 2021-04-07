@@ -96,7 +96,7 @@ public class Constants {
 
         public static final double baseShootingSpeed = 6000;
 
-        public static final double intakingPower = 0.6;
+        public static final double intakingPower = 0.4;
         public static final double jogFowardPower = 0.2;
 
         public static final double kickerPower = 1.0;
@@ -110,8 +110,8 @@ public class Constants {
 
     public static final class AutoConstants {
 
-        public static final double maxVelMetersPerSec = 4;
-        public static final double maxAccelMetersPerSecondSq = 3.25;
+        public static final double maxVelMetersPerSec = 4.5;
+        public static final double maxAccelMetersPerSecondSq = 3.5;
         
     }
 
