@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.util.Units;
@@ -53,6 +54,10 @@ public class RobotContainer {
             )
         );
 
+        shooter.setDefaultCommand(
+            new InstantCommand(() -> shooter.runShooterPercent(gamepad.getRawAxis(3) / 5), shooter)
+        );
+
         indexer.setDefaultCommand(new Waiting(indexer));
 
         configureButtonBindings();
@@ -66,9 +71,11 @@ public class RobotContainer {
             .whenPressed(new InstantCommand(intake::runIntakeMotor))
             .whenReleased(new InstantCommand(intake::stopIntakeMotor));
 
+        /*
         // ramp up shooter using vision
         new JoystickButton(gamepad, Button.kBumperRight.value)
             .whenPressed(new RampUpWithVision(shooter, limelight));
+        */
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
@@ -98,6 +105,7 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kX.value)
             .whenPressed(new InstantCommand(intake::toggleIntake));
 
+        /*    
         // shoot close
         new POVButton(gamepad, 0)
             .whileHeld(
@@ -154,21 +162,17 @@ public class RobotContainer {
         new JoystickButton(rightJoystick, 3)
             .whenPressed(new InstantCommand(drive::resetImu));
 
+   
         // toggle hood
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
             .whenPressed(new InstantCommand(shooter::toggleHood));
+        */
 
     }
 
     public Command getAutonomousCommand() {
 
-        Trajectory trajectory = AutoTrajectories.galacticSearchRedBTrajectory;
-
-        drive.resetPose(trajectory.getInitialPose());
-
-        return new InstantCommand(intake::extendIntake)
-        .andThen(new RunCommand(intake::runIntakeMotor))
-        .alongWith(new FollowTrajectory(drive, trajectory));
+        return null;
 
     }
 
