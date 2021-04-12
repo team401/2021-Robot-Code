@@ -2,6 +2,7 @@ package frc.robot.commands.superstructure.indexing;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
+/*establishes the indexing structure */
 
 public class Reversing extends CommandBase {
 
@@ -15,7 +16,7 @@ public class Reversing extends CommandBase {
 
         addRequirements(indexer);
 
-    }
+    } //gets the state of the bottom banner sensor and schedules a new jogging command
 
     @Override
     public void execute() {
@@ -31,7 +32,7 @@ public class Reversing extends CommandBase {
 
         } 
 
-    }
+    } // Tells the robot that the indexing is finished making a new command for the robot to execute
 
     @Override
     public boolean isFinished() {
