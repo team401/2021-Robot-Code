@@ -8,6 +8,10 @@ import frc.robot.subsystems.Limelight;
 
 public class AlignWithTargetVision extends CommandBase {
 
+    /**
+     * Similar to AlignWithGyro, a command to control robot heading based on a vision target
+     */
+
     private final DriveSubsystem drive;
     private final Limelight limelight;
 
@@ -25,6 +29,7 @@ public class AlignWithTargetVision extends CommandBase {
     @Override
     public void initialize() {
 
+        //turn on the limelight at the beginning of the command
         limelight.setLedMode(0);
 
     }
@@ -32,6 +37,11 @@ public class AlignWithTargetVision extends CommandBase {
     @Override
     public void execute() {
 
+        /**
+         * Runs only if the limelight has a lock on a valid target
+         * Calculate the desired output and controls the rotational output of the drive to lock to the target
+         * Allows for manual strafing through joystick input
+         */
         if (limelight.hasValidTarget()) {
             
             double rotationOut = controller.calculate(limelight.gettX(), Units.degreesToRadians(0));
@@ -49,6 +59,7 @@ public class AlignWithTargetVision extends CommandBase {
     @Override
     public void end(boolean interrupted) {
 
+        //turn off the limelight led when the command ends (button is released)
         limelight.setLedMode(1);
 
     }

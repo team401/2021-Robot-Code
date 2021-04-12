@@ -2,7 +2,6 @@ package frc.robot.commands.drivetrain;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
@@ -10,8 +9,18 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class OperatorControl extends CommandBase {
 
+    /**
+     * Command to allow for driver input in teleop
+     * Can't be inlined efficiently if we want to edit the inputs in any way (deadband, square, etc.)
+     */
+
     private final DriveSubsystem drive;
 
+    /**
+     * Joysticks return DoubleSuppliers when the get methods are called
+     * This is so that joystick getter methods can be passed in as a parameter but will continuously update, 
+     * versus using a double which would only update when the constructor is called
+     */
     private final DoubleSupplier forwardX;
     private final DoubleSupplier forwardY;
     private final DoubleSupplier rotation;
@@ -40,6 +49,12 @@ public class OperatorControl extends CommandBase {
     @Override
     public void execute() {
 
+        /**
+         * Units are given in meters per second radians per second
+         * Since joysticks give output from -1 to 1, we multiply the outputs by the max speed
+         * Otherwise, our max speed would be 1 meter per second and 1 radian per second
+         */
+
         double fwdX = forwardX.getAsDouble();
         fwdX = Math.copySign(fwdX, fwdX);
         fwdX = deadbandInputs(fwdX) * Units.feetToMeters(DriveConstants.maxDriveSpeed);
@@ -61,6 +76,7 @@ public class OperatorControl extends CommandBase {
 
     }
 
+    // method to deadband inputs to eliminate tiny unwanted values from the joysticks
     public double deadbandInputs(double input) {
 
         if (Math.abs(input) < 0.035) return 0.0;

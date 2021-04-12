@@ -7,6 +7,11 @@ import frc.robot.subsystems.IndexingSubsystem;
 
 public class Jogging extends CommandBase {
 
+    /**
+     * Part of the indexing state machine
+     * Spaces the ball forward a defined amount to ensure the balls don't jam together in the indexer
+     */
+
     private final IndexingSubsystem indexer;
 
     private final Timer timer = new Timer();

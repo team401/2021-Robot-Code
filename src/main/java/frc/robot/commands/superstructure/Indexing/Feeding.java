@@ -5,6 +5,12 @@ import frc.robot.subsystems.IndexingSubsystem;
 
 public class Feeding extends CommandBase {
 
+    /**
+     * Part of the indexing state machine
+     * Command that runs the indexer foward when a ball is first seen, then exits when either the indexer is full,
+     * a ball reaches the top of the indexer, or the ball passes the bottom sensor (meaning the ball has been successfully indexed)
+     */
+
     private final IndexingSubsystem indexer;
 
     private boolean isFinishedFlag = false;

@@ -6,6 +6,11 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class MeasureWheelRadius extends CommandBase {
 
+    /**
+     * Command to measure the wheel radius of the drive
+     * For swerve, we assume each module wheel radius to be the same and use the average distance driven as the robot distance
+     */
+
     private final DriveSubsystem drive;
 
     private double distance;

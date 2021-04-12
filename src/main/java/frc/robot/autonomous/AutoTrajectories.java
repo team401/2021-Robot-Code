@@ -14,6 +14,11 @@ import frc.robot.Constants.DriveConstants;
 
 public class AutoTrajectories {
 
+    /**
+     * Defines the trajectories to be run through auto
+     */
+
+    // configures the maximum velocity and accel for the trajectories
     private final static TrajectoryConfig config = 
         new TrajectoryConfig(
             AutoConstants.maxVelMetersPerSec, 
@@ -21,6 +26,11 @@ public class AutoTrajectories {
         )
         .setKinematics(DriveConstants.kinematics);
 
+    /**
+     * Each trajectory is treated as a constant statically through the class
+     * 
+     * Trajectories are cubic clamped - generated with automatically defined slopes
+     */
     public static Trajectory autoNavSlalomTrajectory = 
         TrajectoryGenerator.generateTrajectory(
             new Pose2d(Units.inchesToMeters(30), Units.inchesToMeters(30), new Rotation2d(0)),

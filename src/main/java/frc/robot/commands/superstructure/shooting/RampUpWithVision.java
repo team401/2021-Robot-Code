@@ -9,6 +9,10 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class RampUpWithVision extends CommandBase {
 
+    /**
+     * Command to ramp up the shooter based on the size of the target seen
+     */
+
     private final ShooterSubsystem shooter;
     private final Limelight limelight;
     
@@ -24,15 +28,20 @@ public class RampUpWithVision extends CommandBase {
     @Override
     public void execute() {
 
-        SmartDashboard.putNumber("ta", limelight.gettA());
-
+        //only run if the limelight has a valid lock
         if (limelight.hasValidTarget()) { 
 
+            /**
+             * tA is perentage of limelight view taken up by the target
+             * We plug the tA value into a regression we generated to get a power in RMP, then use our velocity 
+             * control method to ramp the shooter to the speed
+             */
             double ta = limelight.gettA();
             double desiredFlywheelVelRPM = 418.27 * Math.pow(ta, 5) + -4633.42 * Math.pow(ta, 4) + 19538 * Math.pow(ta, 3) + -38570.7 * Math.pow(ta, 2) + 35110.1 * ta + -6960.68;
 
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(desiredFlywheelVelRPM));
 
+        // otherwise, run a standard "base" shooter speed
         } else {
             
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SuperstructureConstants.baseShootingSpeed));

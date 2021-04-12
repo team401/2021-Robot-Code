@@ -9,6 +9,10 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class CharacterizeDrive extends CommandBase {
 
+    /**
+     * Runs along with the FRC Characterziation Tool to generate feedforward gains for the drivetrain
+     */
+
     private final DriveSubsystem drive;
 
     private final NetworkTableEntry autoSpeedEntry = NetworkTableInstance.getDefault().getEntry("/robot/autospeed");

@@ -13,8 +13,13 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowTrajectory extends SwerveControllerCommand {
 
+    /**
+     * Command to follow a given Trajectory using the SwerveControllerCommand class, which in turn uses HolonomicDriveController
+     */
+
     private final Trajectory trajectory;
 
+    //uses motion profiling versus standard PID for smoother heading tracking and to limit rotational speed
     private static final ProfiledPIDController rotationController = 
         new ProfiledPIDController(2, 0, 0,
             new TrapezoidProfile.Constraints(AutoConstants.maxVelMetersPerSec,
@@ -24,6 +29,18 @@ public class FollowTrajectory extends SwerveControllerCommand {
 
     public FollowTrajectory(DriveSubsystem drive, Trajectory trajectory) {
 
+        /**
+         * Super constructor for SwerveControllerCommand
+         * Parameters: 
+         * trajectory to be followed
+         * method reference to the pose supplier
+         * kinematics of the drive (wheel placements on robot)
+         * x controller
+         * y controller
+         * rotation controller
+         * method reference to the module control method
+         * requirements (drive subsystem)
+         */
         super(
             trajectory, 
             drive::getPose, 
@@ -35,6 +52,7 @@ public class FollowTrajectory extends SwerveControllerCommand {
             drive
         );
 
+        // set the rotation controller to wrap around from -PI to PI
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         this.trajectory = trajectory;
