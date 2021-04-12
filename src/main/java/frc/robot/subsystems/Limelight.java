@@ -8,8 +8,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Limelight extends SubsystemBase {
 
+    /**
+     * Subsystem to hold the vision info from the limelight
+     * Limelight publishes information to a network table, which is continuously updated and can be read from
+     * the NetworkTable class
+     */
+
     private final NetworkTable table;
     
+
+    /**
+     * tV - 0 if there is no target seen and 1 if a target is seen
+     * tX - offset in degrees from the center of the target to the center of the viewframe
+     * tA - percentage of view taken up by the target
+     */
+
     private double tv;
     private double tx;
     private double ta;
@@ -18,6 +31,7 @@ public class Limelight extends SubsystemBase {
 
         table = NetworkTableInstance.getDefault().getTable("limelight");
 
+        //ledMode 1 is off, 0 is on
         setLedMode(1);
 
     }
@@ -28,8 +42,6 @@ public class Limelight extends SubsystemBase {
         tv = table.getEntry("tv").getDouble(0.0);
         tx = table.getEntry("tx").getDouble(0.0);
         ta = table.getEntry("ta").getDouble(0.0);
-
-        SmartDashboard.putNumber("ta", ta);
 
     }
 

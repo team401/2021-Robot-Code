@@ -12,7 +12,7 @@ public class Reversing extends CommandBase {
 
     public Reversing(IndexingSubsystem subsystem) {
 
-        indexer = subsystem;
+        indexer = subsyastem;
 
         addRequirements(indexer);
 

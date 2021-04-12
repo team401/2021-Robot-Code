@@ -16,6 +16,12 @@ import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule extends SubsystemBase {
 
+    /**
+     * Class to represent and handle a swerve module
+     * A module's state is measured by a CANCoder for the absolute position, integrated CANEncoder for relative position
+     * for both rotation and linear movement
+     */
+
     private static final double rotationkP = 1;
     private static final double rotationkD = 0.5;
 
@@ -29,6 +35,7 @@ public class SwerveModule extends SubsystemBase {
 
     private final CANCoder canCoder;
 
+    //absolute offset for the CANCoder so that the wheels can be aligned when the robot is turned on
     private final Rotation2d offset;
 
     private final CANPIDController rotationController;
@@ -62,16 +69,20 @@ public class SwerveModule extends SubsystemBase {
 
         driveController.setP(drivekP);
 
+        //set the output of the drive encoder to be in radians for linear measurement
         driveEncoder.setPositionConversionFactor(
             2.0 * Math.PI / DriveConstants.driveWheelGearReduction
         );
 
+        //set the output of the drive encoder to be in radians per second for velocity measurement
         driveEncoder.setVelocityConversionFactor(
             2.0 * Math.PI / 60 / DriveConstants.driveWheelGearReduction
         );
 
+        //set the output of the rotation encoder to be in radians
         rotationEncoder.setPositionConversionFactor(2 * Math.PI / DriveConstants.rotationWheelGearReduction);
 
+        //configure the CANCoder to output in unsigned (wrap around from 360 to 0 degrees)
         canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
     }
@@ -118,6 +129,7 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
+    //calculate the angle motor setpoint based on the desired angle and the current angle measurement
     public double calculateAdjustedAngle(double targetAngle, double currentAngle) {
 
         double modAngle = currentAngle % (2.0 * Math.PI);
@@ -133,12 +145,19 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
+    //initialize the integrated CANCoder to offset measurement by the CANCoder reading
     public void initRotationOffset() {
 
         rotationEncoder.setPosition(getCanCoderAngle().getRadians());
 
     }
 
+    /**
+     * Method to set the desired state of the swerve module
+     * Parameter: 
+     * SwerveModuleState object that holds a desired linear and rotational setpoint
+     * Uses PID and a feedforward to control the output
+     */
     public void setDesiredStateClosedLoop(SwerveModuleState desiredState) {
         
         SwerveModuleState state = desiredState;

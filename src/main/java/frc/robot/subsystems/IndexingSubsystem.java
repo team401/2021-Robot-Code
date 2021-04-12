@@ -11,13 +11,20 @@ import frc.robot.Constants.SuperstructureConstants;
 
 public class IndexingSubsystem extends SubsystemBase {
 
+    /**
+     * Subsystem for the indexing, not including the intake or kicker
+     * 
+     */
+
     private final WPI_TalonFX conveyorMotor = new WPI_TalonFX(CANDevices.conveyorMotorId);
     
+    //banner sensors
     private final DigitalInput bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
     private final DigitalInput topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
     
     public IndexingSubsystem() {
 
+        //ensure the intake motor stops when we don't command it to prevent jamming
         conveyorMotor.setNeutralMode(NeutralMode.Brake);
 
     }
