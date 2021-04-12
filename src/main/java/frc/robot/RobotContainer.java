@@ -31,6 +31,10 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
 
+    /**
+     * Establishes the controls and subsystems of the robot
+     */
+
     private final Joystick leftJoystick = new Joystick(InputDevices.leftJoystickPort);
     private final Joystick rightJoystick = new Joystick(InputDevices.rightJoystickPort);
 
@@ -43,7 +47,7 @@ public class RobotContainer {
     private Limelight limelight = new Limelight();
     
     public RobotContainer() {
-
+        //callibrates joysticks
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 

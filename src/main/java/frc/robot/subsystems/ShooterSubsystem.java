@@ -18,6 +18,10 @@ import frc.robot.Constants.SuperstructureConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
 
+    /**
+     * Subsystem that controls the shooter of the robot
+     */
+
     private final WPI_TalonFX leftFlywheelMotor = new WPI_TalonFX(CANDevices.leftFlywheelMotorId);
     private final WPI_TalonFX rightFlywheelMotor = new WPI_TalonFX(CANDevices.rightFlywheelMotorId);
     

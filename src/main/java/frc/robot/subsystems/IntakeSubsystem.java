@@ -12,6 +12,10 @@ import frc.robot.Constants.SuperstructureConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
+    /**
+     * Subsystem that controls the intake of the robot
+     */
+
     private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
 
     private final DoubleSolenoid intakeSolenoid = 
