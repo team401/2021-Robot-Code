@@ -9,8 +9,8 @@ import frc.robot.subsystems.Limelight;
 public class AlignWithTargetVision extends CommandBase {
 
     /**
-     * Similar to AlignWithGyro, a command to control robot heading based on a vision target
-     */
+    * Similar to QuickTurn, a command to control robot heading based on a vision target
+    */
 
     private final DriveSubsystem drive;
     private final Limelight limelight;
@@ -43,7 +43,7 @@ public class AlignWithTargetVision extends CommandBase {
          * Allows for manual strafing through joystick input
          */
         if (limelight.hasValidTarget()) {
-            
+
             double rotationOut = controller.calculate(limelight.gettX(), Units.degreesToRadians(0));
 
             drive.drive(

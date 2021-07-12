@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.autonomous.AutoTrajectories;
-import frc.robot.commands.drivetrain.AlignWithGyro;
+import frc.robot.commands.drivetrain.QuickTurn;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
@@ -58,9 +58,11 @@ public class RobotContainer {
             )
         );
 
+        /*
         shooter.setDefaultCommand(
-            new InstantCommand(() -> shooter.runShooterPercent(gamepad.getRawAxis(3) / 5), shooter)
+            new RunCommand(() -> shooter.runShooterPercent(gamepad.getRawAxis(3) / 5), shooter)
         );
+        */
 
         indexer.setDefaultCommand(new Waiting(indexer));
 
@@ -109,7 +111,6 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kX.value)
             .whenPressed(new InstantCommand(intake::toggleIntake));
 
-        /*    
         // shoot close
         new POVButton(gamepad, 0)
             .whileHeld(
@@ -156,27 +157,30 @@ public class RobotContainer {
 
         // align with 0 degrees
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value)
-            .whileHeld(new AlignWithGyro(drive, Math.PI));
+            .whileHeld(new QuickTurn(drive, Math.PI));
 
         // align with 180 degrees
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value) 
-            .whileHeld(new AlignWithGyro(drive, 0));
+            .whileHeld(new QuickTurn(drive, 0));
 
         // reset imu 
         new JoystickButton(rightJoystick, 3)
             .whenPressed(new InstantCommand(drive::resetImu));
 
-   
         // toggle hood
-        new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
+        /*new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
             .whenPressed(new InstantCommand(shooter::toggleHood));
         */
+
+        new JoystickButton(gamepad, Button.kX.value)
+            .whenPressed(new RampUpWithVision(shooter, limelight));
 
     }
 
     public Command getAutonomousCommand() {
 
-        return null;
+        drive.resetPose(AutoTrajectories.testTrajectory.getInitialPose());
+        return new FollowTrajectory(drive, AutoTrajectories.testTrajectory);
 
     }
 

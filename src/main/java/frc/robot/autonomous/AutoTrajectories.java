@@ -106,7 +106,7 @@ public class AutoTrajectories {
             config
         );
 
-        public static Trajectory galacticSearchRedBTrajectory =
+    public static Trajectory galacticSearchRedBTrajectory =
         TrajectoryGenerator.generateTrajectory(
             new Pose2d(Units.inchesToMeters(45), Units.inchesToMeters(96), new Rotation2d(0)),
             List.of(
@@ -116,6 +116,88 @@ public class AutoTrajectories {
             ),
             new Pose2d(Units.inchesToMeters(370), Units.inchesToMeters(120), new Rotation2d(0)),
             config
-        );
+    );
+
+    public static Trajectory testTrajectory = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0)),
+            List.of(
+                new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(30)),
+                new Translation2d(Units.inchesToMeters(60), Units.inchesToMeters(15)),
+                new Translation2d(Units.inchesToMeters(90), Units.inchesToMeters(0))
+            ), 
+            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(30), new Rotation2d(0)),
+            config
+    );
+
+    /*For competition - Being across from shooter (on right looking at it) and going backwards to collect
+      Steps are to shoot 3x, and then turn around and go backwards, collecting the balls while moving
+    public static Trajectory acrossFromShooterAndCollect = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(323.5 - 94.66), Units.inchesToMeters(120)), 
+            List.of (
+
+            ), 
+            end, 
+            config
+    );
+    
+    //For competition - Being across from shoot and going sideways to get out of way
+    //Steps are to shoot 3x, and then turn around and go backwards at an angle 
+    public static Trajectory acrossFromShooterAndCollect = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(323.5 - 94.66), Units.inchesToMeters(120)), 
+            List.of (
+
+            ), 
+            end, 
+            config
+    );
+
+    //For competition - Starting at the middle, going to shoot, and then moving backwards to collect
+    public static Trajectory acrossFromShooterAndCollect = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(323.5/2.), Units.inchesToMeters(120)), 
+            List.of (
+
+            ), 
+            end, 
+            config
+    );
+
+    //For competition - Starting at the middle, going to shoot, and then moving backwards at an angle to get out of way
+    public static Trajectory acrossFromShooterAndCollect = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(323.5/2), Units.inchesToMeters(120)), 
+            List.of (
+
+            ), 
+            end, 
+            config
+    );
+
+    //For competition - Starting at left (when looking at drivers), going to shoot, and then moving backwards to collect
+    public static Trajectory acrossFromShooterAndCollect = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(94.66), Units.inchesToMeters(120)), 
+            List.of (
+
+            ), 
+            end, 
+            config
+    );
+
+    //For competition - Starting at left (when looking at drivers), going to shoot, and then moving backwards at angle
+        public static Trajectory acrossFromShooterAndCollect = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(94.66), Units.inchesToMeters(120)), 
+            List.of (
+
+            ), 
+            end, 
+            config
+    );
+
+    */
 
 }

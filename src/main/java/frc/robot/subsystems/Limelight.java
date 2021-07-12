@@ -25,6 +25,7 @@ public class Limelight extends SubsystemBase {
 
     private double tv;
     private double tx;
+    private double ty;
     private double ta;
 
     public Limelight() {
@@ -41,6 +42,7 @@ public class Limelight extends SubsystemBase {
 
         tv = table.getEntry("tv").getDouble(0.0);
         tx = table.getEntry("tx").getDouble(0.0);
+        ty = table.getEntry("ty").getDouble(0.0);
         ta = table.getEntry("ta").getDouble(0.0);
 
     }
@@ -54,6 +56,12 @@ public class Limelight extends SubsystemBase {
     public double gettX() {
 
         return Units.degreesToRadians(tx);
+
+    }
+
+    public double gettY() {
+
+        return Units.degreesToRadians(ty);
 
     }
 

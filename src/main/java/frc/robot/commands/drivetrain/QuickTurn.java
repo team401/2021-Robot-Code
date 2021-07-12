@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class AlignWithGyro extends CommandBase {
+public class QuickTurn extends CommandBase {
 
     /**
      * A command to align the robot automatically to a certain heading, used for a "quick turn" for shooting
@@ -19,7 +19,7 @@ public class AlignWithGyro extends CommandBase {
         2.5, 0, 0.25
     );
 
-    public AlignWithGyro(DriveSubsystem subsystem, double desiredAngleRad) {
+    public QuickTurn(DriveSubsystem subsystem, double desiredAngleRad) {
 
         drive = subsystem;
 

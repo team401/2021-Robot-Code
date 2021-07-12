@@ -21,7 +21,6 @@ public class MeasureWheelRadius extends CommandBase {
 
         distance = distanceMeters;
 
-
     }
 
     @Override

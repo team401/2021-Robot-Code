@@ -23,6 +23,9 @@ public class Constants {
         public static final int rearRightRotationMotorId = 3;
         public static final int rearRightDriveMotorId = 4;
 
+        public static final int leftClimberMotorId = 20;
+        public static final int rightClimberMotorId = 21;
+
         public static final int frontLeftRotationEncoderId = 17;
         public static final int frontRightRotationEncoderId = 13;
         public static final int rearLeftRotationEncoderId = 15;
@@ -61,6 +64,7 @@ public class Constants {
 
         public static final int[] intakeSolenoidChannels = {0, 1};
         public static final int[] hoodSolenoidChannels = {2, 3};
+        public static final int[] climberSolenoidChannels = {4, 5};
 
     }
 
@@ -108,16 +112,34 @@ public class Constants {
 
     }
 
+    public static final class ClimbingConstants {
+
+        public static final double climberMotorGearReduction = 1;
+
+        public static final double winchDiameterInches = 1;
+        public static final double climberMaxHeightInches = 40.5;
+
+        public static final double desiredClimberSpeedInchesPerSecond = 1;
+
+    }
+
+    public static final class VisionConstants {
+
+        public static final double limelightHeightInches = 26.5; // distance from limelight to ground
+        public static final double limelightMountAngleRadians = Units.degreesToRadians(53);
+
+    }
+
     public static final class AutoConstants {
 
         public static final double maxVelMetersPerSec = 4.5;
-        public static final double maxAccelMetersPerSecondSq = 3.5;
+        public static final double maxAccelMetersPerSecondSq = 1.95;
         
     }
 
     public static final class FieldConstants {
 
-        public static final Pose2d initalRobotToFieldPose = new Pose2d(0.0, 0.0, new Rotation2d(0.0));
+        public static final double targetHeightInches = 89.5;
 
     }
     
