@@ -134,7 +134,7 @@ public class AutoTrajectories {
       Steps are to shoot 3x, and then turn around and go backwards, collecting the balls while moving
     public static Trajectory acrossFromShooterAndCollect = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(323.5 - 94.66), Units.inchesToMeters(120)), 
+            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(323.5 - 94.66)), 
             List.of (
 
             ), 
@@ -146,7 +146,7 @@ public class AutoTrajectories {
     //Steps are to shoot 3x, and then turn around and go backwards at an angle 
     public static Trajectory acrossFromShooterAndCollect = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(323.5 - 94.66), Units.inchesToMeters(120)), 
+            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(323.5 - 94.66)), 
             List.of (
 
             ), 
@@ -157,7 +157,7 @@ public class AutoTrajectories {
     //For competition - Starting at the middle, going to shoot, and then moving backwards to collect
     public static Trajectory acrossFromShooterAndCollect = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(323.5/2.), Units.inchesToMeters(120)), 
+            new Pose2d( Units.inchesToMeters(120), Units.inchesToMeters(323.5/2.)), 
             List.of (
 
             ), 
@@ -168,7 +168,7 @@ public class AutoTrajectories {
     //For competition - Starting at the middle, going to shoot, and then moving backwards at an angle to get out of way
     public static Trajectory acrossFromShooterAndCollect = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(323.5/2), Units.inchesToMeters(120)), 
+            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(323.5/2)), 
             List.of (
 
             ), 
@@ -179,7 +179,7 @@ public class AutoTrajectories {
     //For competition - Starting at left (when looking at drivers), going to shoot, and then moving backwards to collect
     public static Trajectory acrossFromShooterAndCollect = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(94.66), Units.inchesToMeters(120)), 
+            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(94.66)), 
             List.of (
 
             ), 
@@ -190,7 +190,7 @@ public class AutoTrajectories {
     //For competition - Starting at left (when looking at drivers), going to shoot, and then moving backwards at angle
         public static Trajectory acrossFromShooterAndCollect = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(94.66), Units.inchesToMeters(120)), 
+            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(94.66)), 
             List.of (
 
             ), 

@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
 
         robotContainer = new RobotContainer();
         NetworkTableInstance.getDefault().setUpdateRate(.01);
+        //Added to speed up auto running
         new AutoTrajectories();
     }
 
