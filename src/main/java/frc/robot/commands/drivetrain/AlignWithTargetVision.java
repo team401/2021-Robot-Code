@@ -1,6 +1,9 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
@@ -16,13 +19,14 @@ public class AlignWithTargetVision extends CommandBase {
     private final Limelight limelight;
 
     private final PIDController controller = new PIDController(
-        2.5, 0, 0.25
+        5.0, 0, 0
     );
 
     public AlignWithTargetVision(DriveSubsystem subsystem, Limelight vision) {
 
         drive = subsystem;
         limelight = vision;
+        SmartDashboard.putString("AlignwithTargetVision", "created/entered");
 
     }
 
@@ -31,6 +35,7 @@ public class AlignWithTargetVision extends CommandBase {
 
         //turn on the limelight at the beginning of the command
         limelight.setLedMode(0);
+        SmartDashboard.putString("AlignwithTargetVision", "initialized");
 
     }
 
@@ -44,13 +49,27 @@ public class AlignWithTargetVision extends CommandBase {
          */
         if (limelight.hasValidTarget()) {
 
-            double rotationOut = controller.calculate(limelight.gettX(), Units.degreesToRadians(0));
+            if (Math.abs(limelight.gettX()) > Units.degreesToRadians(1)){
 
-            drive.drive(
-                drive.getCommandedDriveValues()[0], 
-                drive.getCommandedDriveValues()[1], 
-                rotationOut, 
-                drive.getIsFieldRelative());
+                double rotationOut = controller.calculate(limelight.gettX(), Units.degreesToRadians(0));
+                SmartDashboard.putNumber("TX", limelight.gettX());
+                SmartDashboard.putNumber("rotationout", rotationOut);
+
+                drive.drive(
+                    drive.getCommandedDriveValues()[0], 
+                    drive.getCommandedDriveValues()[1], 
+                    rotationOut, 
+                    drive.getIsFieldRelative());
+
+            } else {
+            
+                drive.drive(
+                    drive.getCommandedDriveValues()[0], 
+                    drive.getCommandedDriveValues()[1], 
+                    0.0, 
+                    drive.getIsFieldRelative());
+
+            }
 
         }
 

@@ -1,7 +1,7 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -16,7 +16,7 @@ public class QuickTurn extends CommandBase {
     private final double desiredAngle;
 
     private final PIDController controller = new PIDController(
-        2.5, 0, 0.25
+        5.0, 0, 0
     );
 
     public QuickTurn(DriveSubsystem subsystem, double desiredAngleRad) {
@@ -31,14 +31,18 @@ public class QuickTurn extends CommandBase {
     public void execute() {
             
         //calculate the next output for the drive based on the current heading, setpoint being the given angle
-        double rotationOut = controller.calculate(drive.getHeading().getRadians(), desiredAngle);
 
-        //allows for driver control for strafing but takes control of the rotation output
-        drive.drive(
-            drive.getCommandedDriveValues()[0], 
-            drive.getCommandedDriveValues()[1], 
-            rotationOut, 
-            drive.getIsFieldRelative());
+        if (Math.abs(desiredAngle - drive.getHeading().getRadians()) > Units.degreesToRadians(1)) {
+
+            double rotationOut = controller.calculate(drive.getHeading().getRadians(), desiredAngle);
+
+            drive.drive(
+                drive.getCommandedDriveValues()[0], 
+                drive.getCommandedDriveValues()[1], 
+                rotationOut, 
+                drive.getIsFieldRelative());
+
+        }
 
     }
 

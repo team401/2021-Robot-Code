@@ -23,11 +23,11 @@ public class ShooterSubsystem extends SubsystemBase {
      */
 
     private final WPI_TalonFX leftFlywheelMotor = new WPI_TalonFX(CANDevices.leftFlywheelMotorId);
-    //private final WPI_TalonFX rightFlywheelMotor = new WPI_TalonFX(CANDevices.rightFlywheelMotorId);
+    private final WPI_TalonFX rightFlywheelMotor = new WPI_TalonFX(CANDevices.rightFlywheelMotorId);
     
     private final CANSparkMax kickerMotor = new CANSparkMax(CANDevices.kickerMotorId, MotorType.kBrushless);
 
-    private final SpeedControllerGroup flywheel = new SpeedControllerGroup(leftFlywheelMotor);
+    private final SpeedControllerGroup flywheel = new SpeedControllerGroup(leftFlywheelMotor, rightFlywheelMotor);
 
     private final DoubleSolenoid hoodSolenoid = 
         new DoubleSolenoid(
@@ -45,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem() {
 
-        //rightFlywheelMotor.setInverted(true);
+        rightFlywheelMotor.setInverted(true);
 
         controller.setTolerance(Units.rotationsPerMinuteToRadiansPerSecond(20));
 
@@ -71,6 +71,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("desired", desiredSpeedRadPerSec);
         SmartDashboard.putNumber("current", getFlywheelVelRadPerSec());
+
+        SmartDashboard.putNumber("current draw", leftFlywheelMotor.getStatorCurrent());
 
     }
 

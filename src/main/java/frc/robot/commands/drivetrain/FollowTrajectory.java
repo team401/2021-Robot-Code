@@ -36,7 +36,7 @@ public class FollowTrajectory extends SwerveControllerCommand {
 
     //uses motion profiling versus standard PID for smoother heading tracking and to limit rotational speed
     private static final ProfiledPIDController rotationController = 
-        new ProfiledPIDController(2, 0, 0,
+        new ProfiledPIDController(3.0, 0, 0,
             new TrapezoidProfile.Constraints(AutoConstants.maxVelMetersPerSec,
                 AutoConstants.maxAccelMetersPerSecondSq
             )
@@ -100,10 +100,12 @@ public class FollowTrajectory extends SwerveControllerCommand {
         State desiredState = AutoTrajectories.testTrajectory.sample(timer.get());
         SmartDashboard.putNumber("Desired x", Units.metersToInches(desiredState.poseMeters.getX()));
         SmartDashboard.putNumber("Desired y", Units.metersToInches(desiredState.poseMeters.getY()));
+        SmartDashboard.putNumber("Desired theta", desiredState.poseMeters.getRotation().getRadians());
 
         Pose2d Currentposition = drive.getPose();
         SmartDashboard.putNumber("Actual x", Units.metersToInches(Currentposition.getX()));
         SmartDashboard.putNumber("Actual y", Units.metersToInches(Currentposition.getY()));
+        SmartDashboard.putNumber("Actual theta", Currentposition.getRotation().getRadians());
     }
 
 }

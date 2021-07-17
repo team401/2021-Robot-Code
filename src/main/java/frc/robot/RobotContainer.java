@@ -110,7 +110,7 @@ public class RobotContainer {
         new POVButton(gamepad, 0)
             .whileHeld(
                 new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4500))
+                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4000))
                 )
                 .alongWith(new InstantCommand(shooter::retractHood))
             )
@@ -120,7 +120,7 @@ public class RobotContainer {
         new POVButton(gamepad, 90)
             .whileHeld(
                 new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(3800))
+                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(5000))
                 )
                 .alongWith(new InstantCommand(shooter::retractHood))
             )
@@ -140,7 +140,7 @@ public class RobotContainer {
         new POVButton(gamepad, 270)
             .whileHeld(
                 new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(6300))
+                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(7000))
                 )
                 .alongWith(new InstantCommand(shooter::extendHood))
             )
@@ -168,7 +168,8 @@ public class RobotContainer {
         */
 
         new JoystickButton(gamepad, Button.kX.value)
-            .whenPressed(new RampUpWithVision(shooter, limelight));
+            .whileHeld(new RampUpWithVision(shooter, limelight))
+            .whenReleased(new InstantCommand(() -> shooter.runShooterPercent(0)));
 
     }
 

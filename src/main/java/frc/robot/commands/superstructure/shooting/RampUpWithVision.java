@@ -1,6 +1,9 @@
 package frc.robot.commands.superstructure.shooting;
 
+import javax.xml.stream.util.StreamReaderDelegate;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
@@ -22,6 +25,7 @@ public class RampUpWithVision extends CommandBase {
         limelight = vision;
 
         addRequirements(shooter, limelight);
+        SmartDashboard.putNumber("RPM", 0);
 
     }
 
@@ -31,7 +35,7 @@ public class RampUpWithVision extends CommandBase {
         limelight.setLedMode(0);  // remove after testing
 
         //only run if the limelight has a valid lock
-        if (limelight.hasValidTarget()) { 
+        //if (limelight.hasValidTarget()) { 
 
             /*
             /**
@@ -45,16 +49,18 @@ public class RampUpWithVision extends CommandBase {
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(desiredFlywheelVelRPM));
             */
 
-            double distanceFromTargetInches = (FieldConstants.targetHeightInches - VisionConstants.limelightHeightInches) / Math.tan(VisionConstants.limelightMountAngleRadians + limelight.gettY());
+           // double distanceFromTargetInches = 
+            //    (FieldConstants.targetHeightInches - VisionConstants.limelightHeightInches) / Math.tan(VisionConstants.limelightMountAngleRadians + limelight.gettY());
 
-            SmartDashboard.putNumber("distance in INCHES", distanceFromTargetInches);
+            SmartDashboard.putNumber("ty", limelight.gettY());
+            shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("RPM", 0.0)));
 
         // otherwise, run a standard "base" shooter speed
-        } else {
+        /*} else {
             
             //shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SuperstructureConstants.baseShootingSpeed));
 
-        }
+        }*/
 
     }
 
@@ -62,6 +68,8 @@ public class RampUpWithVision extends CommandBase {
     public void end(boolean interrupted) {
 
         shooter.stopKicker();
+        shooter.runShooterPercent(0.0);
+        
 
     }
 

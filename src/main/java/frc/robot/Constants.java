@@ -98,15 +98,15 @@ public class Constants {
 
         public static final double baseShootingSpeed = 6000; //rptations per minute
 
-        public static final double intakingPower = 0.4;
-        public static final double jogFowardPower = 0.2;
+        public static final double intakingPower = 0.35;
+        public static final double jogFowardPower = 0.15;
 
         public static final double kickerPower = 1.0;
         public static final double conveyorPower = 0.35;
 
         public static final double flywheelGearRatio = 32.0 / 18.0;
 
-        public static final double jogDelaySeconds = 0.1;
+        public static final double jogDelaySeconds = 0.05;
 
     }
 
@@ -124,7 +124,7 @@ public class Constants {
     public static final class VisionConstants {
 
         public static final double limelightHeightInches = 26.5; // distance from limelight to ground
-        public static final double limelightMountAngleRadians = Units.degreesToRadians(53);
+        public static final double limelightMountAngleRadians = Units.degreesToRadians(44);
 
     }
 
