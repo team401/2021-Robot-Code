@@ -13,12 +13,14 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.QuickTurn;
+import frc.robot.commands.climbing.ActuateClimbers;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.subsystems.IndexingSubsystem;
+import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
@@ -40,9 +42,9 @@ public class RobotContainer {
     private IndexingSubsystem indexer = new IndexingSubsystem();
     private ShooterSubsystem shooter = new ShooterSubsystem();
     private Limelight limelight = new Limelight();
+    private ClimbingSubsystem climber = new ClimbingSubsystem();
     
     public RobotContainer() {
-        //callibrates joysticks
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
@@ -53,11 +55,12 @@ public class RobotContainer {
             )
         );
 
-        /*
-        shooter.setDefaultCommand(
-            new RunCommand(() -> shooter.runShooterPercent(gamepad.getRawAxis(3) / 5), shooter)
+        climber.setDefaultCommand(
+            new ActuateClimbers(
+                climber,
+                () -> gamepad.getRawAxis(5)
+            )
         );
-        */
 
         indexer.setDefaultCommand(new Waiting(indexer));
 
@@ -71,12 +74,6 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kB.value)
             .whenPressed(new InstantCommand(intake::runIntakeMotor))
             .whenReleased(new InstantCommand(intake::stopIntakeMotor));
-
-        /*
-        // ramp up shooter using vision
-        new JoystickButton(gamepad, Button.kBumperRight.value)
-            .whenPressed(new RampUpWithVision(shooter, limelight));
-        */
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
@@ -112,7 +109,6 @@ public class RobotContainer {
                 new InstantCommand(
                     () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4000))
                 )
-                .alongWith(new InstantCommand(shooter::retractHood))
             )
             .whenReleased(new InstantCommand(shooter::stopShooter));
 
@@ -122,7 +118,6 @@ public class RobotContainer {
                 new InstantCommand(
                     () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(5000))
                 )
-                .alongWith(new InstantCommand(shooter::retractHood))
             )
             .whenReleased(new InstantCommand(shooter::stopShooter));
 
@@ -132,7 +127,6 @@ public class RobotContainer {
                 new InstantCommand(
                     () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(6000))
                 )
-                .alongWith(new InstantCommand(shooter::extendHood))
             )
             .whenReleased(new InstantCommand(shooter::stopShooter));
 
@@ -142,7 +136,6 @@ public class RobotContainer {
                 new InstantCommand(
                     () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(7000))
                 )
-                .alongWith(new InstantCommand(shooter::extendHood))
             )
             .whenReleased(new InstantCommand(shooter::stopShooter));
 
@@ -150,11 +143,11 @@ public class RobotContainer {
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
             .whileHeld(new AlignWithTargetVision(drive, limelight));
 
-        // align with 0 degrees
+        // quick turn to 0 degrees
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value)
             .whileHeld(new QuickTurn(drive, Math.PI));
 
-        // align with 180 degrees
+        // quick turn to 180 degrees
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value) 
             .whileHeld(new QuickTurn(drive, 0));
 
@@ -162,14 +155,18 @@ public class RobotContainer {
         new JoystickButton(rightJoystick, 3)
             .whenPressed(new InstantCommand(drive::resetImu));
 
-        // toggle hood
-        /*new JoystickButton(rightJoystick, Joystick.ButtonType.kTop.value)
-            .whenPressed(new InstantCommand(shooter::toggleHood));
-        */
-
+        // ramp up with vision using regression
         new JoystickButton(gamepad, Button.kX.value)
             .whileHeld(new RampUpWithVision(shooter, limelight))
             .whenReleased(new InstantCommand(() -> shooter.runShooterPercent(0)));
+
+        // deploy climbers
+        new JoystickButton(gamepad, Button.kA.value) 
+            .whenPressed(new InstantCommand(climber::deployClimbers));
+
+        // lock climbers
+        new JoystickButton(gamepad, Button.kStickLeft.value)
+            .whenPressed(new InstantCommand(climber::lockClimbers));
 
     }
 

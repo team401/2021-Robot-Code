@@ -32,6 +32,8 @@ public class RampUpWithVision extends CommandBase {
     @Override
     public void execute() {
 
+        SmartDashboard.putNumber("how fast it's actually gonig", Units.radiansPerSecondToRotationsPerMinute(shooter.getFlywheelVelRadPerSec()));
+
         limelight.setLedMode(0);  // remove after testing
 
         //only run if the limelight has a valid lock

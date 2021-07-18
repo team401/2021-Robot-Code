@@ -17,12 +17,8 @@ import frc.robot.Constants.PneumaticChannels;
 
 public class ClimbingSubsystem extends SubsystemBase {
 
-    public enum Direction {
-        UP,
-        DOWN
-    }
-
     private boolean isDeployed = false;
+    private boolean isLocked = false;
 
     private final double leftControllerkP = 0;
     private final double leftControllerkI = 0;
@@ -43,6 +39,12 @@ public class ClimbingSubsystem extends SubsystemBase {
             PneumaticChannels.climberSolenoidChannels[1]
         );
 
+    private final DoubleSolenoid lockingSolenoid = 
+        new DoubleSolenoid(
+            PneumaticChannels.lockingSolenoidChannels[0],
+            PneumaticChannels.lockingSolenoidChannels[1]
+        );
+
     private final CANPIDController leftController = leftClimberMotor.getPIDController();
     private final CANPIDController rightController = rightClimberMotor.getPIDController();
 
@@ -50,6 +52,9 @@ public class ClimbingSubsystem extends SubsystemBase {
     private final CANEncoder rightEncoder = rightClimberMotor.getEncoder();
 
     public ClimbingSubsystem() {
+
+        deploySolenoid.set(Value.kReverse);
+        lockingSolenoid.set(Value.kReverse);
 
         leftClimberMotor.setIdleMode(IdleMode.kBrake);
         rightClimberMotor.setIdleMode(IdleMode.kBrake);
@@ -76,7 +81,7 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     }
 
-    public void updateClimberLeft(double desiredPositionLeft, Direction direction) {
+    public void updateClimberLeft(double desiredPositionLeft) {
 
         leftController.setReference(
             desiredPositionLeft,
@@ -87,7 +92,7 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     }
 
-    public void updateClimberRight(double desiredPositionRight, Direction direction) {
+    public void updateClimberRight(double desiredPositionRight) {
 
         rightController.setReference(
             desiredPositionRight, 
@@ -130,17 +135,23 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     }
 
-    public void retractClimbers() {
-
-        deploySolenoid.set(Value.kReverse);
-
-        isDeployed = false;
-
-    }
-
     public boolean getIsDeployed() {
 
         return isDeployed;
+
+    }
+
+    public void lockClimbers() {
+
+        lockingSolenoid.set(Value.kForward);
+
+        isLocked = true;
+
+    }
+
+    public boolean getIsLocked() {
+
+        return isLocked;
 
     }
     
