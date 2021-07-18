@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.autonomous.AutoTrajectories;
+import frc.robot.AutoTrajectories;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowTrajectory extends SwerveControllerCommand {
@@ -24,15 +24,6 @@ public class FollowTrajectory extends SwerveControllerCommand {
     private final Trajectory trajectory;
     private Timer timer = new Timer();
     private DriveSubsystem drive;
-
-    /*NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable table = inst.getTable("datatable");
-    NetworkTableEntry desiredXEntry;
-    NetworkTableEntry desiredYEntry;
-    NetworkTableEntry actualXEntry;
-    NetworkTableEntry actualYEntry;*/
-    
-
 
     //uses motion profiling versus standard PID for smoother heading tracking and to limit rotational speed
     private static final ProfiledPIDController rotationController = 

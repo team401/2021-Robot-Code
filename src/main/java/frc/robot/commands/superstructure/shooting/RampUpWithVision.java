@@ -1,13 +1,10 @@
 package frc.robot.commands.superstructure.shooting;
 
-import javax.xml.stream.util.StreamReaderDelegate;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.Limelight;
+import frc.robot.Constants.SuperstructureConstants;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class RampUpWithVision extends CommandBase {
@@ -17,52 +14,41 @@ public class RampUpWithVision extends CommandBase {
      */
 
     private final ShooterSubsystem shooter;
-    private final Limelight limelight;
+    private final VisionSubsystem limelight;
     
-    public RampUpWithVision(ShooterSubsystem subsystem, Limelight vision) {
+    public RampUpWithVision(ShooterSubsystem subsystem, VisionSubsystem vision) {
 
         shooter = subsystem;
         limelight = vision;
 
         addRequirements(shooter, limelight);
-        SmartDashboard.putNumber("RPM", 0);
+
+    }
+
+    @Override
+    public void initialize() {
+
+        limelight.setLedMode(0);
 
     }
 
     @Override
     public void execute() {
 
-        SmartDashboard.putNumber("how fast it's actually gonig", Units.radiansPerSecondToRotationsPerMinute(shooter.getFlywheelVelRadPerSec()));
-
-        limelight.setLedMode(0);  // remove after testing
-
         //only run if the limelight has a valid lock
-        //if (limelight.hasValidTarget()) { 
-
-            /*
-            /**
-             * tA is perentage of limelight view taken up by the target
-             * We plug the tA value into a regression we generated to get a power in RMP, then use our velocity 
-             * control method to ramp the shooter to the speed
+        if (limelight.hasValidTarget()) { 
              
-            double ta = limelight.gettA();
-            double desiredFlywheelVelRPM = 418.27 * Math.pow(ta, 5) + -4633.42 * Math.pow(ta, 4) + 19538 * Math.pow(ta, 3) + -38570.7 * Math.pow(ta, 2) + 35110.1 * ta + -6960.68;
+            double ty = limelight.gettY();
+            double desiredFlywheelVelRPM = 12637 * Math.pow(ty, 2) + 3201.4 * ty + 4057.3;
 
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(desiredFlywheelVelRPM));
-            */
-
-           // double distanceFromTargetInches = 
-            //    (FieldConstants.targetHeightInches - VisionConstants.limelightHeightInches) / Math.tan(VisionConstants.limelightMountAngleRadians + limelight.gettY());
-
-            SmartDashboard.putNumber("ty", limelight.gettY());
-            shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("RPM", 0.0)));
 
         // otherwise, run a standard "base" shooter speed
-        /*} else {
+        } else {
             
-            //shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SuperstructureConstants.baseShootingSpeed));
+            shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SuperstructureConstants.baseShootingSpeed));
 
-        }*/
+        }
 
     }
 
@@ -72,6 +58,7 @@ public class RampUpWithVision extends CommandBase {
         shooter.stopKicker();
         shooter.runShooterPercent(0.0);
         
+        limelight.setLedMode(1);
 
     }
 

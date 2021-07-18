@@ -1,11 +1,10 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class AlignWithTargetVision extends CommandBase {
 
@@ -14,17 +13,16 @@ public class AlignWithTargetVision extends CommandBase {
     */
 
     private final DriveSubsystem drive;
-    private final Limelight limelight;
+    private final VisionSubsystem limelight;
 
     private final PIDController controller = new PIDController(
         5.0, 0, 0
     );
 
-    public AlignWithTargetVision(DriveSubsystem subsystem, Limelight vision) {
+    public AlignWithTargetVision(DriveSubsystem subsystem, VisionSubsystem vision) {
 
         drive = subsystem;
         limelight = vision;
-        SmartDashboard.putString("AlignwithTargetVision", "created/entered");
 
     }
 
@@ -33,7 +31,6 @@ public class AlignWithTargetVision extends CommandBase {
 
         //turn on the limelight at the beginning of the command
         limelight.setLedMode(0);
-        SmartDashboard.putString("AlignwithTargetVision", "initialized");
 
     }
 
@@ -47,11 +44,9 @@ public class AlignWithTargetVision extends CommandBase {
          */
         if (limelight.hasValidTarget()) {
 
-            if (Math.abs(limelight.gettX()) > Units.degreesToRadians(1)){
+            if (Math.abs(limelight.gettX()) > Units.degreesToRadians(1.5)){
 
                 double rotationOut = controller.calculate(limelight.gettX(), Units.degreesToRadians(0));
-                SmartDashboard.putNumber("TX", limelight.gettX());
-                SmartDashboard.putNumber("rotationout", rotationOut);
 
                 drive.drive(
                     drive.getCommandedDriveValues()[0], 

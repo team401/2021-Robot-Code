@@ -97,7 +97,7 @@ public class Constants {
 
     public static final class SuperstructureConstants {
 
-        public static final double baseShootingSpeed = 6000; //rptations per minute
+        public static final double baseShootingSpeed = 4000; //rptations per minute
 
         public static final double intakingPower = 0.35;
         public static final double jogFowardPower = 0.15;

@@ -12,7 +12,7 @@ public class ActuateClimbers extends CommandBase {
 
     private final DoubleSupplier input;
 
-    private double threshold = 0.5;
+    private double threshold = 0.15;
     private double desiredPositionLeft;
     private double desiredPositionRight;
 

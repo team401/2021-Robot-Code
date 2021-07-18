@@ -5,7 +5,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Limelight extends SubsystemBase {
+public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Subsystem to hold the vision info from the limelight
@@ -27,7 +27,7 @@ public class Limelight extends SubsystemBase {
     private double ty;
     private double ta;
 
-    public Limelight() {
+    public VisionSubsystem() {
 
         table = NetworkTableInstance.getDefault().getTable("limelight");
 

@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -11,11 +13,12 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.InputDevices;
-import frc.robot.autonomous.AutoTrajectories;
 import frc.robot.commands.drivetrain.QuickTurn;
+import frc.robot.commands.autonomous.InfiniteRecharge2021Auto;
+import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.IntakeSource;
+import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.StartingPosition;
 import frc.robot.commands.climbing.ActuateClimbers;
 import frc.robot.commands.drivetrain.AlignWithTargetVision;
-import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
@@ -23,7 +26,7 @@ import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
@@ -37,14 +40,17 @@ public class RobotContainer {
 
     private final XboxController gamepad = new XboxController(InputDevices.gamepadPort);
 
-    private DriveSubsystem drive = new DriveSubsystem();
-    private IntakeSubsystem intake = new IntakeSubsystem();
-    private IndexingSubsystem indexer = new IndexingSubsystem();
-    private ShooterSubsystem shooter = new ShooterSubsystem();
-    private Limelight limelight = new Limelight();
-    private ClimbingSubsystem climber = new ClimbingSubsystem();
+    private final DriveSubsystem drive = new DriveSubsystem();
+    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final IndexingSubsystem indexer = new IndexingSubsystem();
+    private final ShooterSubsystem shooter = new ShooterSubsystem();
+    private final VisionSubsystem limelight = new VisionSubsystem();
+    private final ClimbingSubsystem climber = new ClimbingSubsystem();
     
+    SendableChooser<Command> autoSelector = new SendableChooser<Command>();
+
     public RobotContainer() {
+
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
@@ -65,6 +71,10 @@ public class RobotContainer {
         indexer.setDefaultCommand(new Waiting(indexer));
 
         configureButtonBindings();
+
+        autoSelector.setDefaultOption("Do Nothing", new InstantCommand());
+
+        SmartDashboard.putData(autoSelector);
 
     }
 
@@ -172,8 +182,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        drive.resetPose(AutoTrajectories.testTrajectory.getInitialPose());
-        return new FollowTrajectory(drive, AutoTrajectories.testTrajectory);
+        return autoSelector.getSelected();
 
     }
 
