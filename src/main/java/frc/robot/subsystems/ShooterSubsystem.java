@@ -34,6 +34,8 @@ public class ShooterSubsystem extends SubsystemBase {
         )
     );
 
+    private double desiredFlywheelVel = 0;
+
     public ShooterSubsystem() {
 
         rightFlywheelMotor.setInverted(true);
@@ -51,6 +53,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void runVelocityProfileController(double desiredSpeedRadPerSec) {
+
+        desiredFlywheelVel = desiredSpeedRadPerSec;
 
 
         double powerOut = controller.calculate(
@@ -70,6 +74,12 @@ public class ShooterSubsystem extends SubsystemBase {
     public void runShooterPercent(double speed) {
 
         flywheel.set(speed);
+
+    }
+
+    public boolean atGoal() {
+
+        return getFlywheelVelRadPerSec() >= desiredFlywheelVel - Units.rotationsPerMinuteToRadiansPerSecond(50);
 
     }
 

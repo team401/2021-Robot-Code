@@ -1,14 +1,25 @@
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.commands.drivetrain.AlignWithTargetVision;
 import frc.robot.commands.drivetrain.FollowTrajectory;
+import frc.robot.commands.drivetrain.QuickTurn;
+import frc.robot.commands.superstructure.shooting.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IndexingSubsystem;
 
-public class InfiniteRecharge2021Auto extends CommandGroupBase {
+public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
 
     public enum StartingPosition {
         Left,
@@ -22,25 +33,36 @@ public class InfiniteRecharge2021Auto extends CommandGroupBase {
         TrenchRight
     }
 
-    private final DriveSubsystem drive = new DriveSubsystem();
-    private final IntakeSubsystem intake = new IntakeSubsystem();
-    private final VisionSubsystem limelight = new VisionSubsystem();
-    private final ShooterSubsystem shooter = new ShooterSubsystem();
+    private final DriveSubsystem drive;
+    private final IntakeSubsystem intake;
+    private final IndexingSubsystem indexer;
+    private final VisionSubsystem limelight;
+    private final ShooterSubsystem shooter;
 
     private final StartingPosition startingPosition;
     private final IntakeSource intakeSource;
 
-    public InfiniteRecharge2021Auto(StartingPosition position, IntakeSource source) {
+    public InfiniteRecharge2021Auto(
+        StartingPosition position, 
+        IntakeSource source, 
+        DriveSubsystem subsystem, 
+        IntakeSubsystem intaker, 
+        IndexingSubsystem index, 
+        VisionSubsystem vision, 
+        ShooterSubsystem shoot
+    ) {
+
+        drive = subsystem;
+        intake = intaker;
+        indexer = index;
+        limelight = vision;
+        shooter = shoot;
 
         startingPosition = position;
         intakeSource = source;
-    
-    }
 
-	@Override
-	public void addCommands(Command... commands) {
 
-		switch (startingPosition) {
+        switch (startingPosition) {
 
             case Left:
                 
@@ -84,13 +106,25 @@ public class InfiniteRecharge2021Auto extends CommandGroupBase {
 
                     case TrenchRight:
 
-                        addCommands();
+                        addCommands(
+                            new ParallelCommandGroup(
+                                new AlignWithTargetVision(drive, limelight),
+                                new RunCommand(
+                                    () -> shooter.runVelocityProfileController(
+                                        Units.rotationsPerMinuteToRadiansPerSecond(500)), 
+                                        shooter
+                                ).withInterrupt(shooter::atGoal)
+                            ),
+                            new Shoot(Units.rotationsPerMinuteToRadiansPerSecond(500), shooter)
+                                .withTimeout(5)
+                        );
 
                 }
-
+            
+        
         }
 
-	}
+    }
 
 }
     

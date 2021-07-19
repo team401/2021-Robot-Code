@@ -8,8 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.InputDevices;
@@ -47,7 +51,7 @@ public class RobotContainer {
     private final VisionSubsystem limelight = new VisionSubsystem();
     private final ClimbingSubsystem climber = new ClimbingSubsystem();
     
-    SendableChooser<Command> autoSelector = new SendableChooser<Command>();
+    //SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
 
@@ -72,9 +76,10 @@ public class RobotContainer {
 
         configureButtonBindings();
 
-        autoSelector.setDefaultOption("Do Nothing", new InstantCommand());
+        //autoSelector.setDefaultOption("Do nothing", new InstantCommand());
+        //autoSelector.addOption("Start right to trench right", new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter));
 
-        SmartDashboard.putData(autoSelector);
+        //SmartDashboard.putData(autoSelector);
 
     }
 
@@ -151,7 +156,7 @@ public class RobotContainer {
 
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
-            .whileHeld(new AlignWithTargetVision(drive, limelight));
+            .whenPressed(new AlignWithTargetVision(drive, limelight));
 
         // quick turn to 0 degrees
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value)
@@ -182,7 +187,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
 
-        return autoSelector.getSelected();
+        //return autoSelector.getSelected();
+
+        return new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter);
 
     }
 
