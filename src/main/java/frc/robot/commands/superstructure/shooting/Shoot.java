@@ -1,35 +1,57 @@
 package frc.robot.commands.superstructure.shooting;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class Shoot extends CommandBase { 
+public class Shoot extends CommandBase {
 
     private final ShooterSubsystem shooter;
+    private final IndexingSubsystem indexer;
 
-    private double shooterVelRadPerSec;
+    private final Timer timer = new Timer();
 
-    public Shoot(double velRadPerSec, ShooterSubsystem shoot) {
+    public Shoot(ShooterSubsystem shoot, IndexingSubsystem index) {
 
         shooter = shoot;
+        indexer = index;
 
-        shooterVelRadPerSec = velRadPerSec;
-
-        addRequirements(shooter);
+        addRequirements(shooter, indexer);
 
     }
 
     @Override
     public void initialize() {
 
-        shooter.runKicker();
+        timer.reset();
+        timer.start();
 
     }
 
     @Override
     public void execute() {
 
-        shooter.runVelocityProfileController(shooterVelRadPerSec);
+        if (shooter.atGoal()) {
+
+            shooter.runKicker();
+            indexer.runConveyor();
+
+        } else { 
+
+            shooter.stopKicker();
+            indexer.stopConveyor();
+
+            timer.reset();
+
+        }
+
+    }
+
+    @Override
+    public boolean isFinished() {
+
+        return timer.get() > 2;
 
     }
 
@@ -38,6 +60,7 @@ public class Shoot extends CommandBase {
 
         shooter.stopShooter();
         shooter.stopKicker();
+        indexer.stopConveyor();
 
     }
     

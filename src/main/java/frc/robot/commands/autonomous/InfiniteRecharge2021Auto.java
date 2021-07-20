@@ -1,5 +1,7 @@
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -7,12 +9,17 @@ import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.AutoTrajectories;
 import frc.robot.commands.drivetrain.AlignWithVisionTarget;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.QuickTurn;
+import frc.robot.commands.superstructure.indexing.Waiting;
+import frc.robot.commands.superstructure.shooting.RampUpToSpeed;
+import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.commands.superstructure.shooting.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -34,39 +41,25 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
         TrenchRight
     }
 
-    private final DriveSubsystem drive;
-    private final IntakeSubsystem intake;
-    private final IndexingSubsystem indexer;
-    private final VisionSubsystem limelight;
-    private final ShooterSubsystem shooter;
-
     private final StartingPosition startingPosition;
     private final IntakeSource intakeSource;
 
     public InfiniteRecharge2021Auto(
         StartingPosition position, 
         IntakeSource source, 
-        DriveSubsystem subsystem, 
-        IntakeSubsystem intaker, 
-        IndexingSubsystem index, 
-        VisionSubsystem vision, 
-        ShooterSubsystem shoot
+        DriveSubsystem drive, 
+        IntakeSubsystem intake, 
+        IndexingSubsystem indexer, 
+        VisionSubsystem limelight, 
+        ShooterSubsystem shooter
     ) {
-
-        drive = subsystem;
-        intake = intaker;
-        indexer = index;
-        limelight = vision;
-        shooter = shoot;
 
         startingPosition = position;
         intakeSource = source;
 
-        addCommands(
-            new AlignWithVisionTarget(drive, limelight)
-        );
+        drive.resetImu();
 
-        /*switch (startingPosition) {
+        switch (startingPosition) {
 
             case Left:
                 
@@ -96,7 +89,34 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
 
                     case TrenchRight:
 
-                        addCommands();
+                        drive.resetPose(new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(162), new Rotation2d(0)));
+
+                        addCommands(
+                            new ParallelCommandGroup(
+                                new AlignWithVisionTarget(drive, limelight),
+                                new SequentialCommandGroup(
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4250), shooter),
+                                    new Shoot(shooter, indexer)
+                                )
+                            ),
+                            new InstantCommand(intake::runIntakeMotor),
+                            new FollowTrajectory(
+                                drive, 
+                                AutoTrajectories.startMidToTrenchRight
+                            ),
+                            new InstantCommand(intake::stopIntakeMotor),
+                            new FollowTrajectory(
+                                drive,
+                                AutoTrajectories.trenchRightToShootRight
+                            ),
+                            new ParallelCommandGroup(
+                                new AlignWithVisionTarget(drive, limelight),
+                                new SequentialCommandGroup(
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4250), shooter),
+                                    new Shoot(shooter, indexer)
+                                )
+                            )
+                        );
 
                 }
 
@@ -106,17 +126,42 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
 
                     case Mid:
 
-                        addCommands();
+                        addCommands(); 
 
                     case TrenchRight:
 
+                        drive.resetPose(new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(0)));
+
                         addCommands(
-                            new AlignWithVisionTarget(drive, limelight)
+                            new ParallelCommandGroup(
+                                new AlignWithVisionTarget(drive, limelight),
+                                new SequentialCommandGroup(
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4250), shooter),
+                                    new Shoot(shooter, indexer)
+                                )
+                            ),
+                            new InstantCommand(intake::runIntakeMotor),
+                            new FollowTrajectory(
+                                drive, 
+                                AutoTrajectories.startRightToTrenchRight
+                            ),
+                            new InstantCommand(intake::stopIntakeMotor),
+                            new FollowTrajectory(
+                                drive,
+                                AutoTrajectories.trenchRightToShootRight
+                            ),
+                            new ParallelCommandGroup(
+                                new AlignWithVisionTarget(drive, limelight),
+                                new SequentialCommandGroup(
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4250), shooter),
+                                    new Shoot(shooter, indexer)
+                                )
+                            )
                         );
 
                 }
         
-        }*/
+        }
 
     }
 

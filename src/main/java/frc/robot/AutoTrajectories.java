@@ -29,153 +29,51 @@ public class AutoTrajectories {
         )
         .setKinematics(DriveConstants.kinematics);
 
-    public static Trajectory testTrajectory = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0)), 
-            List.of (
-                new Translation2d(Units.inchesToMeters(1), Units.inchesToMeters(0))
-            ), 
-            new Pose2d(Units.inchesToMeters(2), Units.inchesToMeters(0), new Rotation2d(0)), 
-            config
-        );
-
     /**
      * Each trajectory is treated as a constant statically through the class
      * 
      * Trajectories are cubic clamped - generated with automatically defined slopes
      */
     
-    /*public static Trajectory startLeftToTrenchLeft = 
+    // start centered on line, center 4 ft from right edge
+    public static Trajectory startRightToTrenchRight = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(507), Units.inchesToMeters(), new Rotation2d()), 
-            List.of (
-                new Translation2d(Units.inchesToMeters(), Units.inchesToMeters())
+            List.of(
+                new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(0)),
+                new Pose2d(Units.inchesToMeters(423), Units.inchesToMeters(27.75), new Rotation2d(Math.PI)),
+                new Pose2d(Units.inchesToMeters(310), Units.inchesToMeters(27.75), new Rotation2d(Math.PI))
             ), 
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
-            config
-        );
-    
-    public static Trajectory midToTrenchClose = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
-            List.of (
-                new Translation2d(Units.inchesToMeters(), Units.inchesToMeters())
-            ), 
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
             config
         );
 
-    public static Trajectory rightToTrenchClose = 
+    public static Trajectory trenchRightToShootRight = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
-            List.of (
-                new Translation2d(Units.inchesToMeters(), Units.inchesToMeters())
-            ), 
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
+            new Pose2d(Units.inchesToMeters(310), Units.inchesToMeters(27.75), new Rotation2d(-Math.PI)),
+            List.of(
+                new Translation2d(Units.inchesToMeters(423), Units.inchesToMeters(27.75))
+            ),
+            new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(-0)),
             config
         );
 
-    public static Trajectory trenchCloseToShoot = 
+    // start centered on line, center 13 ft from right edge
+    public static Trajectory startMidToTrenchRight = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
-            List.of (
-                new Translation2d(Units.inchesToMeters(), Units.inchesToMeters())
+            List.of(
+                new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(162), new Rotation2d(0)),
+                new Pose2d(Units.inchesToMeters(423), Units.inchesToMeters(27.75), new Rotation2d(Math.PI)),
+                new Pose2d(Units.inchesToMeters(310), Units.inchesToMeters(27.75), new Rotation2d(Math.PI))
             ), 
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
-            config
-        );
-    
-    public static Trajectory shootToTrenchFar = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
-            List.of (
-                new Translation2d(Units.inchesToMeters(), Units.inchesToMeters())
-            ), 
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
             config
         );
 
-    public static Trajectory trenchFarToShoot = 
+    // start centered on line, center 4 ft from left edge
+    public static Trajectory startLeftToTrenchLeft = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
-            List.of (
-                new Translation2d(Units.inchesToMeters(), Units.inchesToMeters())
+            List.of(
+                new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(320), new Rotation2d(0))
             ), 
-            new Pose2d(Units.inchesToMeters(), Units.inchesToMeters(), new Rotation2d()), 
             config
         );
-
-    */
-
-
-    /*For competition - Being across from shooter (on right looking at it) and going backwards to collect
-      Steps are to shoot 3x, and then turn around and go backwards, collecting the balls while moving
-    public static Trajectory acrossFromShooterAndCollect = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(323.5 - 94.66)), 
-            List.of (
-
-            ), 
-            end, 
-            config
-    );
-    
-    //For competition - Being across from shoot and going sideways to get out of way
-    //Steps are to shoot 3x, and then turn around and go backwards at an angle 
-    public static Trajectory acrossFromShooterAndCollect = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(323.5 - 94.66)), 
-            List.of (
-
-            ), 
-            end, 
-            config
-    );
-
-    //For competition - Starting at the middle, going to shoot, and then moving backwards to collect
-    public static Trajectory acrossFromShooterAndCollect = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d( Units.inchesToMeters(120), Units.inchesToMeters(323.5/2.)), 
-            List.of (
-
-            ), 
-            end, 
-            config
-    );
-
-    //For competition - Starting at the middle, going to shoot, and then moving backwards at an angle to get out of way
-    public static Trajectory acrossFromShooterAndCollect = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(323.5/2)), 
-            List.of (
-
-            ), 
-            end, 
-            config
-    );
-
-    //For competition - Starting at left (when looking at drivers), going to shoot, and then moving backwards to collect
-    public static Trajectory acrossFromShooterAndCollect = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(94.66)), 
-            List.of (
-
-            ), 
-            end, 
-            config
-    );
-
-    //For competition - Starting at left (when looking at drivers), going to shoot, and then moving backwards at angle
-        public static Trajectory acrossFromShooterAndCollect = 
-        TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(120), Units.inchesToMeters(94.66)), 
-            List.of (
-
-            ), 
-            end, 
-            config
-    );
-
-    */
 
 }

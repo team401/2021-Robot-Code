@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
@@ -34,13 +35,25 @@ public class ShooterSubsystem extends SubsystemBase {
         )
     );
 
-    private double desiredFlywheelVel = 0;
+    private Timer timer = new Timer();
+
+    private double desiredSpeed = 0;
 
     public ShooterSubsystem() {
 
         rightFlywheelMotor.setInverted(true);
 
         controller.setTolerance(Units.rotationsPerMinuteToRadiansPerSecond(20));
+
+        timer.start();
+        timer.reset();
+
+    }
+
+    @Override
+    public void periodic() {
+
+        if (!(Math.abs(desiredSpeed - getFlywheelVelRadPerSec()) < 50)) timer.reset();
 
     }
 
@@ -54,8 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void runVelocityProfileController(double desiredSpeedRadPerSec) {
 
-        desiredFlywheelVel = desiredSpeedRadPerSec;
-
+        desiredSpeed = desiredSpeedRadPerSec;
 
         double powerOut = controller.calculate(
                 getFlywheelVelRadPerSec(), 
@@ -74,12 +86,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public void runShooterPercent(double speed) {
 
         flywheel.set(speed);
-
-    }
-
-    public boolean atGoal() {
-
-        return getFlywheelVelRadPerSec() >= desiredFlywheelVel - Units.rotationsPerMinuteToRadiansPerSecond(50);
 
     }
 
@@ -104,6 +110,12 @@ public class ShooterSubsystem extends SubsystemBase {
     public void reverseKicker() {
 
         kickerMotor.set(-SuperstructureConstants.kickerPower);
+
+    }
+
+    public boolean atGoal() {
+
+        return timer.get() >= 0.25;
 
     }
 

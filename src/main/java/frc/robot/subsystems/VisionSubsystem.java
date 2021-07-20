@@ -31,6 +31,8 @@ public class VisionSubsystem extends SubsystemBase {
 
         table = NetworkTableInstance.getDefault().getTable("limelight");
 
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+
         //ledMode 1 is off, 0 is on
         setLedMode(1);
 
@@ -73,12 +75,6 @@ public class VisionSubsystem extends SubsystemBase {
     public void setLedMode(int ledMode) {
 
         table.getEntry("ledMode").forceSetDouble(ledMode);
-
-    }
-    
-    public void setPipeline(int pipeline) {
-
-        
 
     }
 

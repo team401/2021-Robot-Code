@@ -26,6 +26,7 @@ import frc.robot.commands.drivetrain.AlignWithVisionTarget;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
+import frc.robot.commands.superstructure.shooting.Shoot;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.ClimbingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -92,10 +93,7 @@ public class RobotContainer {
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
-            .whileHeld(new InstantCommand(shooter::runKicker)
-            .alongWith(new InstantCommand(indexer::runConveyor, indexer)))
-            .whenReleased(new InstantCommand(shooter::stopKicker)
-            .alongWith(new InstantCommand(indexer::stopConveyor, indexer)));
+            .whileHeld(new Shoot(shooter, indexer));
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
@@ -118,60 +116,24 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kX.value)
             .whenPressed(new InstantCommand(intake::toggleIntake));
 
-        // shoot close
-        new POVButton(gamepad, 0)
-            .whileHeld(
-                new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4000))
-                )
-            )
-            .whenReleased(new InstantCommand(shooter::stopShooter));
-
-        // shoot mid-close
-        new POVButton(gamepad, 90)
-            .whileHeld(
-                new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(5000))
-                )
-            )
-            .whenReleased(new InstantCommand(shooter::stopShooter));
-
-        // shoot mid-far
-        new POVButton(gamepad, 180)
-            .whileHeld(
-                new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(6000))
-                )
-            )
-            .whenReleased(new InstantCommand(shooter::stopShooter));
-
-        // shoot far
-        new POVButton(gamepad, 270)
-            .whileHeld(
-                new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(7000))
-                )
-            )
-            .whenReleased(new InstantCommand(shooter::stopShooter));
-
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
             .whileHeld(new AlignWithVisionTarget(drive, limelight));
 
         // quick turn to 0 degrees
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value)
-            .whileHeld(new QuickTurn(drive, Math.PI));
+            .whileHeld(new QuickTurn(Math.PI, drive));
 
         // quick turn to 180 degrees
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value) 
-            .whileHeld(new QuickTurn(drive, 0));
+            .whileHeld(new QuickTurn(0, drive));
 
         // reset imu 
         new JoystickButton(rightJoystick, 3)
             .whenPressed(new InstantCommand(drive::resetImu));
 
         // ramp up with vision using regression
-        new JoystickButton(gamepad, Button.kX.value)
+        new JoystickButton(gamepad, Button.kBumperRight.value)
             .whileHeld(new RampUpWithVision(shooter, limelight))
             .whenReleased(new InstantCommand(() -> shooter.runShooterPercent(0)));
 

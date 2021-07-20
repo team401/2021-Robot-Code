@@ -131,8 +131,8 @@ public class Constants {
 
     public static final class AutoConstants {
 
-        public static final double maxVelMetersPerSec = 4.5;
-        public static final double maxAccelMetersPerSecondSq = 1.95;
+        public static final double maxVelMetersPerSec = 3;
+        public static final double maxAccelMetersPerSecondSq = 1;
         
     }
 

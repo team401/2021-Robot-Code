@@ -64,39 +64,30 @@ public class FollowTrajectory extends SwerveControllerCommand {
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         this.trajectory = trajectory;
- 
     
     }
 
     @Override
     public void initialize() {
+
         timer.reset();
         timer.start();
+
         super.initialize();
+
     } 
 
     @Override
     public void execute() {
-        graph();
+
         super.execute();
+
     }
 
     public Pose2d getInitialPose() {
         
         return trajectory.getInitialPose();
 
-    }
-
-    public void graph() {
-        State desiredState = AutoTrajectories.testTrajectory.sample(timer.get());
-        SmartDashboard.putNumber("Desired x", Units.metersToInches(desiredState.poseMeters.getX()));
-        SmartDashboard.putNumber("Desired y", Units.metersToInches(desiredState.poseMeters.getY()));
-        SmartDashboard.putNumber("Desired theta", desiredState.poseMeters.getRotation().getRadians());
-
-        Pose2d Currentposition = drive.getPose();
-        SmartDashboard.putNumber("Actual x", Units.metersToInches(Currentposition.getX()));
-        SmartDashboard.putNumber("Actual y", Units.metersToInches(Currentposition.getY()));
-        SmartDashboard.putNumber("Actual theta", Currentposition.getRotation().getRadians());
     }
 
 }
