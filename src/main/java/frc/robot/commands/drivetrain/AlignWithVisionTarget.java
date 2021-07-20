@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class AlignWithTargetVision extends CommandBase {
+public class AlignWithVisionTarget extends CommandBase {
 
     /**
     * Similar to QuickTurn, a command to control robot heading based on a vision target
@@ -16,13 +16,11 @@ public class AlignWithTargetVision extends CommandBase {
     private final DriveSubsystem drive;
     private final VisionSubsystem limelight;
 
-    private double rotationOut = 0;
-
     private final PIDController controller = new PIDController(
         5.0, 0, 0
     );
 
-    public AlignWithTargetVision(DriveSubsystem subsystem, VisionSubsystem vision) {
+    public AlignWithVisionTarget(DriveSubsystem subsystem, VisionSubsystem vision) {
 
         drive = subsystem;
         limelight = vision;
@@ -40,8 +38,6 @@ public class AlignWithTargetVision extends CommandBase {
     @Override
     public void execute() {
 
-        SmartDashboard.putNumber("tx value", Units.radiansToDegrees(limelight.gettX()));
-
         /**
          * Runs only if the limelight has a lock on a valid target
          * Calculate the desired output and controls the rotational output of the drive to lock to the target
@@ -49,37 +45,30 @@ public class AlignWithTargetVision extends CommandBase {
          */
         if (limelight.hasValidTarget()) {
 
-            if (Math.abs(limelight.gettX()) > Units.degreesToRadians(1.5)) rotationOut = controller.calculate(limelight.gettX(), Units.degreesToRadians(0)); 
-            else rotationOut = 0;
+            if (Math.abs(limelight.gettX()) > Units.degreesToRadians(1.5)) {
 
-            drive.drive(
-                drive.getCommandedDriveValues()[0], 
-                drive.getCommandedDriveValues()[1], 
-                rotationOut, 
-                drive.getIsFieldRelative());
+                double rotationOut = controller.calculate(limelight.gettX(), 0);
 
-            SmartDashboard.putNumber("rotation out", rotationOut);
+                SmartDashboard.putNumber("rotationOut", rotationOut);
+
+                drive.drive(
+                    drive.getCommandedDriveValues()[0], 
+                    drive.getCommandedDriveValues()[1], 
+                    rotationOut, 
+                    drive.getIsFieldRelative()
+                );
+
+            } 
 
         }
 
     }
 
     @Override
-    public boolean isFinished() {
-
-        if (limelight.hasValidTarget()) return Math.abs(limelight.gettX()) < Units.degreesToRadians(1.5);
-        else return false;
-
-    }
-
-    @Override
     public void end(boolean interrupted) {
-    
-        SmartDashboard.putString("is finished", "yes");
 
         //turn off the limelight led when the command ends (button is released)
         limelight.setLedMode(1);
-    
 
     }
 

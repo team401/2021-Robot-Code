@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.commands.drivetrain.AlignWithTargetVision;
+import frc.robot.commands.drivetrain.AlignWithVisionTarget;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.QuickTurn;
 import frc.robot.commands.superstructure.shooting.Shoot;
@@ -61,8 +62,11 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
         startingPosition = position;
         intakeSource = source;
 
+        addCommands(
+            new AlignWithVisionTarget(drive, limelight)
+        );
 
-        switch (startingPosition) {
+        /*switch (startingPosition) {
 
             case Left:
                 
@@ -107,24 +111,13 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                     case TrenchRight:
 
                         addCommands(
-                            new ParallelCommandGroup(
-                                new AlignWithTargetVision(drive, limelight),
-                                new RunCommand(
-                                    () -> shooter.runVelocityProfileController(
-                                        Units.rotationsPerMinuteToRadiansPerSecond(500)), 
-                                        shooter
-                                ).withInterrupt(shooter::atGoal)
-                            ),
-                            new Shoot(Units.rotationsPerMinuteToRadiansPerSecond(500), shooter)
-                                .withTimeout(5)
+                            new AlignWithVisionTarget(drive, limelight)
                         );
 
                 }
-            
         
-        }
+        }*/
 
     }
 
 }
-    

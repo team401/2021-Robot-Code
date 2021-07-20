@@ -22,7 +22,7 @@ import frc.robot.commands.autonomous.InfiniteRecharge2021Auto;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.IntakeSource;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.StartingPosition;
 import frc.robot.commands.climbing.ActuateClimbers;
-import frc.robot.commands.drivetrain.AlignWithTargetVision;
+import frc.robot.commands.drivetrain.AlignWithVisionTarget;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
@@ -156,7 +156,7 @@ public class RobotContainer {
 
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
-            .whenPressed(new AlignWithTargetVision(drive, limelight));
+            .whileHeld(new AlignWithVisionTarget(drive, limelight));
 
         // quick turn to 0 degrees
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value)
