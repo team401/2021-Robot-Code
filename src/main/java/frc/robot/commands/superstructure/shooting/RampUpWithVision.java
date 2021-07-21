@@ -10,7 +10,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class RampUpWithVision extends CommandBase {
 
     /**
-     * Command to ramp up the shooter based on the size of the target seen
+     * Command to ramp up the shooter based on the seen vision angle offset
      */
 
     private final ShooterSubsystem shooter;
@@ -35,11 +35,13 @@ public class RampUpWithVision extends CommandBase {
     @Override
     public void execute() {
 
+        SmartDashboard.putNumber("tY Value", limelight.gettY());
+
         //only run if the limelight has a valid lock
-        if (limelight.hasValidTarget()) { 
+        /*if (limelight.hasValidTarget()) { 
              
             double ty = limelight.gettY();
-            double desiredFlywheelVelRPM = 12637 * Math.pow(ty, 2) + 3201.4 * ty + 4057.3;
+            double desiredFlywheelVelRPM = 7378.13 * Math.pow(ty, 2) + -2200.66 * ty + 4079.94;
 
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(desiredFlywheelVelRPM));
 
@@ -48,18 +50,24 @@ public class RampUpWithVision extends CommandBase {
             
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SuperstructureConstants.baseShootingSpeed));
 
-        }
+        }*/
+
+        shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("desired RPM", 0)));
+
+    }
+
+    /*@Override
+    public boolean isFinished() {
+
+        return shooter.atGoal();
 
     }
 
     @Override
     public void end(boolean interrupted) {
-
-        shooter.stopKicker();
-        shooter.runShooterPercent(0.0);
         
         limelight.setLedMode(1);
 
-    }
+    }*/
 
 }

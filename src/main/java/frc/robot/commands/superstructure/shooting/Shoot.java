@@ -17,7 +17,7 @@ public class Shoot extends CommandBase {
         shooter = shoot;
         indexer = index;
 
-        addRequirements(shooter, indexer);
+        addRequirements(indexer);
 
     }
 

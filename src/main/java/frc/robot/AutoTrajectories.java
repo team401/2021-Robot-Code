@@ -48,11 +48,11 @@ public class AutoTrajectories {
 
     public static Trajectory trenchRightToShootRight = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(310), Units.inchesToMeters(27.75), new Rotation2d(-Math.PI)),
+            new Pose2d(Units.inchesToMeters(310), Units.inchesToMeters(27.75), new Rotation2d(0)),
             List.of(
                 new Translation2d(Units.inchesToMeters(423), Units.inchesToMeters(27.75))
             ),
-            new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(-0)),
+            new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(0)), // TODO: update angle
             config
         );
 
@@ -68,12 +68,12 @@ public class AutoTrajectories {
         );
 
     // start centered on line, center 4 ft from left edge
-    public static Trajectory startLeftToTrenchLeft = 
+    /*public static Trajectory startLeftToTrenchLeft = 
         TrajectoryGenerator.generateTrajectory(
             List.of(
                 new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(320), new Rotation2d(0))
             ), 
             config
-        );
+        );*/
 
 }

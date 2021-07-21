@@ -12,19 +12,18 @@ public class AlignWithVisionTarget extends CommandBase {
     private final DriveSubsystem drive;
     private final VisionSubsystem limelight;
 
-    private final PIDController controller = new PIDController(5, 0, 0);
+    private final PIDController controller = new PIDController(
+        5, 0, 0
+    );
 
     private Timer timer = new Timer();
 
     private double rotationOut = 0;
-
+    
     public AlignWithVisionTarget(DriveSubsystem subsystem, VisionSubsystem vision) {
 
         drive = subsystem;
-
         limelight = vision;
-
-        addRequirements(drive, vision);
 
     }
 
@@ -53,13 +52,23 @@ public class AlignWithVisionTarget extends CommandBase {
 
             }
 
-            drive.drive(drive.getCommandedDriveValues()[0], drive.getCommandedDriveValues()[1], rotationOut, true);
+            drive.drive(
+                drive.getCommandedDriveValues()[0], 
+                drive.getCommandedDriveValues()[1], 
+                rotationOut, 
+                drive.getIsFieldRelative()
+            );
 
         } else {
 
             timer.reset();
 
-            drive.drive(drive.getCommandedDriveValues()[0], drive.getCommandedDriveValues()[1], drive.getCommandedDriveValues()[2], true);
+            drive.drive(
+                drive.getCommandedDriveValues()[0], 
+                drive.getCommandedDriveValues()[1], 
+                drive.getCommandedDriveValues()[2], 
+                drive.getIsFieldRelative()
+            );
 
         }
 
@@ -75,11 +84,8 @@ public class AlignWithVisionTarget extends CommandBase {
     @Override
     public void end(boolean interrupted) {
 
-        //turn off the limelight led when the command ends (button is released)
         limelight.setLedMode(1);
 
-        drive.drive(0, 0, 0, false);
-
     }
-    
+
 }

@@ -2,6 +2,7 @@ package frc.robot.commands.climbing;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimbingConstants;
 import frc.robot.subsystems.ClimbingSubsystem;
@@ -36,10 +37,10 @@ public class ActuateClimbers extends CommandBase {
 
     @Override
     public void execute() {
-       
+    
         if (climber.getIsDeployed() && !climber.getIsLocked()) {
 
-            if (input.getAsDouble() > threshold) {
+            if (input.getAsDouble() < -threshold) {
 
                 if (climber.getCurrentPositionLeft() < ClimbingConstants.climberMaxHeightInches) {
 
@@ -57,7 +58,7 @@ public class ActuateClimbers extends CommandBase {
                     
                 } 
             
-            } else if (input.getAsDouble() < -threshold) {
+            } else if (input.getAsDouble() > threshold) {
 
                 if (climber.getCurrentPositionLeft() > 0) {
 

@@ -4,25 +4,18 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.QuickTurn;
+import frc.robot.commands.drivetrain.AlignWithVisionTarget;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.IntakeSource;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.StartingPosition;
 import frc.robot.commands.climbing.ActuateClimbers;
-import frc.robot.commands.drivetrain.AlignWithVisionTarget;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
@@ -56,11 +49,13 @@ public class RobotContainer {
 
     public RobotContainer() {
 
+        SmartDashboard.putNumber("desired RPM", 0);
+
         drive.setDefaultCommand(
             new OperatorControl(
                 drive, 
                 () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
-                () -> leftJoystick.getX(GenericHID.Hand.kLeft), 
+                () -> leftJoystick.getX(GenericHID.Hand.kLeft),
                 () -> rightJoystick.getX(GenericHID.Hand.kRight),
                 true
             )
@@ -93,14 +88,18 @@ public class RobotContainer {
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
-            .whileHeld(new Shoot(shooter, indexer));
+            .whileHeld(new Shoot(shooter, indexer))
+            .whenReleased(
+                new InstantCommand(shooter::stopShooter)
+                .alongWith(new InstantCommand(indexer::stopConveyor))
+            );
 
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
             .whileHeld(
                 new ParallelCommandGroup(
                     new InstantCommand(shooter::reverseKicker),
-                    new InstantCommand(indexer::reverseConveyor, indexer),
+                    new InstantCommand(indexer::reverseConveyor),
                     new InstantCommand(intake::reverseIntakeMotor)
                 )
             )
@@ -112,19 +111,15 @@ public class RobotContainer {
                 )
             );
 
-        // toggle intake
-        new JoystickButton(gamepad, Button.kX.value)
-            .whenPressed(new InstantCommand(intake::toggleIntake));
-
         // align with vision
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTop.value)
             .whileHeld(new AlignWithVisionTarget(drive, limelight));
-
-        // quick turn to 0 degrees
+         
+        // quick turn to 180 degrees
         new JoystickButton(rightJoystick, Joystick.ButtonType.kTrigger.value)
             .whileHeld(new QuickTurn(Math.PI, drive));
 
-        // quick turn to 180 degrees
+        // quick turn to 0 degrees
         new JoystickButton(leftJoystick, Joystick.ButtonType.kTrigger.value) 
             .whileHeld(new QuickTurn(0, drive));
 
@@ -138,12 +133,12 @@ public class RobotContainer {
             .whenReleased(new InstantCommand(() -> shooter.runShooterPercent(0)));
 
         // deploy climbers
-        new JoystickButton(gamepad, Button.kA.value) 
+        new JoystickButton(gamepad, Button.kX.value) 
             .whenPressed(new InstantCommand(climber::deployClimbers));
 
-        // lock climbers
-        new JoystickButton(gamepad, Button.kStickLeft.value)
-            .whenPressed(new InstantCommand(climber::lockClimbers));
+        // toggle locking climbers
+        new JoystickButton(gamepad, Button.kA.value)
+            .whenPressed(new InstantCommand(climber::toggleClimberLock));
 
     }
 
@@ -151,7 +146,8 @@ public class RobotContainer {
 
         //return autoSelector.getSelected();
 
-        return new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter);
+        //return new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter);
+        return new InfiniteRecharge2021Auto(StartingPosition.Mid, IntakeSource.TrenchLeft, drive, intake, indexer, limelight, shooter);
 
     }
 

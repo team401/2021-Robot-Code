@@ -76,10 +76,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         flywheel.set(powerOut);
 
-        SmartDashboard.putNumber("desired", desiredSpeedRadPerSec);
-        SmartDashboard.putNumber("current", getFlywheelVelRadPerSec());
-
-        SmartDashboard.putNumber("current draw", leftFlywheelMotor.getStatorCurrent());
+        SmartDashboard.putNumber("current", Units.radiansPerSecondToRotationsPerMinute(getFlywheelVelRadPerSec()));
 
     }
 

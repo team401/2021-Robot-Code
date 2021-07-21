@@ -2,30 +2,32 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class QuickTurn extends CommandBase {
 
+    /**
+     * A command to align the robot automatically to a certain heading, used for a "quick turn" for shooting
+     */
+
     private final DriveSubsystem drive;
 
-    private final ProfiledPIDController controller = new ProfiledPIDController(5, 0, 0, new TrapezoidProfile.Constraints(0,0));
+    private final double desiredAngle;
+    private double rotationOut = 0;
 
-    private Timer timer = new Timer();
+    private final PIDController controller = new PIDController(
+        5, 0, 0
+    );
 
-    private double desiredAngle;
+    private final Timer timer = new Timer();
 
-    public QuickTurn(double angleRad, DriveSubsystem subsystem) {
+    public QuickTurn(double desiredAngleRad, DriveSubsystem subsystem) {
 
         drive = subsystem;
 
-        desiredAngle = angleRad;
-
-        addRequirements(drive);
+        desiredAngle = desiredAngleRad;
 
     }
 
@@ -39,23 +41,30 @@ public class QuickTurn extends CommandBase {
 
     @Override
     public void execute() {
-
+            
         if (Math.abs(drive.getHeading().getRadians() - desiredAngle) > Units.degreesToRadians(1.5)) {
 
             timer.reset();
 
-            double rotationOut = controller.calculate(drive.getHeading().getRadians(), desiredAngle);
+            rotationOut = controller.calculate(drive.getHeading().getRadians(), desiredAngle);
 
-            drive.drive(drive.getCommandedDriveValues()[0], drive.getCommandedDriveValues()[1], rotationOut, true);
 
         } else {
 
-            drive.drive(drive.getCommandedDriveValues()[0], drive.getCommandedDriveValues()[1], 0, true);
+            rotationOut = 0;
             
         }
 
-    }
+        drive.drive(
+            drive.getCommandedDriveValues()[0], 
+            drive.getCommandedDriveValues()[1], 
+            rotationOut, 
+            drive.getIsFieldRelative()
+        );
 
+
+    }
+    
     @Override
     public boolean isFinished() {
 
@@ -63,11 +72,4 @@ public class QuickTurn extends CommandBase {
 
     }
 
-    @Override
-    public void end(boolean interrupted) {
-
-        drive.drive(0, 0, 0, false);
-
-    }
-    
 }

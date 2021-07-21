@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ClimbingConstants;
@@ -20,15 +19,12 @@ public class ClimbingSubsystem extends SubsystemBase {
     private boolean isDeployed = false;
     private boolean isLocked = false;
 
-    private final double leftControllerkP = 0;
+    private final double leftControllerkP = 0.5;
     private final double leftControllerkI = 0;
     private final double leftControllerkD = 0;
-    private final double rightControllerkP = 0;
+    private final double rightControllerkP = 0.5;
     private final double rightControllerkI = 0;
     private final double rightControllerkD = 0;
-
-    private final SimpleMotorFeedforward leftFF = new SimpleMotorFeedforward(0, 0);
-    private final SimpleMotorFeedforward rightFF = new SimpleMotorFeedforward(0, 0);
 
     private final CANSparkMax leftClimberMotor = new CANSparkMax(CANDevices.leftClimberMotorId, MotorType.kBrushless);
     private final CANSparkMax rightClimberMotor = new CANSparkMax(CANDevices.rightClimberMotorId, MotorType.kBrushless);
@@ -69,9 +65,6 @@ public class ClimbingSubsystem extends SubsystemBase {
         leftEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI);
         rightEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI);
 
-        leftEncoder.setVelocityConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI);
-        rightEncoder.setVelocityConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI);
-
     }
 
     public void resetEncoders() {
@@ -85,21 +78,19 @@ public class ClimbingSubsystem extends SubsystemBase {
 
         leftController.setReference(
             desiredPositionLeft,
-            ControlType.kSmartMotion,
-            0,
-            leftFF.calculate(desiredPositionLeft)
+            ControlType.kPosition,
+            0
         );
 
     }
 
     public void updateClimberRight(double desiredPositionRight) {
 
-        rightController.setReference(
-            desiredPositionRight, 
-            ControlType.kSmartMotion,
-            0,
-            rightFF.calculate(desiredPositionRight)
-        );
+            rightController.setReference(
+                desiredPositionRight, 
+                ControlType.kPosition,
+                0        
+            );
 
     }
 
@@ -112,18 +103,6 @@ public class ClimbingSubsystem extends SubsystemBase {
     public double getCurrentPositionRight() {
 
         return rightEncoder.getPosition();
-
-    }
-
-    public double getCurrentVelocityLeft() {
-
-        return leftEncoder.getVelocity();
-
-    }
-
-    public double getCurrentVelocityRight() {
-
-        return rightEncoder.getVelocity();
 
     }
 
@@ -141,11 +120,13 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     }
 
-    public void lockClimbers() {
+    public void toggleClimberLock() {
 
-        lockingSolenoid.set(Value.kForward);
+        if (!isLocked) lockingSolenoid.set(Value.kForward);
+        else lockingSolenoid.set(Value.kReverse);
+        
+        isLocked = !isLocked;
 
-        isLocked = true;
 
     }
 
