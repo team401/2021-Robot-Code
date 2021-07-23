@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -112,6 +113,10 @@ public class DriveSubsystem extends SubsystemBase {
 
         // update the odometry every 20ms
         odometry.update(getHeading(), getModuleStates());
+
+        SmartDashboard.putNumber("heading", getHeading().getDegrees());
+        SmartDashboard.putNumber("Odometry x", odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());
         
     }
     

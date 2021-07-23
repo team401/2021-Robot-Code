@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
@@ -17,29 +18,18 @@ import frc.robot.Constants.PneumaticChannels;
 public class ClimbingSubsystem extends SubsystemBase {
 
     private boolean isDeployed = false;
-    private boolean isLocked = false;
 
-    private final double leftControllerkP = 0.5;
+    private final double leftControllerkP = 2;
     private final double leftControllerkI = 0;
     private final double leftControllerkD = 0;
-    private final double rightControllerkP = 0.5;
+    private final double rightControllerkP = 2;
     private final double rightControllerkI = 0;
     private final double rightControllerkD = 0;
 
     private final CANSparkMax leftClimberMotor = new CANSparkMax(CANDevices.leftClimberMotorId, MotorType.kBrushless);
     private final CANSparkMax rightClimberMotor = new CANSparkMax(CANDevices.rightClimberMotorId, MotorType.kBrushless);
 
-    private final DoubleSolenoid deploySolenoid = 
-        new DoubleSolenoid(
-            PneumaticChannels.climberSolenoidChannels[0], 
-            PneumaticChannels.climberSolenoidChannels[1]
-        );
-
-    private final DoubleSolenoid lockingSolenoid = 
-        new DoubleSolenoid(
-            PneumaticChannels.lockingSolenoidChannels[0],
-            PneumaticChannels.lockingSolenoidChannels[1]
-        );
+    private final Solenoid deploySolenoid = new Solenoid(PneumaticChannels.lockingSolenoidChannel);
 
     private final CANPIDController leftController = leftClimberMotor.getPIDController();
     private final CANPIDController rightController = rightClimberMotor.getPIDController();
@@ -49,8 +39,9 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     public ClimbingSubsystem() {
 
-        deploySolenoid.set(Value.kReverse);
-        lockingSolenoid.set(Value.kReverse);
+        rightClimberMotor.setInverted(true);
+
+        deploySolenoid.set(false);
 
         leftClimberMotor.setIdleMode(IdleMode.kBrake);
         rightClimberMotor.setIdleMode(IdleMode.kBrake);
@@ -62,8 +53,8 @@ public class ClimbingSubsystem extends SubsystemBase {
         rightController.setI(rightControllerkI);
         rightController.setD(rightControllerkD);
         
-        leftEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI);
-        rightEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI);
+        leftEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI * ClimbingConstants.climberGearRatio);
+        rightEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI * ClimbingConstants.climberGearRatio);
 
     }
 
@@ -94,6 +85,18 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     }
 
+    public void actuateClimberPercentLeft(double percent) {
+
+        leftClimberMotor.set(percent);
+
+    }
+
+    public void actuateClimberPercentRight(double percent) {
+
+        rightClimberMotor.set(percent);
+
+    }
+
     public double getCurrentPositionLeft() {
 
         return leftEncoder.getPosition();
@@ -108,31 +111,23 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     public void deployClimbers() {
     
-        deploySolenoid.set(Value.kForward);
+        deploySolenoid.set(true);
         
         isDeployed = true;
+
+    }
+
+    public void lockClimbers() {
+
+        deploySolenoid.set(false);
+
+        isDeployed = false;
 
     }
 
     public boolean getIsDeployed() {
 
         return isDeployed;
-
-    }
-
-    public void toggleClimberLock() {
-
-        if (!isLocked) lockingSolenoid.set(Value.kForward);
-        else lockingSolenoid.set(Value.kReverse);
-        
-        isLocked = !isLocked;
-
-
-    }
-
-    public boolean getIsLocked() {
-
-        return isLocked;
 
     }
     

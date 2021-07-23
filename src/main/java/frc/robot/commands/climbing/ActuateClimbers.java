@@ -38,11 +38,11 @@ public class ActuateClimbers extends CommandBase {
     @Override
     public void execute() {
     
-        if (climber.getIsDeployed() && !climber.getIsLocked()) {
+        /*if (climber.getIsDeployed()) {*/
 
-            if (input.getAsDouble() < -threshold) {
+            if (-input.getAsDouble() < -threshold) {
 
-                if (climber.getCurrentPositionLeft() < ClimbingConstants.climberMaxHeightInches) {
+                if (/*climber.getCurrentPositionLeft() < ClimbingConstants.climberMaxHeightInches*/ true) {
 
                     desiredPositionLeft += ClimbingConstants.desiredClimberSpeedInchesPerSecond / 50;
 
@@ -50,7 +50,7 @@ public class ActuateClimbers extends CommandBase {
 
                 } 
 
-                if (climber.getCurrentPositionRight() < ClimbingConstants.climberMaxHeightInches) {
+                if (/*climber.getCurrentPositionRight() < ClimbingConstants.climberMaxHeightInches*/ true) {
 
                     desiredPositionRight += ClimbingConstants.desiredClimberSpeedInchesPerSecond / 50;
     
@@ -58,9 +58,9 @@ public class ActuateClimbers extends CommandBase {
                     
                 } 
             
-            } else if (input.getAsDouble() > threshold) {
+            } else if (-input.getAsDouble() > threshold) {
 
-                if (climber.getCurrentPositionLeft() > 0) {
+                if (/*climber.getCurrentPositionLeft() > 0*/ true) {
 
                     desiredPositionLeft -= ClimbingConstants.desiredClimberSpeedInchesPerSecond / 50;
     
@@ -68,7 +68,7 @@ public class ActuateClimbers extends CommandBase {
                     
                 } 
     
-                if (climber.getCurrentPositionRight() > 0) {
+                if (/*climber.getCurrentPositionRight() > 0*/true) {
     
                     desiredPositionRight -= ClimbingConstants.desiredClimberSpeedInchesPerSecond / 50;
     
@@ -83,7 +83,11 @@ public class ActuateClimbers extends CommandBase {
 
             }
 
-        }   
+       // }
+        
+        SmartDashboard.putNumber("Desired Left", desiredPositionLeft);
+        SmartDashboard.putNumber("Actual Position Left", climber.getCurrentPositionLeft());
+
 
     }
 

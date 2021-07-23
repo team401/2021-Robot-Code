@@ -53,8 +53,8 @@ public class RobotContainer {
 
         drive.setDefaultCommand(
             new OperatorControl(
-                drive, 
-                () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
+                drive,
+                () -> leftJoystick.getY(GenericHID.Hand.kLeft),
                 () -> leftJoystick.getX(GenericHID.Hand.kLeft),
                 () -> rightJoystick.getX(GenericHID.Hand.kRight),
                 true
@@ -134,11 +134,12 @@ public class RobotContainer {
 
         // deploy climbers
         new JoystickButton(gamepad, Button.kX.value) 
-            .whenPressed(new InstantCommand(climber::deployClimbers));
+            .whenPressed(new InstantCommand(climber::deployClimbers))
+            .whenPressed(new InstantCommand(intake::extendIntake));
 
-        // toggle locking climbers
-        new JoystickButton(gamepad, Button.kA.value)
-            .whenPressed(new InstantCommand(climber::toggleClimberLock));
+        new JoystickButton(gamepad, Button.kA.value) 
+            .whenPressed(new InstantCommand(climber::lockClimbers))
+            .whenPressed(new InstantCommand(intake::retractIntake));
 
     }
 
@@ -146,8 +147,7 @@ public class RobotContainer {
 
         //return autoSelector.getSelected();
 
-        //return new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter);
-        return new InfiniteRecharge2021Auto(StartingPosition.Mid, IntakeSource.TrenchLeft, drive, intake, indexer, limelight, shooter);
+        return new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter);
 
     }
 

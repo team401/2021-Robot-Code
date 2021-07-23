@@ -61,8 +61,7 @@ public class Constants {
         public  static final int PCMId = 19;
 
         public static final int[] intakeSolenoidChannels = {0, 1};
-        public static final int[] lockingSolenoidChannels = {2, 3};
-        public static final int[] climberSolenoidChannels = {4, 5};
+        public static final int lockingSolenoidChannel = 2;
 
 
     }
@@ -99,7 +98,7 @@ public class Constants {
 
         public static final double baseShootingSpeed = 4500; //rotations per minute
 
-        public static final double intakingPower = 0.35;
+        public static final double intakingPower = 0.3;
         public static final double jogFowardPower = 0.15;
 
         public static final double kickerPower = 1.0;
@@ -107,7 +106,7 @@ public class Constants {
 
         public static final double flywheelGearRatio = 32.0 / 18.0;
 
-        public static final double jogDelaySeconds = 0.05;
+        public static final double jogDelaySeconds = 0.0;
 
     }
 
@@ -116,9 +115,10 @@ public class Constants {
         public static final double climberMotorGearReduction = 1;
 
         public static final double winchDiameterInches = 1;
+        public static final double climberGearRatio = 1.0/6.0;
         public static final double climberMaxHeightInches = 40.5;
 
-        public static final double desiredClimberSpeedInchesPerSecond = 1;
+        public static final double desiredClimberSpeedInchesPerSecond = 10;
 
     }
 

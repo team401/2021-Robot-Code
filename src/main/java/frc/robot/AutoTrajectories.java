@@ -28,12 +28,6 @@ public class AutoTrajectories {
             AutoConstants.maxAccelMetersPerSecondSq
         )
         .setKinematics(DriveConstants.kinematics);
-
-    /**
-     * Each trajectory is treated as a constant statically through the class
-     * 
-     * Trajectories are cubic clamped - generated with automatically defined slopes
-     */
     
     // start centered on line, center 4 ft from right edge
     public static Trajectory startRightToTrenchRight = 
@@ -48,7 +42,7 @@ public class AutoTrajectories {
 
     public static Trajectory trenchRightToShootRight = 
         TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(310), Units.inchesToMeters(27.75), new Rotation2d(0)),
+            new Pose2d(Units.inchesToMeters(310), Units.inchesToMeters(27.75), new Rotation2d(Math.PI)),
             List.of(
                 new Translation2d(Units.inchesToMeters(423), Units.inchesToMeters(27.75))
             ),

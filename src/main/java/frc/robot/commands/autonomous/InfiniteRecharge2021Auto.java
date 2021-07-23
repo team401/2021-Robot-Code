@@ -61,9 +61,13 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
 
                         addCommands();
 
+                        break;
+
                     case Mid:
 
                         addCommands();
+
+                        break;
 
                 }
 
@@ -73,9 +77,15 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
 
                     case TrenchLeft:
 
+                        addCommands();
+
+                        break;
+
                     case Mid:
 
                         addCommands();
+
+                        break;
 
                     case TrenchRight:
 
@@ -108,6 +118,8 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                             )
                         );
 
+                        break;
+
                 }
 
             case Right:
@@ -117,6 +129,8 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                     case Mid:
 
                         addCommands(); 
+
+                        break;
 
                     case TrenchRight:
 
@@ -132,7 +146,7 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                             ),
                             new InstantCommand(intake::runIntakeMotor),
                             new FollowTrajectory(
-                                drive, 
+                                drive,
                                 AutoTrajectories.startRightToTrenchRight
                             ),
                             new InstantCommand(intake::stopIntakeMotor),
@@ -149,6 +163,8 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                                 )
                             )
                         );
+
+                        break;
 
                 }
         

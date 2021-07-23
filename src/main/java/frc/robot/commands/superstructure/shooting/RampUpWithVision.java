@@ -21,7 +21,7 @@ public class RampUpWithVision extends CommandBase {
         shooter = subsystem;
         limelight = vision;
 
-        addRequirements(shooter, limelight);
+        addRequirements(limelight);
 
     }
 
@@ -38,11 +38,11 @@ public class RampUpWithVision extends CommandBase {
         SmartDashboard.putNumber("tY Value", limelight.gettY());
 
         //only run if the limelight has a valid lock
-        /*if (limelight.hasValidTarget()) { 
+        if (limelight.hasValidTarget()) { 
              
             double ty = limelight.gettY();
-            double desiredFlywheelVelRPM = 7378.13 * Math.pow(ty, 2) + -2200.66 * ty + 4079.94;
-
+            double desiredFlywheelVelRPM = 8468.71 * Math.pow(ty, 2) + -353.274 * ty + 3905.02;
+            SmartDashboard.putNumber("desired flywheel rpm", desiredFlywheelVelRPM);
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(desiredFlywheelVelRPM));
 
         // otherwise, run a standard "base" shooter speed
@@ -50,13 +50,11 @@ public class RampUpWithVision extends CommandBase {
             
             shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SuperstructureConstants.baseShootingSpeed));
 
-        }*/
-
-        shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("desired RPM", 0)));
+        }
 
     }
 
-    /*@Override
+    @Override
     public boolean isFinished() {
 
         return shooter.atGoal();
@@ -68,6 +66,6 @@ public class RampUpWithVision extends CommandBase {
         
         limelight.setLedMode(1);
 
-    }*/
+    }
 
 }
