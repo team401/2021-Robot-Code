@@ -4,20 +4,27 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.QuickTurn;
 import frc.robot.commands.drivetrain.AlignWithVisionTarget;
+import frc.robot.commands.drivetrain.DriveTime;
+import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.IntakeSource;
 import frc.robot.commands.autonomous.InfiniteRecharge2021Auto.StartingPosition;
 import frc.robot.commands.climbing.ActuateClimbers;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
+import frc.robot.commands.superstructure.shooting.RampUpToSpeed;
 import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.commands.superstructure.shooting.Shoot;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -45,7 +52,7 @@ public class RobotContainer {
     private final VisionSubsystem limelight = new VisionSubsystem();
     private final ClimbingSubsystem climber = new ClimbingSubsystem();
     
-    //SendableChooser<Command> autoSelector = new SendableChooser<Command>();
+    SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
     public RobotContainer() {
 
@@ -72,10 +79,13 @@ public class RobotContainer {
 
         configureButtonBindings();
 
-        //autoSelector.setDefaultOption("Do nothing", new InstantCommand());
-        //autoSelector.addOption("Start right to trench right", new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter));
+        autoSelector.setDefaultOption("Do nothing", new InstantCommand());
+        autoSelector.addOption("Start right to trench right", new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter));
+        autoSelector.addOption("Start right 3 ball", new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.NoSource, drive, intake, indexer, limelight, shooter));
+        autoSelector.addOption("Start mid 3 ball", new InfiniteRecharge2021Auto(StartingPosition.Mid, IntakeSource.NoSource, drive, intake, indexer, limelight, shooter));
+        autoSelector.addOption("Start left 3 ball", new InfiniteRecharge2021Auto(StartingPosition.Left, IntakeSource.NoSource, drive, intake, indexer, limelight, shooter));
 
-        //SmartDashboard.putData(autoSelector);
+        SmartDashboard.putData(autoSelector);
 
     }
 
@@ -84,7 +94,9 @@ public class RobotContainer {
         // intake
         new JoystickButton(gamepad, Button.kB.value)
             .whenPressed(new InstantCommand(intake::runIntakeMotor))
+            //.alongWith(new InstantCommand(intake::extendIntake)))
             .whenReleased(new InstantCommand(intake::stopIntakeMotor));
+            //.alongWith(new InstantCommand(intake::retractIntake)));
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
@@ -99,14 +111,14 @@ public class RobotContainer {
             .whileHeld(
                 new ParallelCommandGroup(
                     new InstantCommand(shooter::reverseKicker),
-                    new InstantCommand(indexer::reverseConveyor),
+                    new InstantCommand(indexer::reverseConveyor, indexer),
                     new InstantCommand(intake::reverseIntakeMotor)
                 )
             )
             .whenReleased(
                 new ParallelCommandGroup(
                     new InstantCommand(shooter::stopKicker),
-                    new InstantCommand(indexer::stopConveyor),
+                    new InstantCommand(indexer::stopConveyor, indexer),
                     new InstantCommand(intake::stopIntakeMotor)
                 )
             );
@@ -128,9 +140,9 @@ public class RobotContainer {
             .whenPressed(new InstantCommand(drive::resetImu));
 
         // ramp up with vision using regression
-        new JoystickButton(gamepad, Button.kBumperRight.value)
-            .whileHeld(new RampUpWithVision(shooter, limelight))
-            .whenReleased(new InstantCommand(() -> shooter.runShooterPercent(0)));
+        //new JoystickButton(gamepad, Button.kBumperLeft.value)
+        //    .whileHeld(new RampUpWithVision(shooter, limelight))
+        //    .whenReleased(new InstantCommand(() -> shooter.runShooterPercent(0)));
 
         // deploy climbers
         new JoystickButton(gamepad, Button.kX.value) 
@@ -141,14 +153,22 @@ public class RobotContainer {
             .whenPressed(new InstantCommand(climber::lockClimbers))
             .whenPressed(new InstantCommand(intake::retractIntake));
 
+        new JoystickButton(gamepad, Button.kBumperRight.value)
+            .whileHeld(new RunCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4200))))
+            .whenReleased(new InstantCommand(() -> shooter.stopShooter()));
+
+        new JoystickButton(gamepad, Button.kBumperLeft.value)
+            .whenPressed(new InstantCommand(intake::toggleIntake));
     }
 
     public Command getAutonomousCommand() {
 
-        //return autoSelector.getSelected();
+        drive.resetImu();
 
-        return new InfiniteRecharge2021Auto(StartingPosition.Right, IntakeSource.TrenchRight, drive, intake, indexer, limelight, shooter);
+        return new RunCommand(() -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(4100))).withTimeout(3)
 
+        .andThen(new Shoot(shooter, indexer));
+        
     }
 
 }

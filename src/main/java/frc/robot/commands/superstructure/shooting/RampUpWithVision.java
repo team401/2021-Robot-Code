@@ -22,6 +22,7 @@ public class RampUpWithVision extends CommandBase {
         limelight = vision;
 
         addRequirements(limelight);
+        SmartDashboard.putNumber("desired rpm:", 0);
 
     }
 
@@ -34,8 +35,6 @@ public class RampUpWithVision extends CommandBase {
 
     @Override
     public void execute() {
-
-        SmartDashboard.putNumber("tY Value", limelight.gettY());
 
         //only run if the limelight has a valid lock
         if (limelight.hasValidTarget()) { 

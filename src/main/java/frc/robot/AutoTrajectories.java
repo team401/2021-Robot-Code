@@ -61,6 +61,19 @@ public class AutoTrajectories {
             config
         );
 
+    public static Trajectory startRightToGenerator = 
+        TrajectoryGenerator.generateTrajectory(
+            new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(0)),
+            List.of(
+                new Translation2d(Units.inchesToMeters(315), Units.inchesToMeters(85)),
+                new Translation2d(Units.inchesToMeters(373), Units.inchesToMeters(132)),
+                new Translation2d(Units.inchesToMeters(390.5), Units.inchesToMeters(144)),
+                new Translation2d(Units.inchesToMeters(378), Units.inchesToMeters(100))
+            ), 
+            new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(65), new Rotation2d(0)),
+            config
+        );
+
     // start centered on line, center 4 ft from left edge
     /*public static Trajectory startLeftToTrenchLeft = 
         TrajectoryGenerator.generateTrajectory(
@@ -69,5 +82,32 @@ public class AutoTrajectories {
             ), 
             config
         );*/
+
+    public static Trajectory startRightDriveOffInitLine = 
+        TrajectoryGenerator.generateTrajectory(
+            List.of(
+                new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(0)),
+                new Pose2d(Units.inchesToMeters(450), Units.inchesToMeters(48), new Rotation2d(0))
+            ), 
+            config
+        ); 
+
+    public static Trajectory startMidDriveOffInitLine = 
+        TrajectoryGenerator.generateTrajectory(
+            List.of(
+                new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(162), new Rotation2d(0)),
+                new Pose2d(Units.inchesToMeters(450), Units.inchesToMeters(162), new Rotation2d(0))
+            ), 
+            config
+        ); 
+
+    public static Trajectory startLeftDriveOffInitLine = 
+        TrajectoryGenerator.generateTrajectory(
+            List.of(
+                new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(320), new Rotation2d(0)),
+                new Pose2d(Units.inchesToMeters(450), Units.inchesToMeters(320), new Rotation2d(0))
+            ), 
+            config
+        ); 
 
 }

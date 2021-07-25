@@ -28,6 +28,8 @@ public class Waiting extends CommandBase {
         boolean bottomSensorState = indexer.getBottomBannerState();
         boolean topSensorState = indexer.getTopBannerState();
 
+        
+
         indexer.stopConveyor();    
 
         if (bottomSensorState && !topSensorState) {

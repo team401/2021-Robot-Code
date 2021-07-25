@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTrajectories;
 import frc.robot.commands.drivetrain.AlignWithVisionTarget;
 import frc.robot.commands.drivetrain.FollowTrajectory;
-import frc.robot.commands.drivetrain.QuickTurn;
+import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.commands.superstructure.shooting.RampUpToSpeed;
-import frc.robot.commands.superstructure.shooting.RampUpWithVision;
 import frc.robot.commands.superstructure.shooting.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -28,9 +28,9 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
     }
 
     public enum IntakeSource {
-        TrenchLeft,
-        Mid, 
-        TrenchRight
+        Generator, 
+        TrenchRight,
+        NoSource
     }
 
     private final StartingPosition startingPosition;
@@ -57,15 +57,20 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                 
                 switch (intakeSource) {
 
-                    case TrenchLeft:
+                    case NoSource:
 
-                        addCommands();
+                        drive.resetPose(AutoTrajectories.startLeftDriveOffInitLine.getInitialPose());
 
-                        break;
-
-                    case Mid:
-
-                        addCommands();
+                        addCommands(
+                            new ParallelCommandGroup(
+                                new AlignWithVisionTarget(drive, limelight).andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
+                                new SequentialCommandGroup(
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4100), shooter),
+                                    new Shoot(shooter, indexer)
+                                )
+                            ),
+                            new FollowTrajectory(drive, AutoTrajectories.startLeftDriveOffInitLine)
+                        );
 
                         break;
 
@@ -75,13 +80,9 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                 
                 switch (intakeSource) {
 
-                    case TrenchLeft:
-
-                        addCommands();
-
-                        break;
-
-                    case Mid:
+                    case Generator:
+                        
+                        drive.resetPose(new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(162), new Rotation2d(0)));
 
                         addCommands();
 
@@ -89,20 +90,23 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
 
                     case TrenchRight:
 
-                        drive.resetPose(new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(162), new Rotation2d(0)));
+                        drive.resetPose(AutoTrajectories.startMidToTrenchRight.getInitialPose());
 
                         addCommands(
                             new ParallelCommandGroup(
                                 new AlignWithVisionTarget(drive, limelight).andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
                                 new SequentialCommandGroup(
-                                    new RampUpWithVision(shooter, limelight),
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4100), shooter),
                                     new Shoot(shooter, indexer)
                                 )
                             ),
                             new InstantCommand(intake::runIntakeMotor),
-                            new FollowTrajectory(
-                                drive, 
-                                AutoTrajectories.startMidToTrenchRight
+                            new ParallelDeadlineGroup(
+                                new FollowTrajectory(
+                                    drive, 
+                                    AutoTrajectories.startMidToTrenchRight
+                                ), 
+                                new Waiting(indexer)
                             ),
                             new InstantCommand(intake::stopIntakeMotor),
                             new FollowTrajectory(
@@ -112,10 +116,27 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                             new ParallelCommandGroup(
                                 new AlignWithVisionTarget(drive, limelight).andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
                                 new SequentialCommandGroup(
-                                    new RampUpWithVision(shooter, limelight),
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4100), shooter),
                                     new Shoot(shooter, indexer)
                                 )
                             )
+                        );
+
+                        break;
+
+                    case NoSource:
+
+                        drive.resetPose(AutoTrajectories.startMidDriveOffInitLine.getInitialPose());
+
+                        addCommands(
+                            new ParallelCommandGroup(
+                                new AlignWithVisionTarget(drive, limelight).andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
+                                new SequentialCommandGroup(
+                                new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4100), shooter),
+                                new Shoot(shooter, indexer)
+                                )
+                            ),
+                            new FollowTrajectory(drive, AutoTrajectories.startMidDriveOffInitLine)
                         );
 
                         break;
@@ -126,7 +147,9 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                 
                 switch (intakeSource) {
 
-                    case Mid:
+                    case Generator:
+
+                        drive.resetPose(AutoTrajectories.startRightToGenerator.getInitialPose());
 
                         addCommands(); 
 
@@ -134,23 +157,22 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
 
                     case TrenchRight:
 
-                        drive.resetPose(new Pose2d(Units.inchesToMeters(510), Units.inchesToMeters(48), new Rotation2d(0)));
+                        drive.resetPose(AutoTrajectories.startRightToTrenchRight.getInitialPose());
 
                         addCommands(
                             new ParallelCommandGroup(
                                 new AlignWithVisionTarget(drive, limelight).andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
                                 new SequentialCommandGroup(
-                                    new RampUpWithVision(shooter, limelight),
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4100), shooter),
                                     new Shoot(shooter, indexer)
                                 )
                             ),
                             new InstantCommand(intake::runIntakeMotor),
                             new FollowTrajectory(
-                                drive,
+                                drive, 
                                 AutoTrajectories.startRightToTrenchRight
-                            ),
+                            ),                                                         
                             new InstantCommand(intake::stopIntakeMotor),
-                            new QuickTurn(0, drive),
                             new FollowTrajectory(
                                 drive,
                                 AutoTrajectories.trenchRightToShootRight
@@ -158,10 +180,28 @@ public class InfiniteRecharge2021Auto extends SequentialCommandGroup {
                             new ParallelCommandGroup(
                                 new AlignWithVisionTarget(drive, limelight).andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
                                 new SequentialCommandGroup(
-                                    new RampUpWithVision(shooter, limelight),
-                                    new Shoot(shooter, indexer)
+                                new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4100), shooter),
+                                new Shoot(shooter, indexer)
                                 )
                             )
+
+                        );
+
+                        break;
+
+                    case NoSource:
+
+                        drive.resetPose(AutoTrajectories.startRightDriveOffInitLine.getInitialPose());
+
+                        addCommands(
+                            /*new ParallelCommandGroup(
+                                new AlignWithVisionTarget(drive, limelight).andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
+                                new SequentialCommandGroup(
+                                    new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(4100), shooter),
+                                    new Shoot(shooter, indexer)
+                                )
+                            ),*/
+                            new FollowTrajectory(drive, AutoTrajectories.startRightDriveOffInitLine)
                         );
 
                         break;

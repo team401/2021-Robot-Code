@@ -7,9 +7,8 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ClimbingConstants;
@@ -19,10 +18,10 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     private boolean isDeployed = false;
 
-    private final double leftControllerkP = 2;
+    private final double leftControllerkP = 4;
     private final double leftControllerkI = 0;
     private final double leftControllerkD = 0;
-    private final double rightControllerkP = 2;
+    private final double rightControllerkP = 4;
     private final double rightControllerkI = 0;
     private final double rightControllerkD = 0;
 
@@ -39,12 +38,13 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     public ClimbingSubsystem() {
 
-        rightClimberMotor.setInverted(true);
+        rightClimberMotor.setInverted(false);
+        leftClimberMotor.setInverted(true);
 
         deploySolenoid.set(false);
 
-        leftClimberMotor.setIdleMode(IdleMode.kBrake);
-        rightClimberMotor.setIdleMode(IdleMode.kBrake);
+        leftClimberMotor.setIdleMode(IdleMode.kCoast);
+        rightClimberMotor.setIdleMode(IdleMode.kCoast);
 
         leftController.setP(leftControllerkP);
         leftController.setI(leftControllerkI);
@@ -55,6 +55,14 @@ public class ClimbingSubsystem extends SubsystemBase {
         
         leftEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI * ClimbingConstants.climberGearRatio);
         rightEncoder.setPositionConversionFactor(ClimbingConstants.winchDiameterInches * Math.PI * ClimbingConstants.climberGearRatio);
+
+    }
+
+    @Override
+    public void periodic() {
+
+        SmartDashboard.putNumber("climber left value", getCurrentPositionLeft());
+        SmartDashboard.putNumber("climber right value", getCurrentPositionRight());
 
     }
 
