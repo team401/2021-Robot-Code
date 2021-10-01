@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -17,7 +19,8 @@ public class IntakeSubsystem extends SubsystemBase {
      * Subsystem that controls the intake of the robot
      */
 
-    private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
+
+    private final TalonSRX intakeMotor = new TalonSRX(CANDevices.intakeMotorId);
 
     private final DoubleSolenoid intakeSolenoid = 
         new DoubleSolenoid(
@@ -27,34 +30,32 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {
 
-        intakeMotor.setInverted(true);
-
-        intakeMotor.setSmartCurrentLimit(40);
+        intakeMotor.setInverted(false);
 
     }
 
     @Override
     public void periodic() {
 
-        SmartDashboard.putNumber("intake motor measured current", intakeMotor.getOutputCurrent());
+        SmartDashboard.putNumber("intake motor measured current", intakeMotor.getMotorOutputPercent());
 
     }
 
     public void runIntakeMotor() {
 
-        intakeMotor.set(SuperstructureConstants.intakingPower);
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, SuperstructureConstants.intakingPower);
 
     }
 
     public void stopIntakeMotor() {
 
-        intakeMotor.set(0);
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, 0);
 
     }
 
     public void reverseIntakeMotor() {
 
-        intakeMotor.set(-SuperstructureConstants.intakingPower);
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, -SuperstructureConstants.intakingPower);
 
     }
 
