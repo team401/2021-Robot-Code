@@ -97,7 +97,8 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kBumperRight.value)
             .whileHeld(
                 new InstantCommand(
-                    () -> shooter.runVelocityProfileController(Units.rotationsPerMinuteToRadiansPerSecond(2500)))
+                    () -> shooter.runVelocityProfileController
+                    (Units.rotationsPerMinuteToRadiansPerSecond(2500)))
             )
             .whenReleased(new InstantCommand(shooter::stopShooter));
 
