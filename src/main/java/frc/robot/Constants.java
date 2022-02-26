@@ -29,8 +29,7 @@ public class Constants {
         public static final int rearLeftRotationEncoderId = 15;
         public static final int rearRightRotationEncoderId = 14;
 
-        public static final int rightFlywheelMotorId = 12;
-        public static final int leftFlywheelMotorId = 11;
+        public static final int flywheelMotorId = 11;
 
         public static final int kickerMotorId = 10;
         public static final int intakeMotorId = 16; 

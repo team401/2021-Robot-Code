@@ -50,7 +50,7 @@ public class RobotContainer {
 
         shooter.setDefaultCommand(
             new RunCommand(
-                () -> shooter.runShooterPercent(gamepad.getRawAxis(3) / 2.75), 
+                () -> shooter.runShooterPercent(rightJoystick.getZ() / 2.75), 
                 shooter
             )
         );
@@ -62,7 +62,7 @@ public class RobotContainer {
     public void configureButtonBindings() {
 
         // intake
-        new JoystickButton(gamepad, Button.kB.value)
+        new JoystickButton(rightJoystick, 1)
             .whenPressed(new InstantCommand(intake::runIntakeMotor))
             .whenReleased(new InstantCommand(intake::stopIntakeMotor));
 
@@ -93,8 +93,8 @@ public class RobotContainer {
                     new InstantCommand(intake::stopIntakeMotor)
                 )
             );
-
-        new JoystickButton(gamepad, Button.kBumperRight.value)
+        // spin flywheel
+        new JoystickButton(rightJoystick, 2)
             .whileHeld(
                 new InstantCommand(
                     () -> shooter.runVelocityProfileController
@@ -102,6 +102,18 @@ public class RobotContainer {
             )
             .whenReleased(new InstantCommand(shooter::stopShooter));
 
+            new JoystickButton(rightJoystick, 4)
+                .whileHeld(
+                    new InstantCommand(
+                        () -> shooter.runShooterPercent(0.2)
+                    )
+                )
+                .whenReleased(
+                    new InstantCommand(
+                        () -> shooter.stopShooter()
+                    )
+                );
+            
         // reset imu 
         new JoystickButton(rightJoystick, 3)
             .whenPressed(new InstantCommand(drive::resetImu));
