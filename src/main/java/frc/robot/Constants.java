@@ -41,8 +41,8 @@ public class Constants {
 
     public static final class DIOChannels {
 
-        public static final int bottomBannerPort = 0;
-        public static final int topBannerPort = 9;
+        public static final int bottomBannerPort = 9;
+        public static final int topBannerPort = 7;
 
     }
 
@@ -101,7 +101,7 @@ public class Constants {
         public static final double jogFowardPower = 0.15;
 
         public static final double kickerPower = 1.0;
-        public static final double conveyorPower = 0.35;
+        public static final double conveyorPower = 0.6;
 
         public static final double flywheelGearRatio = 32.0 / 18.0;
 

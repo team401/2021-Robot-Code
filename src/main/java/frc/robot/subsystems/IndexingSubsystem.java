@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DIOChannels;
 import frc.robot.Constants.SuperstructureConstants;
+import jdk.dynalink.linker.ConversionComparator;
 
 public class IndexingSubsystem extends SubsystemBase {
 
@@ -26,6 +27,14 @@ public class IndexingSubsystem extends SubsystemBase {
 
         //ensure the intake motor stops when we don't command it to prevent jamming
         conveyorMotor.setNeutralMode(NeutralMode.Brake);
+
+        conveyorMotor.setInverted(true);
+
+    }
+
+    public void runConveyorPercent(double percent) {
+
+        conveyorMotor.set(percent);
 
     }
 

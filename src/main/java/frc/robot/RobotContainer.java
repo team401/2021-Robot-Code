@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.InputDevices;
+import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.subsystems.IndexingSubsystem;
@@ -62,7 +63,7 @@ public class RobotContainer {
     public void configureButtonBindings() {
 
         // intake
-        new JoystickButton(rightJoystick, 1)
+        new JoystickButton(gamepad, Button.kB.value)
             .whenPressed(new InstantCommand(intake::runIntakeMotor))
             .whenReleased(new InstantCommand(intake::stopIntakeMotor));
 
@@ -70,7 +71,7 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kY.value)
             .whileHeld(
                 new InstantCommand(shooter::runKicker)
-                .alongWith(new InstantCommand(indexer::runConveyor, indexer))
+                .alongWith(new InstantCommand(() -> indexer.runConveyorPercent(SuperstructureConstants.conveyorPower), indexer))
             )
             .whenReleased(
                 new InstantCommand(shooter::stopKicker)
@@ -82,7 +83,7 @@ public class RobotContainer {
             .whileHeld(
                 new ParallelCommandGroup(
                     new InstantCommand(shooter::reverseKicker),
-                    new InstantCommand(indexer::reverseConveyor, indexer),
+                    new InstantCommand(() -> indexer.runConveyorPercent(-SuperstructureConstants.conveyorPower), indexer),
                     new InstantCommand(intake::reverseIntakeMotor)
                 )
             )
