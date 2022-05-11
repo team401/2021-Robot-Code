@@ -95,25 +95,25 @@ public class RobotContainer {
                 )
             );
         // spin flywheel
-        new JoystickButton(rightJoystick, 2)
+        new JoystickButton(gamepad, Button.kBumperRight.value)
             .whileHeld(
                 new InstantCommand(
                     () -> shooter.runVelocityProfileController
                     (Units.rotationsPerMinuteToRadiansPerSecond(2500)))
             )
             .whenReleased(new InstantCommand(shooter::stopShooter));
-
-            new JoystickButton(rightJoystick, 4)
-                .whileHeld(
-                    new InstantCommand(
-                        () -> shooter.runShooterPercent(0.2)
-                    )
+        // for debugging, doesn't use PID
+        new JoystickButton(rightJoystick, 4)
+            .whileHeld(
+                new InstantCommand(
+                    () -> shooter.runShooterPercent(0.2)
                 )
-                .whenReleased(
-                    new InstantCommand(
-                        () -> shooter.stopShooter()
-                    )
-                );
+            )
+            .whenReleased(
+                new InstantCommand(
+                    () -> shooter.stopShooter()
+                )
+            );
             
         // reset imu 
         new JoystickButton(rightJoystick, 3)
