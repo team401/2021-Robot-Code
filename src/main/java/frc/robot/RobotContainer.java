@@ -48,10 +48,10 @@ public class RobotContainer {
         );
 
         indexer.setDefaultCommand(new Waiting(indexer));
-
+        
         shooter.setDefaultCommand(
             new RunCommand(
-                () -> shooter.runShooterPercent(rightJoystick.getZ() / 2.75), 
+                () -> shooter.runShooterPercent(gamepad.getTriggerAxis(GenericHID.Hand.kRight) / 2), 
                 shooter
             )
         );
@@ -71,7 +71,7 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kY.value)
             .whileHeld(
                 new InstantCommand(shooter::runKicker)
-                .alongWith(new InstantCommand(() -> indexer.runConveyorPercent(SuperstructureConstants.conveyorPower), indexer))
+                .alongWith(new InstantCommand(() -> indexer.runConveyorPercent(-SuperstructureConstants.conveyorPower), indexer))
             )
             .whenReleased(
                 new InstantCommand(shooter::stopKicker)
@@ -83,7 +83,7 @@ public class RobotContainer {
             .whileHeld(
                 new ParallelCommandGroup(
                     new InstantCommand(shooter::reverseKicker),
-                    new InstantCommand(() -> indexer.runConveyorPercent(-SuperstructureConstants.conveyorPower), indexer),
+                    new InstantCommand(() -> indexer.runConveyorPercent(SuperstructureConstants.conveyorPower), indexer),
                     new InstantCommand(intake::reverseIntakeMotor)
                 )
             )

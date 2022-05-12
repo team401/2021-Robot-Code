@@ -101,7 +101,7 @@ public class Constants {
         public static final double jogFowardPower = 0.15;
 
         public static final double kickerPower = 1.0;
-        public static final double conveyorPower = 0.6;
+        public static final double conveyorPower = 0.3;
 
         public static final double flywheelGearRatio = 32.0 / 18.0;
 
