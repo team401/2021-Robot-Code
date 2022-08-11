@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.InputDevices;
-import frc.robot.commands.drivetrain.EmptyDrive;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
 import frc.robot.subsystems.IndexingSubsystem;
