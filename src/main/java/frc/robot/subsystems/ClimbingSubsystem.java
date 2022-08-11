@@ -1,22 +1,18 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ClimbingConstants;
-import frc.robot.Constants.PneumaticChannels;
 
 public class ClimbingSubsystem extends SubsystemBase {
-
-    private boolean isDeployed = false;
 
     private final double leftControllerkP = 4;
     private final double leftControllerkI = 0;
@@ -28,20 +24,16 @@ public class ClimbingSubsystem extends SubsystemBase {
     private final CANSparkMax leftClimberMotor = new CANSparkMax(CANDevices.leftClimberMotorId, MotorType.kBrushless);
     private final CANSparkMax rightClimberMotor = new CANSparkMax(CANDevices.rightClimberMotorId, MotorType.kBrushless);
 
-    private final Solenoid deploySolenoid = new Solenoid(PneumaticChannels.lockingSolenoidChannel);
+    private final SparkMaxPIDController leftController = leftClimberMotor.getPIDController();
+    private final SparkMaxPIDController rightController = rightClimberMotor.getPIDController();
 
-    private final CANPIDController leftController = leftClimberMotor.getPIDController();
-    private final CANPIDController rightController = rightClimberMotor.getPIDController();
-
-    private final CANEncoder leftEncoder = leftClimberMotor.getEncoder();
-    private final CANEncoder rightEncoder = rightClimberMotor.getEncoder();
+    private final RelativeEncoder leftEncoder = leftClimberMotor.getEncoder();
+    private final RelativeEncoder rightEncoder = rightClimberMotor.getEncoder();
 
     public ClimbingSubsystem() {
 
         rightClimberMotor.setInverted(false);
         leftClimberMotor.setInverted(true);
-
-        deploySolenoid.set(false);
 
         leftClimberMotor.setIdleMode(IdleMode.kCoast);
         rightClimberMotor.setIdleMode(IdleMode.kCoast);
@@ -114,28 +106,6 @@ public class ClimbingSubsystem extends SubsystemBase {
     public double getCurrentPositionRight() {
 
         return rightEncoder.getPosition();
-
-    }
-
-    public void deployClimbers() {
-    
-        deploySolenoid.set(true);
-        
-        isDeployed = true;
-
-    }
-
-    public void lockClimbers() {
-
-        deploySolenoid.set(false);
-
-        isDeployed = false;
-
-    }
-
-    public boolean getIsDeployed() {
-
-        return isDeployed;
 
     }
     

@@ -1,14 +1,11 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
-import frc.robot.Constants.PneumaticChannels;
 import frc.robot.Constants.SuperstructureConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -17,63 +14,37 @@ public class IntakeSubsystem extends SubsystemBase {
      * Subsystem that controls the intake of the robot
      */
 
-    private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorId, MotorType.kBrushless);
 
-    private final DoubleSolenoid intakeSolenoid = 
-        new DoubleSolenoid(
-            PneumaticChannels.intakeSolenoidChannels[0], 
-            PneumaticChannels.intakeSolenoidChannels[1]
-        );
+    private final TalonSRX intakeMotor = new TalonSRX(CANDevices.intakeMotorId);
 
     public IntakeSubsystem() {
 
-        intakeMotor.setInverted(true);
-
-        intakeMotor.setSmartCurrentLimit(40);
+        intakeMotor.setInverted(false);
 
     }
 
     @Override
     public void periodic() {
 
-        SmartDashboard.putNumber("intake motor measured current", intakeMotor.getOutputCurrent());
+        SmartDashboard.putNumber("intake motor measured current", intakeMotor.getMotorOutputPercent());
 
     }
 
     public void runIntakeMotor() {
 
-        intakeMotor.set(SuperstructureConstants.intakingPower);
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, SuperstructureConstants.intakingPower);
 
     }
 
     public void stopIntakeMotor() {
 
-        intakeMotor.set(0);
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, 0);
 
     }
 
     public void reverseIntakeMotor() {
 
-        intakeMotor.set(-SuperstructureConstants.intakingPower);
-
-    }
-
-    public void extendIntake() {
-
-        intakeSolenoid.set(Value.kForward);
-
-    }
-
-    public void retractIntake() {
-
-        intakeSolenoid.set(Value.kReverse);
-
-    }
-
-    public void toggleIntake() {
-
-        if (intakeSolenoid.get() == Value.kForward) intakeSolenoid.set(Value.kReverse);
-        else intakeSolenoid.set(Value.kForward);
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, -SuperstructureConstants.intakingPower);
 
     }
 

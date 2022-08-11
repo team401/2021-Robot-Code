@@ -1,7 +1,7 @@
 package frc.robot.commands.superstructure.shooting;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.subsystems.VisionSubsystem;

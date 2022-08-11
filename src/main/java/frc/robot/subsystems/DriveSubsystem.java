@@ -3,14 +3,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 
@@ -80,6 +80,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final PigeonIMU imu = new PigeonIMU(CANDevices.imuId);
 
+    private boolean driveToggled = true;
+
     /**
      * odometry for the robot, measured in meters for linear motion and radians for rotational motion
      * Takes in kinematics and robot angle for parameters
@@ -106,6 +108,9 @@ public class DriveSubsystem extends SubsystemBase {
         rearLeft.resetDistance();
         rearRight.resetDistance();
 
+        SmartDashboard.putNumber("Max Drive Speed ft s", DriveConstants.maxDriveSpeed);
+        SmartDashboard.putNumber("Turn Rate deg s", DriveConstants.teleopTurnRateDegPerSec);
+
     }
 
     @Override
@@ -117,6 +122,8 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Odometry x", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());
+
+        SmartDashboard.putBoolean("Drive Enabled", driveToggled);
         
     }
     
@@ -129,6 +136,9 @@ public class DriveSubsystem extends SubsystemBase {
      * if the control is field relative or robot relative
      */
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
+
+        if (!driveToggled)
+            return;
 
         // update the drive inputs for use in AlignWithGyro and AlignWithTargetVision control
         commandedForward = forward;
@@ -153,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
 
         // make sure the wheels don't try to spin faster than the maximum speed possible
-        SwerveDriveKinematics.normalizeWheelSpeeds(states, DriveConstants.maxDriveSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeed);
 
         setModuleStates(states);
 
@@ -264,6 +274,12 @@ public class DriveSubsystem extends SubsystemBase {
     public void resetImu() {
 
         imu.setYaw(0);
+
+    }
+
+    public void toggleDrive() {
+
+        driveToggled = !driveToggled;
 
     }
 

@@ -2,7 +2,8 @@ package frc.robot.commands.drivetrain;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -55,17 +56,20 @@ public class OperatorControl extends CommandBase {
          * Otherwise, our max speed would be 1 meter per second and 1 radian per second
          */
 
+        double driveSpeed = SmartDashboard.getNumber("Max Drive Speed", DriveConstants.maxDriveSpeed);
+        double turnRateDegPerSec = SmartDashboard.getNumber("Turn Rate Deg/s", DriveConstants.teleopTurnRateDegPerSec);
+
         double fwdX = forwardX.getAsDouble();
         fwdX = Math.copySign(fwdX, fwdX);
-        fwdX = deadbandInputs(fwdX) * Units.feetToMeters(DriveConstants.maxDriveSpeed);
+        fwdX = deadbandInputs(fwdX) * Units.feetToMeters(driveSpeed);
 
         double fwdY = forwardY.getAsDouble();
         fwdY = Math.copySign(fwdY, fwdY);
-        fwdY = deadbandInputs(fwdY) * Units.feetToMeters(DriveConstants.maxDriveSpeed);
+        fwdY = deadbandInputs(fwdY) * Units.feetToMeters(driveSpeed);
 
         double rot = rotation.getAsDouble();
         rot = Math.copySign(rot * rot, rot);
-        rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec);
+        rot = deadbandInputs(rot) * Units.degreesToRadians(turnRateDegPerSec);
 
         drive.drive(
             -fwdX,
@@ -81,6 +85,13 @@ public class OperatorControl extends CommandBase {
 
         if (Math.abs(input) < 0.035) return 0.0;
         return input;
+
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
+        drive.drive(0, 0, 0, true);
 
     }
 
