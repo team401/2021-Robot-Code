@@ -63,7 +63,9 @@ public class RobotContainer {
 
         // Toggle driving
         new JoystickButton(gamepad, Button.kStart.value)
-            .whenPressed(() -> drive.toggleDrive());
+            .whenPressed(drive::toggleDrive);
+        new JoystickButton(leftJoystick, 10)
+            .whenPressed(drive::toggleDrive);
 
         // intake
         new JoystickButton(gamepad, Button.kB.value)

@@ -279,6 +279,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void toggleDrive() {
 
+        drive(0.0, 0.0, 0.0, true);
         driveToggled = !driveToggled;
 
     }
