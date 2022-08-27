@@ -69,8 +69,8 @@ public class RobotContainer {
 
         // intake
         new JoystickButton(gamepad, Button.kB.value)
-            .whenPressed(new InstantCommand(intake::runIntakeMotor))
-            .whenReleased(new InstantCommand(intake::stopIntakeMotor));
+            .whenPressed(intake::runIntakeMotor)
+            .whenReleased(intake::stopIntakeMotor);
 
         // shoot
         new JoystickButton(gamepad, Button.kY.value)
@@ -102,33 +102,19 @@ public class RobotContainer {
         // spin flywheel
         new JoystickButton(rightJoystick, 2)
             .whileHeld(
-                new InstantCommand(
-                    () -> shooter.runVelocityProfileController
-                    (Units.rotationsPerMinuteToRadiansPerSecond(2500)))
-            )
-            .whenReleased(new InstantCommand(shooter::stopShooter));
-
-            new JoystickButton(rightJoystick, 4)
-                .whileHeld(
-                    new InstantCommand(
-                        () -> shooter.runShooterPercent(0.2)
-                    )
-                )
-                .whenReleased(
-                    new InstantCommand(
-                        () -> shooter.stopShooter()
-                    )
-                );
+                () -> shooter.runVelocityProfileController
+                (Units.rotationsPerMinuteToRadiansPerSecond(2500)), shooter)
+            .whenReleased(shooter::stopShooter);
             
         // reset imu 
         new JoystickButton(rightJoystick, 3)
-            .whenPressed(new InstantCommand(drive::resetImu));
+            .whenPressed(drive::resetImu);
     }
 
     public Command getAutonomousCommand() {
 
         return null;
-        
+ 
     }
 
 }

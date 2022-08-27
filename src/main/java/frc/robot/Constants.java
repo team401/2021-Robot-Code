@@ -84,7 +84,7 @@ public class Constants {
         public static final double wheelDiameterMeters = 0.050686 * 2;
 
         public static final double rotationMotorMaxSpeedRadPerSec = 1.0;
-        public static final double rotationMotorMaxAccelRadPerSecSq = 1.0;
+        public static final double rotationMotorMaxAccelRadPerSecSq = 1.0; //TODO: Test and change max acceleration to avoid wheelies
 
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.254, 0.137);
 
