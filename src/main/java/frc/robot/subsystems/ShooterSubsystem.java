@@ -16,13 +16,15 @@ import frc.robot.Constants.SuperstructureConstants;
 public class ShooterSubsystem extends SubsystemBase {
 
     /**
-     * Subsystem that controls the shooter of the robot
+     * Subsystem that controls the shooter of the robot (For outreach, this solely includes the flywheel & kicker)
      */
 
     private final WPI_VictorSPX flywheelMotor = new WPI_VictorSPX(CANDevices.flywheelMotorId);
-    
+
+    //Shoves ball into flywheel from indexing chamber, lauching it
     private final CANSparkMax kickerMotor = new CANSparkMax(CANDevices.kickerMotorId, MotorType.kBrushless);
 
+    //None of the uses for this subsystem really *need* PID, but this a good case for practising using it 
     private final ProfiledPIDController controller = new ProfiledPIDController(
         0.005, 0.005, 0,
         new TrapezoidProfile.Constraints(
@@ -32,8 +34,8 @@ public class ShooterSubsystem extends SubsystemBase {
     );
 
     private Timer timer = new Timer();
-    private double powerReduction = 0;
 
+    private double powerReduction = 0;
     private double desiredSpeed = 0;
 
     public ShooterSubsystem() {
@@ -60,14 +62,15 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getFlywheelVelRadPerSec() {
 
         return (((flywheelMotor.getSelectedSensorVelocity()
-        / 2048 * (2 * Math.PI) * 10) * SuperstructureConstants.flywheelGearRatio)); 
-        // raw sensor unit/100ms * 1 rotation/2048 units Talon * 2pi rad/1 rotation / 10 100ms/sec = rad/sec
+        / 2048 * (2 * Math.PI) * 10) * SuperstructureConstants.flywheelGearRatio));
+        //Unit Conversions: raw sensor unit/100ms * 1 rotation/2048 Talon units  * 2pi rad/1 rotation / 10 100ms/sec 
+        // = rad/sec
 
     }
 
     public void runVelocityProfileController(double desiredSpeedRadPerSec) {
 
-        desiredSpeed = desiredSpeedRadPerSec;
+        desiredSpeed = desiredSpeedRadPerSec * powerReduction;
 
         double powerOut = controller.calculate(
                 getFlywheelVelRadPerSec(), 
@@ -111,10 +114,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public boolean atGoal() {
+    /*public boolean atGoal() {
 
         return timer.get() >= 0.25;
 
-    }
-
+    }*/
 }

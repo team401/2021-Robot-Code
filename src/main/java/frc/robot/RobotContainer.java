@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
+import frc.robot.commands.superstructure.shooting.RampUpToSpeed;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -34,7 +35,6 @@ public class RobotContainer {
     private final ShooterSubsystem shooter = new ShooterSubsystem();
     
     public RobotContainer() {
-
         drive.setDefaultCommand(
             new OperatorControl(
                 drive,
@@ -44,11 +44,8 @@ public class RobotContainer {
                 true
             )
         );
-
         indexer.setDefaultCommand(new Waiting(indexer));
-
         shooter.setDefaultCommand(
-            
             new RunCommand(
                 () -> shooter.runShooterPercent(gamepad.getRightTriggerAxis()), 
                 shooter
@@ -56,17 +53,14 @@ public class RobotContainer {
         );
 
         configureButtonBindings();
-
     }
 
     public void configureButtonBindings() {
-
         // Toggle driving
         new JoystickButton(gamepad, Button.kStart.value)
             .whenPressed(drive::toggleDrive);
         new JoystickButton(leftJoystick, 10)
             .whenPressed(drive::toggleDrive);
-
         // intake
         new JoystickButton(gamepad, Button.kB.value)
             .whenPressed(intake::runIntakeMotor)
@@ -82,7 +76,15 @@ public class RobotContainer {
                 new InstantCommand(shooter::stopKicker)
                 .alongWith(new InstantCommand(indexer::stopConveyor, indexer))
             );
-
+        // spin flywheel
+        new JoystickButton(rightJoystick, 2)
+        .whileHeld(
+            () -> shooter.runVelocityProfileController
+            (Units.rotationsPerMinuteToRadiansPerSecond(2500)), shooter)
+        .whenReleased(shooter::stopShooter);
+        // auto-shoot
+        new JoystickButton(leftJoystick, 2)
+        .whenPressed(new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(2500), shooter, indexer));
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
             .whileHeld(
@@ -99,22 +101,12 @@ public class RobotContainer {
                     new InstantCommand(intake::stopIntakeMotor)
                 )
             );
-        // spin flywheel
-        new JoystickButton(rightJoystick, 2)
-            .whileHeld(
-                () -> shooter.runVelocityProfileController
-                (Units.rotationsPerMinuteToRadiansPerSecond(2500)), shooter)
-            .whenReleased(shooter::stopShooter);
-            
         // reset imu 
         new JoystickButton(rightJoystick, 3)
             .whenPressed(drive::resetImu);
     }
 
     public Command getAutonomousCommand() {
-
         return null;
- 
     }
-
 }

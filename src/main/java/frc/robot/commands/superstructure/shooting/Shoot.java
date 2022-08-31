@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
+/*
+*   Runs kicker and indexer for two seconds
+*/
 public class Shoot extends CommandBase {
 
     private final ShooterSubsystem shooter;
@@ -23,30 +26,14 @@ public class Shoot extends CommandBase {
 
     @Override
     public void initialize() {
-
         timer.reset();
         timer.start();
 
+        shooter.runKicker();
+        indexer.runConveyor();
     }
 
-    @Override
-    public void execute() {
-
-        if (shooter.atGoal()) {
-
-            shooter.runKicker();
-            indexer.runConveyor();
-
-        } else { 
-
-            shooter.stopKicker();
-            indexer.stopConveyor();
-
-            timer.reset();
-
-        }
-
-    }
+    //has no execute() method, just starts and stops the motors
 
     @Override
     public boolean isFinished() {
