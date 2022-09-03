@@ -128,12 +128,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
     
     /**
-     * method for driving the robot
-     * Parameters:
-     * forward linear value
-     * sideways linear value
-     * rotation value
-     * if the control is field relative or robot relative
+     * Drives the robot if drive is toggled. If not, does nothing
+     * @param forward speed forward in m/s: linear value
+     * @param strafe speed sideways in m/s; linear value
+     * @param rotation rotation speed (counter-clockwise) in radians/s
+     * @param isFieldRelative if the control is field relative or robot relative
      */
     public void drive(double forward, double strafe, double rotation, boolean isFieldRelative) {
 
@@ -271,17 +270,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    public void resetImu() {
-
+    public void resetRealitivity() {
         imu.setYaw(0);
-
     }
 
-    public void toggleDrive() {
+    // Will only drive if the toggle is true. Otherwise will stop moving and refuse to drive
+    public void toggleDrive(boolean toggle) {
+        if (!toggle)
+            drive(0.0, 0.0, 0.0, true);
 
-        drive(0.0, 0.0, 0.0, true);
-        driveToggled = !driveToggled;
-
+        driveToggled = toggle;
     }
-
 }

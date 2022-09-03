@@ -58,9 +58,8 @@ public class RobotContainer {
     public void configureButtonBindings() {
         // Toggle driving
         new JoystickButton(gamepad, Button.kStart.value)
-            .whenPressed(drive::toggleDrive);
-        new JoystickButton(leftJoystick, 10)
-            .whenPressed(drive::toggleDrive);
+            .whenPressed(() -> drive.toggleDrive(true))
+            .whenReleased(() -> drive.toggleDrive(false));
         // intake
         new JoystickButton(gamepad, Button.kB.value)
             .whenPressed(intake::runIntakeMotor)
@@ -77,14 +76,14 @@ public class RobotContainer {
                 .alongWith(new InstantCommand(indexer::stopConveyor, indexer))
             );
         // spin flywheel
-        new JoystickButton(rightJoystick, 2)
+        /*new JoystickButton(rightJoystick, 2)
         .whileHeld(
             () -> shooter.runVelocityProfileController
             (Units.rotationsPerMinuteToRadiansPerSecond(2500)), shooter)
         .whenReleased(shooter::stopShooter);
         // auto-shoot
         new JoystickButton(leftJoystick, 2)
-        .whenPressed(new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(2500), shooter, indexer));
+        .whenPressed(new RampUpToSpeed(Units.rotationsPerMinuteToRadiansPerSecond(2500), shooter, indexer));*/
         // manual reverse
         new JoystickButton(gamepad, Button.kBack.value) 
             .whileHeld(
@@ -101,9 +100,9 @@ public class RobotContainer {
                     new InstantCommand(intake::stopIntakeMotor)
                 )
             );
-        // reset imu 
+        // reset realitive forward
         new JoystickButton(rightJoystick, 3)
-            .whenPressed(drive::resetImu);
+            .whenPressed(drive::resetRealitivity);
     }
 
     public Command getAutonomousCommand() {

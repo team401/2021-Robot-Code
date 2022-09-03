@@ -171,7 +171,7 @@ public class SwerveModule extends SubsystemBase {
         double speedRadPerSec = desiredState.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);
 
         driveController.setReference(
-            speedRadPerSec, 
+            speedRadPerSec, //TODO: Test/ask if this is actually giving it the right speed
             ControlType.kVelocity, 
             0, 
             DriveConstants.driveFF.calculate(speedRadPerSec)
