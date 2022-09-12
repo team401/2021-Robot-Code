@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -117,6 +119,8 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Odometry x", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());
+
+        SmartDashboard.putBoolean("Battery Change Needed", RobotController.getBatteryVoltage() < 11);
         
     }
     
