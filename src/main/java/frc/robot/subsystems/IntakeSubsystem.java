@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem() {
 
-        intakeMotor.setInverted(false);
+        intakeMotor.setInverted(true);
 
     }
 
