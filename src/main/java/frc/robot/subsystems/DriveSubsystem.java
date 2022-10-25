@@ -274,6 +274,10 @@ public class DriveSubsystem extends SubsystemBase {
         imu.setYaw(0);
     }
 
+    public Rotation2d getGyroscopeRotation() {
+        return new Rotation2d(imu.getYaw() * Math.PI / 180);
+    }
+
     // Will only drive if the toggle is true. Otherwise will stop moving and refuse to drive
     public void toggleDrive(boolean toggle) {
         if (!toggle)

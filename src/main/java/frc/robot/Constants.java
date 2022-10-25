@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -125,6 +127,8 @@ public class Constants {
 
         public static final double limelightHeightInches = 26.5; // distance from limelight to ground
         public static final double limelightMountAngleRadians = Units.degreesToRadians(44);
+
+        public static final Transform2d CAMERA_TO_ROBOT = new Transform2d(new Translation2d(0.6731, 0.0), new Rotation2d(0.0));;
 
     }
 
