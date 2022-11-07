@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.VisionConstants.CAMERA_TO_ROBOT;
+import static frc.robot.Constants.VisionConstants;
 import static frc.robot.Constants.DriveConstants;
 
 import java.util.Collections;
@@ -26,21 +26,18 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 
-public class PoseEstimatorSubsystem extends SubsystemBase {
+public class TagVisionSubsystem extends SubsystemBase {
 
   private final PhotonCamera photonCamera;
   private final DriveSubsystem drivetrainSubsystem;
 
-  // Ordered list of target poses by ID (WPILib is adding some functionality for
-  // this)
-  private static final List<Pose2d> targetPoses = Collections.unmodifiableList(List.of(
-      new Pose2d(Units.inchesToMeters(84), Units.inchesToMeters(39.4375), Rotation2d.fromDegrees(180)),
-      new Pose2d(Units.inchesToMeters(84), 0.0, Rotation2d.fromDegrees(180))));
-  
+  private static final Pose2d targetPose = new Pose2d(Units.inchesToMeters(84), 0.0, Rotation2d.fromDegrees(180));
+
   // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
   // you trust your various sensors. Smaller numbers will cause the filter to
-  // "trust" the estimate from that particular component more than the others. 
+  // "trust" the estimate from that particular component more than the others.
   // This in turn means the particualr component will have a stronger influence
   // on the final pose estimate.
   private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
@@ -50,9 +47,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
   private final Field2d field2d = new Field2d();
 
-  private PhotonPipelineResult previousPipelineResult = null;
+  private PhotonPipelineResult previousPipelineResult = new PhotonPipelineResult();
 
-  public PoseEstimatorSubsystem(PhotonCamera photonCamera, DriveSubsystem drivetrainSubsystem) {
+  public TagVisionSubsystem(PhotonCamera photonCamera, DriveSubsystem drivetrainSubsystem) {
     this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
 
@@ -63,8 +60,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         new Pose2d(),
         DriveConstants.kinematics, stateStdDevs,
         localMeasurementStdDevs, visionMeasurementStdDevs);
-    
-    
+
     tab.addString("Pose (X, Y)", this::getFomattedPose).withPosition(0, 4);
     tab.addNumber("Pose Degrees", () -> getCurrentPose().getRotation().getDegrees()).withPosition(1, 4);
     tab.add(field2d);
@@ -81,39 +77,37 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
       for (PhotonTrackedTarget target : pipelineResult.getTargets()) {
 
         var fiducialId = target.getFiducialId();
-        if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
-          var targetPose = targetPoses.get(fiducialId);
-
+        if (fiducialId > -1) {
           Transform3d camToTarget = target.getCameraToTarget();
-          var transform = new Transform2d(
+          Transform2d transform = new Transform2d(
               camToTarget.getTranslation().toTranslation2d(),
               camToTarget.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
 
           Pose2d camPose = targetPose.transformBy(transform.inverse());
 
-          var visionMeasurement = camPose.transformBy(CAMERA_TO_ROBOT);
+          Pose2d visionMeasurement = camPose.transformBy(VisionConstants.CameraToRobot);
           // field2d.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
           // SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
-          //   visionMeasurement.getTranslation().getX(),
-          //   visionMeasurement.getTranslation().getY(),
-          //   visionMeasurement.getRotation().getDegrees()));
+          // visionMeasurement.getTranslation().getX(),
+          // visionMeasurement.getTranslation().getY(),
+          // visionMeasurement.getRotation().getDegrees()));
           poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
         }
       }
     }
     // Update pose estimator with drivetrain sensors
     poseEstimator.updateWithTime(
-      Timer.getFPGATimestamp(),
-      drivetrainSubsystem.getGyroscopeRotation(),
-      drivetrainSubsystem.getModuleStates());
+        Timer.getFPGATimestamp(),
+        drivetrainSubsystem.getGyroscopeRotation(),
+        drivetrainSubsystem.getModuleStates());
 
     field2d.setRobotPose(getCurrentPose());
   }
 
   private String getFomattedPose() {
-    var pose = getCurrentPose();
-    return String.format("(%.2f, %.2f)", 
-        Units.metersToInches(pose.getX()), 
+    Pose2d pose = getCurrentPose();
+    return String.format("(%.2f, %.2f)",
+        Units.metersToInches(pose.getX()),
         Units.metersToInches(pose.getY()));
   }
 
@@ -121,10 +115,21 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+	public PhotonTrackedTarget getCurrentTarget() {
+		// Running getBestTarget() on an empty pipeline result gives a warning and returns null.
+		// Part of the purpose of this subsystem should probably be to avoid all the nulls used by Photonlib.
+		return previousPipelineResult.hasTargets() ? previousPipelineResult.getBestTarget() : new PhotonTrackedTarget();
+	}
+
+	public boolean hasTarget() {
+		return previousPipelineResult.hasTargets();
+	}
+
   /**
    * Resets the current pose to the specified pose. This should ONLY be called
    * when the robot's position on the field is known, like at the beginning of
    * a match.
+   * 
    * @param newPose new pose
    */
   public void setCurrentPose(Pose2d newPose) {
@@ -133,13 +138,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   }
 
   /**
-   * Resets the position on the field to 0,0 0-degrees, with forward being downfield. This resets
+   * Resets the position on the field to 0,0 0-degrees, with forward being
+   * downfield. This resets
    * what "forward" is for field oriented driving.
    */
   public void resetFieldPosition() {
     drivetrainSubsystem.resetRealitivity();
     poseEstimator.resetPosition(
-      new Pose2d(), drivetrainSubsystem.getGyroscopeRotation());
+        new Pose2d(), drivetrainSubsystem.getGyroscopeRotation());
   }
+
+	
 
 }

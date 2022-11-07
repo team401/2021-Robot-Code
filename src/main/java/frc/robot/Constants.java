@@ -124,25 +124,17 @@ public class Constants {
     }
 
     public static final class VisionConstants {
+        public static final String photonCameraName = "Gloworm";
 
-        public static final double limelightHeightInches = 26.5; // distance from limelight to ground
-        public static final double limelightMountAngleRadians = Units.degreesToRadians(44);
-
-        public static final Transform2d CAMERA_TO_ROBOT = new Transform2d(new Translation2d(0.6731, 0.0), new Rotation2d(0.0));;
-
+        public static final Transform2d CameraToRobot = new Transform2d(new Translation2d(0.6731, 0.0), new Rotation2d(0.0));;
     }
 
     public static final class AutoConstants {
-
         public static final double maxVelMetersPerSec = 2;
         public static final double maxAccelMetersPerSecondSq = 1;
-        
     }
 
     public static final class FieldConstants {
-
         public static final double targetHeightInches = 89.5;
-
     }
-    
 }
