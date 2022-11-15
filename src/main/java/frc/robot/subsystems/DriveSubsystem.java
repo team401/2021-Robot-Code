@@ -168,6 +168,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
+    public void stop() {
+        drive(0, 0, 0, true);
+    }
+
     /**
      * Method to set the desired state for each swerve module
      * Uses PID and feedforward control to control the linear and rotational values for the modules

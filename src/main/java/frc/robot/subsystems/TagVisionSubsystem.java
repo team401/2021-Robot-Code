@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
@@ -42,7 +43,7 @@ public class TagVisionSubsystem extends SubsystemBase {
   // on the final pose estimate.
   private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
   private static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
-  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.0001, 0.0001, Units.degreesToRadians(.00005));
   private final SwerveDrivePoseEstimator poseEstimator;
 
   private final Field2d field2d = new Field2d();
@@ -86,11 +87,11 @@ public class TagVisionSubsystem extends SubsystemBase {
           Pose2d camPose = targetPose.transformBy(transform.inverse());
 
           Pose2d visionMeasurement = camPose.transformBy(VisionConstants.CameraToRobot);
-          // field2d.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
-          // SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
-          // visionMeasurement.getTranslation().getX(),
-          // visionMeasurement.getTranslation().getY(),
-          // visionMeasurement.getRotation().getDegrees()));
+          //field2d.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
+          SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
+           visionMeasurement.getTranslation().getX(),
+           visionMeasurement.getTranslation().getY(),
+           visionMeasurement.getRotation().getDegrees()));
           poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
         }
       }

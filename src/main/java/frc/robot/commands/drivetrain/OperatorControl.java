@@ -83,7 +83,7 @@ public class OperatorControl extends CommandBase {
     // method to deadband inputs to eliminate tiny unwanted values from the joysticks
     public double deadbandInputs(double input) {
 
-        if (Math.abs(input) < 0.035) return 0.0;
+        if (Math.abs(input) < 0.1) return 0.0;
         return input;
 
     }

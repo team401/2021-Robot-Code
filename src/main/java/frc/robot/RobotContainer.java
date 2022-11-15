@@ -111,7 +111,7 @@ public class RobotContainer {
             );
         // Follow AprilTag, UNTESTED
         new JoystickButton(gamepad, Button.kX.value)
-            .whileHeld(new Chase(drive, vision));
+            .whenHeld(new Chase(vision, drive));
         // reset realitive forward
         new JoystickButton(rightJoystick, 3)
             .whenPressed(drive::resetRealitivity);
