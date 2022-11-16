@@ -25,8 +25,6 @@ public class Chase extends CommandBase {
 		xController.setTolerance(0.1);
 		yController.setTolerance(0.1);
 		thetaController.setTolerance(0.1);
-		
-		addRequirements(drive);
 	}
 
 	@Override
