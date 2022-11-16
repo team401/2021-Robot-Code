@@ -51,6 +51,10 @@ public class TagVisionSubsystem extends SubsystemBase {
   private PhotonPipelineResult previousPipelineResult = new PhotonPipelineResult();
 
   public TagVisionSubsystem(PhotonCamera photonCamera, DriveSubsystem drivetrainSubsystem) {
+    TagVisionSubsystem(photonCamera, drivetrainSubsystem, new Pose2d);
+  }
+
+  public TagVisionSubsystem(PhotonCamera photonCamera, DriveSubsystem drivetrainSubsystem, Pose2d robotPose) {
     this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
 
@@ -58,7 +62,7 @@ public class TagVisionSubsystem extends SubsystemBase {
 
     poseEstimator = new SwerveDrivePoseEstimator(
         drivetrainSubsystem.getGyroscopeRotation(),
-        new Pose2d(),
+        robotPose,
         DriveConstants.kinematics, stateStdDevs,
         localMeasurementStdDevs, visionMeasurementStdDevs);
 
@@ -102,7 +106,12 @@ public class TagVisionSubsystem extends SubsystemBase {
         drivetrainSubsystem.getGyroscopeRotation(),
         drivetrainSubsystem.getModuleStates());
 
-    field2d.setRobotPose(getCurrentPose());
+    Pose2d estimatedPose = poseEstimator.getEstimatedPosition();
+    field2d.setRobotPose(estimatedPose);
+    SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
+           estimatedPose.getTranslation().getX(),
+           estimatedPose.getTranslation().getY(),
+           estimatedPose.getRotation().getDegrees()));
   }
 
   private String getFomattedPose() {
@@ -116,6 +125,9 @@ public class TagVisionSubsystem extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+  /**
+   * @return The current best target tracked by the photon camera. If none exists, an empty one.
+   */
 	public PhotonTrackedTarget getCurrentTarget() {
 		// Running getBestTarget() on an empty pipeline result gives a warning and returns null.
 		// Part of the purpose of this subsystem should probably be to avoid all the nulls used by Photonlib.
@@ -144,11 +156,6 @@ public class TagVisionSubsystem extends SubsystemBase {
    * what "forward" is for field oriented driving.
    */
   public void resetFieldPosition() {
-    drivetrainSubsystem.resetRealitivity();
-    poseEstimator.resetPosition(
-        new Pose2d(), drivetrainSubsystem.getGyroscopeRotation());
+    setCurrentPose(new Pose2d);
   }
-
-	
-
 }
