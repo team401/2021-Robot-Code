@@ -12,7 +12,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -44,7 +43,6 @@ public class TagVisionSubsystem extends SubsystemBase {
   private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
   private static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
   private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.0001, 0.0001, Units.degreesToRadians(.00005));
-  private final SwerveDrivePoseEstimator poseEstimator;
 
   private final Field2d field2d = new Field2d();
 
@@ -56,11 +54,7 @@ public class TagVisionSubsystem extends SubsystemBase {
 
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
-    poseEstimator = new SwerveDrivePoseEstimator(
-        drivetrainSubsystem.getGyroscopeRotation(),
-        new Pose2d(),
-        DriveConstants.kinematics, stateStdDevs,
-        localMeasurementStdDevs, visionMeasurementStdDevs);
+    
 
     tab.addString("Pose (X, Y)", this::getFomattedPose).withPosition(0, 4);
     tab.addNumber("Pose Degrees", () -> getCurrentPose().getRotation().getDegrees()).withPosition(1, 4);
@@ -92,15 +86,12 @@ public class TagVisionSubsystem extends SubsystemBase {
            visionMeasurement.getTranslation().getX(),
            visionMeasurement.getTranslation().getY(),
            visionMeasurement.getRotation().getDegrees()));
-          poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
+          
         }
       }
     }
     // Update pose estimator with drivetrain sensors
-    poseEstimator.updateWithTime(
-        Timer.getFPGATimestamp(),
-        drivetrainSubsystem.getGyroscopeRotation(),
-        drivetrainSubsystem.getModuleStates());
+    
 
     field2d.setRobotPose(getCurrentPose());
   }
@@ -113,7 +104,15 @@ public class TagVisionSubsystem extends SubsystemBase {
   }
 
   public Pose2d getCurrentPose() {
-    return poseEstimator.getEstimatedPosition();
+    Transform3d cameraToTag = getCurrentTarget().getCameraToTarget();
+
+    Pose2d pose = new Pose2d(cameraToTag.getX(), cameraToTag.getY(), cameraToTag.getRotation().toRotation2d());
+
+    SmartDashboard.putNumber("Tag Pose X", pose.getX());
+    SmartDashboard.putNumber("Tag Pose Y", pose.getY());
+    SmartDashboard.putNumber("Tag Pose theta", pose.getRotation().getDegrees());
+    
+    return pose;
   }
 
 	public PhotonTrackedTarget getCurrentTarget() {
@@ -135,7 +134,7 @@ public class TagVisionSubsystem extends SubsystemBase {
    */
   public void setCurrentPose(Pose2d newPose) {
     drivetrainSubsystem.resetRealitivity();
-    poseEstimator.resetPosition(newPose, drivetrainSubsystem.getGyroscopeRotation());
+    
   }
 
   /**
@@ -145,8 +144,7 @@ public class TagVisionSubsystem extends SubsystemBase {
    */
   public void resetFieldPosition() {
     drivetrainSubsystem.resetRealitivity();
-    poseEstimator.resetPosition(
-        new Pose2d(), drivetrainSubsystem.getGyroscopeRotation());
+    
   }
 
 	
