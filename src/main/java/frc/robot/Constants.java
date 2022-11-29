@@ -126,7 +126,7 @@ public class Constants {
     public static final class VisionConstants {
         public static final String photonCameraName = "gloworm";
 
-        public static final Transform2d CameraToRobot = new Transform2d(new Translation2d(0.6731, 0.0), new Rotation2d(0.0));;
+        public static final Transform2d CameraToRobot = new Transform2d(new Translation2d(0.6731, 0.0), new Rotation2d(0.0));
     }
 
     public static final class AutoConstants {

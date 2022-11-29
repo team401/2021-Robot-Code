@@ -35,15 +35,6 @@ public class TagVisionSubsystem extends SubsystemBase {
 
   private static final Pose2d targetPose = new Pose2d(Units.inchesToMeters(84), 0.0, Rotation2d.fromDegrees(180));
 
-  // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
-  // you trust your various sensors. Smaller numbers will cause the filter to
-  // "trust" the estimate from that particular component more than the others.
-  // This in turn means the particualr component will have a stronger influence
-  // on the final pose estimate.
-  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
-  private static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
-  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.0001, 0.0001, Units.degreesToRadians(.00005));
-
   private final Field2d field2d = new Field2d();
 
   private PhotonPipelineResult previousPipelineResult = new PhotonPipelineResult();
@@ -51,14 +42,6 @@ public class TagVisionSubsystem extends SubsystemBase {
   public TagVisionSubsystem(PhotonCamera photonCamera, DriveSubsystem drivetrainSubsystem) {
     this.photonCamera = photonCamera;
     this.drivetrainSubsystem = drivetrainSubsystem;
-
-    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
-    
-
-    tab.addString("Pose (X, Y)", this::getFomattedPose).withPosition(0, 4);
-    tab.addNumber("Pose Degrees", () -> getCurrentPose().getRotation().getDegrees()).withPosition(1, 4);
-    tab.add(field2d);
   }
 
   @Override
@@ -69,29 +52,29 @@ public class TagVisionSubsystem extends SubsystemBase {
       previousPipelineResult = pipelineResult;
       double imageCaptureTime = Timer.getFPGATimestamp() - (pipelineResult.getLatencyMillis() / 1000d);
 
-      for (PhotonTrackedTarget target : pipelineResult.getTargets()) {
+      PhotonTrackedTarget target = pipelineResult.getBestTarget();
 
-        var fiducialId = target.getFiducialId();
-        if (fiducialId > -1) {
-          Transform3d camToTarget = target.getCameraToTarget();
-          Transform2d transform = new Transform2d(
-              camToTarget.getTranslation().toTranslation2d(),
-              camToTarget.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
+      var fiducialId = target.getFiducialId();
+      if (fiducialId == -1) {
+        return;
+      }
 
-          Pose2d camPose = targetPose.transformBy(transform.inverse());
+      Transform3d camToTarget3d = target.getCameraToTarget();
 
-          Pose2d visionMeasurement = camPose.transformBy(VisionConstants.CameraToRobot);
-          //field2d.getObject("MyRobot" + fiducialId).setPose(visionMeasurement);
-          SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
-           visionMeasurement.getTranslation().getX(),
-           visionMeasurement.getTranslation().getY(),
-           visionMeasurement.getRotation().getDegrees()));
-          
-        }
+      Transform2d camToTarget = new Transform2d(
+          camToTarget3d.getTranslation().toTranslation2d(),
+          camToTarget3d.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
+
+      Pose2d camPose = targetPose.transformBy(camToTarget.inverse());
+
+      Pose2d visionMeasurement = camPose.transformBy(VisionConstants.CameraToRobot);
+      
+      SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
+        visionMeasurement.getTranslation().getX(),
+        visionMeasurement.getTranslation().getY(),
+        visionMeasurement.getRotation().getDegrees()));
       }
     }
-    // Update pose estimator with drivetrain sensors
-    
 
     field2d.setRobotPose(getCurrentPose());
   }
