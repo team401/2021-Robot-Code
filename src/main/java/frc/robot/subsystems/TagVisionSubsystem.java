@@ -48,8 +48,9 @@ public class TagVisionSubsystem extends SubsystemBase {
   public void periodic() {
     // Update pose estimator with visible targets
     var pipelineResult = photonCamera.getLatestResult();
+    previousPipelineResult = pipelineResult;
+    
     if (!pipelineResult.equals(previousPipelineResult) && pipelineResult.hasTargets()) {
-      previousPipelineResult = pipelineResult;
       double imageCaptureTime = Timer.getFPGATimestamp() - (pipelineResult.getLatencyMillis() / 1000d);
 
       PhotonTrackedTarget target = pipelineResult.getBestTarget();
@@ -63,7 +64,7 @@ public class TagVisionSubsystem extends SubsystemBase {
 
       Transform2d camToTarget = new Transform2d(
           camToTarget3d.getTranslation().toTranslation2d(),
-          camToTarget3d.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
+          camToTarget3d.getRotation().toRotation2d());
 
       Pose2d camPose = targetPose.transformBy(camToTarget.inverse());
 
@@ -73,11 +74,12 @@ public class TagVisionSubsystem extends SubsystemBase {
         visionMeasurement.getTranslation().getX(),
         visionMeasurement.getTranslation().getY(),
         visionMeasurement.getRotation().getDegrees()));
+      
       }
-    }
-
-    field2d.setRobotPose(getCurrentPose());
+    SmartDashboard.putBoolean("Has Target", hasTarget());
+    getCurrentPose();
   }
+  
 
   private String getFomattedPose() {
     Pose2d pose = getCurrentPose();
@@ -89,7 +91,7 @@ public class TagVisionSubsystem extends SubsystemBase {
   public Pose2d getCurrentPose() {
     Transform3d cameraToTag = getCurrentTarget().getCameraToTarget();
 
-    Pose2d pose = new Pose2d(cameraToTag.getX(), cameraToTag.getY(), cameraToTag.getRotation().toRotation2d());
+    Pose2d pose = new Pose2d(cameraToTag.getX(), cameraToTag.getY(), cameraToTag.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(180)));
 
     SmartDashboard.putNumber("Tag Pose X", pose.getX());
     SmartDashboard.putNumber("Tag Pose Y", pose.getY());
