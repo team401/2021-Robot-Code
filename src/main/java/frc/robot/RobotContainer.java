@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 
 import org.photonvision.PhotonCamera;
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -15,10 +13,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.InputDevices;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.Chase;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.indexing.Waiting;
-import frc.robot.commands.superstructure.shooting.RampUpToSpeed;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -41,7 +37,7 @@ public class RobotContainer {
     private final IndexingSubsystem indexer = new IndexingSubsystem();
     private final ShooterSubsystem shooter = new ShooterSubsystem();
     private final TagVisionSubsystem vision = new TagVisionSubsystem(
-        new PhotonCamera(VisionConstants.photonCameraName), drive);
+        new PhotonCamera(VisionConstants.photonCameraName));
     
     public RobotContainer() {
         drive.setDefaultCommand(
@@ -109,9 +105,7 @@ public class RobotContainer {
                     new InstantCommand(intake::stopIntakeMotor)
                 )
             );
-        // Follow AprilTag, UNTESTED
-        new JoystickButton(gamepad, Button.kX.value)
-            .whenHeld(new Chase(vision, drive));
+        
         // reset realitive forward
         new JoystickButton(rightJoystick, 3)
             .whenPressed(drive::resetRealitivity);
