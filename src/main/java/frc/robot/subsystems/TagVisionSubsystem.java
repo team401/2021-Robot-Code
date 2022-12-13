@@ -43,35 +43,45 @@ public class TagVisionSubsystem extends SubsystemBase {
     public void periodic() {
         PhotonPipelineResult newResult = camera.getLatestResult();
 
-        if (newResult.equals(latestResult) || !newResult.hasTargets()) {
+        SmartDashboard.putBoolean("Can See Target", canSeeTag());
+
+        if (newResult.equals(latestResult)) {
+            return;
+        }
+
+        if (!newResult.hasTargets()) {
             return;
         }
 
         latestResult = newResult;
 
         PhotonTrackedTarget target = latestResult.getBestTarget();
-        if (target.getPoseAmbiguity() > 0.2 || target.getPoseAmbiguity() < 0) {
-            return;
-        }
+        // if (target.getPoseAmbiguity() > 0.2 || target.getPoseAmbiguity() < 0) {
+        //     return;
+        // }
         
         Transform3d cameraToTarget3d = target.getCameraToTarget();
         Transform2d cameraToTarget2d = new Transform2d(cameraToTarget3d.getTranslation().toTranslation2d(), cameraToTarget3d.getRotation().toRotation2d());
 
+        Transform2d targetToRobot = cameraToTarget2d.inverse();
+
         int fiducialId = target.getFiducialId();
-        Pose2d fieldToTarget = new Pose2d();
-        if (fiducialId == 0) {
-            fieldToTarget = FieldConstants.rightTagLocation;
-        }
-        if (fiducialId == 7) {
-            fieldToTarget = FieldConstants.leftTagLocation;
-        }
+        // if (fiducialId == 0) {
+        //     fieldToTarget = FieldConstants.rightTagLocation;
+        // }
+        // if (fiducialId == 7) {
+        //     fieldToTarget = FieldConstants.leftTagLocation;
+        // }
+        Pose2d fieldToTarget = FieldConstants.fieldToTarget;
 
-        Pose2d robotToField = fieldToTarget.transformBy(cameraToTarget2d);
+        Pose2d fieldToRobot = fieldToTarget.transformBy(targetToRobot);
 
-        latestPose = robotToField;
+        latestPose = fieldToRobot;
         latency = latestResult.getLatencyMillis();
 
         field2d.setRobotPose(latestPose);
+        SmartDashboard.putNumber("Vision X", latestPose.getX());
+        SmartDashboard.putNumber("Vision Y", latestPose.getY());
     }
 
     public Pose2d whereIsRobot() {
@@ -80,5 +90,9 @@ public class TagVisionSubsystem extends SubsystemBase {
 
     public double getLatencyMillis() {
         return latency;
+    }
+
+    public boolean canSeeTag() {
+        return latestResult == null ? false : latestResult.hasTargets();
     }
 }

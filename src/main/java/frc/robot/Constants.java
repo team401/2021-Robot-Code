@@ -130,7 +130,7 @@ public class Constants {
     public static final class VisionConstants {
         public static final String photonCameraName = "gloworm";
 
-        public static final Transform2d CameraToRobot = new Transform2d(new Translation2d(0.6731, 0.0), new Rotation2d(0.0));
+        public static final Transform2d CameraToRobot = new Transform2d(new Translation2d(Units.inchesToMeters(-15), 0), Rotation2d.fromDegrees(180));
     }
 
     public static final class AutoConstants {
@@ -141,8 +141,8 @@ public class Constants {
     public static final class FieldConstants {
         public static final double targetHeightInches = 89.5;
 
-        public static final Pose2d leftTagLocation = new Pose2d(new Translation2d(Units.feetToMeters(3), Units.feetToMeters(15)), Rotation2d.fromDegrees(90));
-        public static final Pose2d rightTagLocation = new Pose2d(new Translation2d(Units.feetToMeters(3), Units.feetToMeters(18)), Rotation2d.fromDegrees(90));
+        public static final Pose2d fieldToTarget = new Pose2d(new Translation2d(Units.inchesToMeters(202), Units.inchesToMeters(255)), Rotation2d.fromDegrees(-90));
+        // public static final Pose2d rightTagLocation = new Pose2d(new Translation2d(Units.inchesToMeters(3), Units.inchesToMeters(18)), Rotation2d.fromDegrees(90));
 
         public static final int leftTagId = 7;
         public static final int rightTagId = 0;
