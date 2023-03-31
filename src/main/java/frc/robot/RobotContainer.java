@@ -57,6 +57,7 @@ public class RobotContainer {
             () -> -rightStick.getRawAxis(0),
             true
         ));
+        SmartDashboard.putNumber("Controller Reduction", 1);
 
         //index.setDefaultCommand(new Waiting(index));
         shooter.setDefaultCommand(

@@ -75,11 +75,11 @@ public final class Constants {
 
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.254, 0.137);
 
-        public static final double maxDriveSpeed = 14.4;
-        public static final double maxTurnRate = 2 * Math.PI;
+        public static final double maxDriveSpeed = 3;
+        public static final double maxTurnRate = Math.PI;
 
         public static final double driveJoystickDeadbandPercent = 0.075;
-        public static final double driveMaxJerk = 200.0;
+        public static final double driveMaxJerk = 100.0;
 
     }
 

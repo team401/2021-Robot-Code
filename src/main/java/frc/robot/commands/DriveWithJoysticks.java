@@ -25,6 +25,8 @@ public class DriveWithJoysticks extends CommandBase {
   private final AxisProcessor yProcessor = new AxisProcessor(false);
   private final AxisProcessor omegaProcessor = new AxisProcessor(true);
 
+  private double controllerReduction = 0.1;
+
   /** Creates a new DriveWithJoysticks. */
   public DriveWithJoysticks(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent, boolean fieldRelative) {
     this.drive = drive;
@@ -47,9 +49,10 @@ public class DriveWithJoysticks extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xMPerS = xProcessor.processJoystickInputs(xPercent.getAsDouble() * 0.75) * DriveConstants.maxDriveSpeed;
-    double yMPerS = yProcessor.processJoystickInputs(yPercent.getAsDouble() * 0.75) * DriveConstants.maxDriveSpeed;
-    double omegaRadPerS = omegaProcessor.processJoystickInputs(omegaPercent.getAsDouble()) * DriveConstants.maxTurnRate;
+    controllerReduction = SmartDashboard.getNumber("Controller Reduction", controllerReduction);
+    double xMPerS = xProcessor.processJoystickInputs(xPercent.getAsDouble() * 0.75) * DriveConstants.maxDriveSpeed * controllerReduction;
+    double yMPerS = yProcessor.processJoystickInputs(yPercent.getAsDouble() * 0.75) * DriveConstants.maxDriveSpeed * controllerReduction;
+    double omegaRadPerS = omegaProcessor.processJoystickInputs(omegaPercent.getAsDouble()) * DriveConstants.maxTurnRate * controllerReduction;
 
     SmartDashboard.putNumber("XMPerS", xMPerS);
 
